@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#10101c">
+<title>PAID File Channel</title>
+<style>
+:root{--bg:#0b0b15;--panel:#151524;--panel2:#1c1b30;--text:#f5f4ff;--muted:#a4a2bb;--accent:#a78bfa;--accent2:#5eead4;--border:rgba(255,255,255,.09);--danger:#fb7185}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 20% 0,#30234f 0,transparent 38%),radial-gradient(ellipse at 90% 15%,#123d45 0,transparent 35%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;min-height:100vh}
+.wrap{max-width:1050px;margin:auto;padding:22px 16px 50px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:15px;background:linear-gradient(135deg,#a78bfa,#5eead4);display:grid;place-items:center;color:#171326;font-weight:900;font-size:20px;box-shadow:0 8px 25px #8b5cf644}
+h1{font-size:23px;margin:0;letter-spacing:.2px}.subtitle{color:var(--muted);font-size:13px;margin-top:3px}
+button,input{font:inherit}button{border:0;border-radius:12px;padding:11px 15px;font-weight:700;cursor:pointer;transition:.15s}button:active{transform:scale(.98)}.btn{background:linear-gradient(135deg,#9b7cf3,#7c65d8);color:white}.btn.secondary{background:#27263b;color:#eee}.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}.btn.danger{background:#4b2232;color:#ffb7c6}
+.hero{background:linear-gradient(140deg,rgba(167,139,250,.16),rgba(94,234,212,.07));border:1px solid var(--border);border-radius:22px;padding:21px;margin-bottom:18px}
+.hero h2{margin:0 0 8px;font-size:20px}.hero p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.toolbar{display:flex;gap:10px;margin:16px 0;flex-wrap:wrap}.search{flex:1;min-width:170px;background:#161625;border:1px solid var(--border);color:white;border-radius:13px;padding:12px 14px;outline:none}.search:focus{border-color:#a78bfa}
+.status{color:var(--muted);font-size:13px;margin:10px 2px 14px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:13px}
+.file{background:linear-gradient(160deg,#1b1a2b,#12121e);border:1px solid var(--border);border-radius:18px;padding:16px;min-width:0;box-shadow:0 8px 30px #0002}
+.file-head{display:flex;gap:12px;align-items:center}.file-icon{width:46px;height:46px;border-radius:14px;background:#2c2844;display:grid;place-items:center;font-size:23px;flex-shrink:0}.file-name{font-weight:750;overflow-wrap:anywhere;line-height:1.25}.meta{color:var(--muted);font-size:12px;margin-top:5px}.file-actions{display:flex;gap:8px;margin-top:14px}.file-actions a{flex:1;text-decoration:none;text-align:center;background:#2c2844;color:#e8e2ff;padding:10px;border-radius:11px;font-size:13px;font-weight:700}
+.empty{border:1px dashed var(--border);border-radius:18px;padding:34px 15px;text-align:center;color:var(--muted);grid-column:1/-1}
+footer{margin-top:30px;text-align:center;color:#77758d;font-size:12px}
+.modal-back{position:fixed;inset:0;background:#0009;backdrop-filter:blur(7px);display:none;align-items:center;justify-content:center;padding:15px;z-index:9}.modal-back.open{display:flex}.modal{width:min(520px,100%);background:#171627;border:1px solid var(--border);border-radius:22px;padding:20px;max-height:90vh;overflow:auto;box-shadow:0 20px 80px #0007}.modal h2{margin:0 0 7px}.modal p{color:var(--muted);font-size:13px;line-height:1.5}.field{display:block;width:100%;padding:12px 13px;background:#0e0e19;border:1px solid var(--border);color:white;border-radius:12px;margin:9px 0;outline:none}.row{display:flex;gap:9px;flex-wrap:wrap}.row button{flex:1}.upload-area{border:1px dashed #7667b5;border-radius:14px;padding:17px;text-align:center;margin-top:12px;background:#211e34}.progress{height:8px;background:#29283a;border-radius:99px;overflow:hidden;margin:10px 0}.progress>div{height:100%;width:0;background:linear-gradient(90deg,#a78bfa,#5eead4);transition:width .2s}.log{font-size:12px;color:var(--muted);max-height:130px;overflow:auto;white-space:pre-wrap;margin-top:9px}.small{font-size:12px;color:var(--muted)}.close{float:right;background:transparent;color:white;font-size:23px;padding:0 5px}.hidden{display:none!important}
+@media(max-width:480px){.wrap{padding:15px 12px 35px}h1{font-size:20px}.hero{padding:17px}.file{padding:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+ <div class="brand"><div class="logo">P</div><div><h1>PAID File Channel</h1><div class="subtitle">Public files · Browse and download</div></div></div>
+ <button class="btn ghost" id="ownerBtn">Owner Upload</button>
+</header>
+<section class="hero"><h2>File Library</h2><p>Browse the channel files below. Search by name, or tap Download to save a file to your device.</p></section>
+<div class="toolbar"><input id="search" class="search" type="search" placeholder="Search files…"><button class="btn secondary" id="refreshBtn">Refresh</button></div>
+<div class="status" id="status">Loading files…</div><section class="grid" id="files"></section>
+<footer>PAID File Channel · Powered by GitHub Releases</footer>
+</div>
+<div class="modal-back" id="modal">
+ <div class="modal">
+  <button class="close" id="closeModal" aria-label="Close">×</button>
+  <h2>Owner Upload</h2>
+  <p>Paste your GitHub token here to enable uploads. It is kept only in this page session and is not saved in local storage.</p>
+  <input class="field" id="token" type="password" autocomplete="off" placeholder="GitHub token (repo Contents: read/write)">
+  <input class="field" id="owner" value="PIKAZOOARMY" placeholder="GitHub owner">
+  <input class="field" id="repo" value="PAID" placeholder="Repository name">
+  <input class="field" id="tag" value="v1" placeholder="Release tag">
+  <div class="row"><button class="btn" id="enableBtn">Enable upload</button><button class="btn secondary" id="hideOwner">Close</button></div>
+  <div id="uploadPanel" class="hidden">
+   <div class="upload-area"><input id="pickFiles" type="file" multiple style="max-width:100%;color:#ddd"><div class="small" style="margin-top:8px">Select one or more files to upload to release v1.</div></div>
+   <button class="btn" id="uploadBtn" style="width:100%;margin-top:12px">Upload selected files</button>
+   <div class="progress"><div id="progressBar"></div></div><div class="small" id="progressText">Waiting for files…</div><div class="log" id="log"></div>
+   <button class="btn danger" id="logout" style="margin-top:12px;width:100%">Clear token / Exit owner mode</button>
+  </div>
+  <p class="small" style="margin-top:15px">Security note: this is a client-side page. The token is never embedded in the HTML file, but while entered it can be inspected by someone with access to your device/browser. Use a fine-grained token restricted to this repository only.</p>
+ </div>
+</div>
+<script>
+const OWNER_DEFAULT="PIKAZOOARMY", REPO_DEFAULT="PAID", TAG_DEFAULT="v1";
+const $=id=>document.getElementById(id);
+let ownerMode=false,sessionToken="",releaseId=null,allFiles=[];
+const modal=$("modal");
+function fmtSize(n){if(!Number.isFinite(n))return "";const units=["B","KB","MB","GB"];let i=0;while(n>=1024&&i<units.length-1){n/=1024;i++}return `${n.toFixed(i?1:0)} ${units[i]}`}
+function extOf(name){return (name.split(".").pop()||"").toLowerCase()}
+function iconFor(name){const e=extOf(name);if(["zip","rar","7z","tar","gz"].includes(e))return "📦";if(["apk","apks","xapk","ipa"].includes(e))return "📱";if(["jpg","jpeg","png","gif","webp","bmp"].includes(e))return "🖼️";if(["mp4","mkv","mov","webm"].includes(e))return "🎬";if(["mp3","wav","flac","ogg"].includes(e))return "🎵";if(["pdf"].includes(e))return "📄";return "📁"}
+function status(msg){$("status").textContent=msg}
+function renderFiles(){const q=$("search").value.trim().toLowerCase();const filtered=allFiles.filter(f=>f.name.toLowerCase().includes(q));$("files").innerHTML="";if(!filtered.length){$("files").innerHTML=`<div class="empty">${allFiles.length?"No files match your search.":"No release files found yet."}</div>`;return}
+ filtered.forEach(f=>{const card=document.createElement("article");card.className="file";card.innerHTML=`<div class="file-head"><div class="file-icon">${iconFor(f.name)}</div><div style="min-width:0"><div class="file-name"></div><div class="meta"></div></div></div><div class="file-actions"><a target="_blank" rel="noopener" href="">Download</a></div>`;card.querySelector(".file-name").textContent=f.name;card.querySelector(".meta").textContent=`${fmtSize(f.size)} · ${new Date(f.created_at||Date.now()).toLocaleDateString()}`;card.querySelector("a").href=f.browser_download_url;card.querySelector("a").download=f.name;$("files").appendChild(card)})}
+async function loadFiles(){status("Loading release files…");$("files").innerHTML="";try{const owner=$("owner").value.trim()||OWNER_DEFAULT,repo=$("repo").value.trim()||REPO_DEFAULT,tag=$("tag").value.trim()||TAG_DEFAULT;const r=await fetch(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/releases/tags/${encodeURIComponent(tag)}`,{headers:{"Accept":"application/vnd.github+json"}});if(!r.ok)throw new Error(r.status===404?"Release/tag not found. Check repository and tag.":"GitHub API response: "+r.status);const data=await r.json();releaseId=data.id;allFiles=(data.assets||[]).map(a=>({name:a.name,size:a.size,created_at:a.created_at,browser_download_url:a.browser_download_url}));status(`${allFiles.length} file${allFiles.length===1?"":"s"} in release ${data.tag_name}`);renderFiles()}catch(e){status("Could not load files: "+e.message);$("files").innerHTML=`<div class="empty">Could not load files. Check internet, repository visibility, and release tag.</div>`}}
+function log(s){$("log").textContent+=s+"\n";$("log").scrollTop=$("log").scrollHeight}
+function openModal(){modal.classList.add("open")}
+function closeModal(){modal.classList.remove("open")}
+$("ownerBtn").onclick=openModal;$("closeModal").onclick=closeModal;$("hideOwner").onclick=closeModal;modal.addEventListener("click",e=>{if(e.target===modal)closeModal()});
+$("refreshBtn").onclick=loadFiles;$("search").addEventListener("input",renderFiles);
+$("enableBtn").onclick=()=>{const t=$("token").value.trim();if(!t){alert("Please paste your GitHub token first.");return}sessionToken=t;ownerMode=true;$("uploadPanel").classList.remove("hidden");$("progressText").textContent="Owner upload mode enabled. Select files.";};
+$("logout").onclick=()=>{sessionToken="";ownerMode=false;$("token").value="";$("uploadPanel").classList.add("hidden");$("pickFiles").value="";$("progressBar").style.width="0";$("progressText").textContent="Token cleared."; $("log").textContent="";};
+async function getRelease(){const o=$("owner").value.trim(),r=$("repo").value.trim(),tag=$("tag").value.trim();const resp=await fetch(`https://api.github.com/repos/${encodeURIComponent(o)}/${encodeURIComponent(r)}/releases/tags/${encodeURIComponent(tag)}`,{headers:{"Accept":"application/vnd.github+json","Authorization":"Bearer "+sessionToken}});if(!resp.ok)throw new Error("Release lookup failed: "+resp.status+" "+await resp.text());return await resp.json()}
+function uploadOne(release,file){return new Promise((resolve,reject)=>{const url=`https://uploads.github.com/repos/${encodeURIComponent($("owner").value.trim())}/${encodeURIComponent($("repo").value.trim())}/releases/${release.id}/assets?name=${encodeURIComponent(file.name)}`;const xhr=new XMLHttpRequest();xhr.open("POST",url);xhr.setRequestHeader("Authorization","Bearer "+sessionToken);xhr.setRequestHeader("Accept","application/vnd.github+json");xhr.setRequestHeader("Content-Type","application/octet-stream");xhr.upload.onprogress=e=>{if(e.lengthComputable){const pct=Math.round(e.loaded/e.total*100);$("progressBar").style.width=pct+"%";$("progressText").textContent=`Uploading ${file.name}: ${pct}%`}};xhr.onload=()=>{if(xhr.status>=200&&xhr.status<300)resolve(JSON.parse(xhr.responseText));else reject(new Error(`${file.name}: HTTP ${xhr.status} — ${xhr.responseText}`))};xhr.onerror=()=>reject(new Error("Network error while uploading "+file.name));xhr.onabort=()=>reject(new Error("Upload cancelled"));xhr.send(file)})}
+$("uploadBtn").onclick=async()=>{if(!ownerMode||!sessionToken){alert("Enable owner mode with your token first.");return}const files=[...$("pickFiles").files];if(!files.length){alert("Choose files first.");return} $("uploadBtn").disabled=true;$("log").textContent="";$("progressBar").style.width="0";try{log("Checking release…");const release=await getRelease();for(let i=0;i<files.length;i++){const f=files[i];log(`Uploading ${f.name} (${fmtSize(f.size)})…`);$("progressText").textContent=`File ${i+1} of ${files.length}`;await uploadOne(release,f);log("Uploaded ✓ "+f.name)}log("All selected files uploaded successfully.");$("progressBar").style.width="100%";$("progressText").textContent="Upload complete.";await loadFiles()}catch(e){log("ERROR: "+e.message);$("progressText").textContent="Upload failed — see log.";alert("Upload error: "+e.message)}finally{$("uploadBtn").disabled=false}};
+loadFiles();
+</script>
+</body>
+</html>
