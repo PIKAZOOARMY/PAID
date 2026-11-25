@@ -849,7 +849,7 @@
 
         function initFirebase(config) {
             try {
-                const app = initializeApp(config);
+                const app = initializeApp(config, "keysAdmin");
                 db = getFirestore(app);
                 auth = getAuth(app);
                 
