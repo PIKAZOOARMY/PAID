@@ -1189,6 +1189,95 @@
     }
     #cardModalSub { white-space: pre-wrap; }
 
+    /* OWNER ACTION & EDIT MODALS */
+    .owner-menu-head {
+      text-align: center;
+      margin-bottom: 14px;
+      padding-right: 34px;
+      padding-left: 34px;
+    }
+    .owner-menu-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--st-orange), var(--st-pink));
+      color: var(--st-text);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .owner-menu-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .owner-act-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 13px 16px;
+      border: 1px solid rgba(255, 224, 237, 0.75);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #E4F3F4, #F6E0EA);
+      box-shadow: var(--st-clay-sm);
+      color: var(--st-text);
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: left;
+      transition: transform 0.15s var(--ease-pop);
+    }
+    .owner-act-btn:active { transform: scale(0.97); }
+    .owner-act-btn.is-warn {
+      background: linear-gradient(145deg, #FFE4D4, #FFD6E4);
+    }
+    .owner-act-btn.is-danger {
+      color: #9A1C3A;
+      background: linear-gradient(145deg, #FFD8E2, #FFC8C8);
+    }
+    .owner-input, .owner-textarea {
+      width: 100%;
+      border: 1px solid rgba(42, 59, 71, 0.16);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--st-text);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      padding: 12px 14px;
+      outline: none;
+      margin-bottom: 12px;
+      box-shadow: var(--st-clay-in);
+    }
+    .owner-textarea {
+      resize: vertical;
+      min-height: 112px;
+      line-height: 1.45;
+    }
+    .owner-thumb-preview {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 18px;
+      overflow: hidden;
+      background: #DDEFF1;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 224, 237, 0.8);
+    }
+    .owner-thumb-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .owner-thumb-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
     .dl {
       position: absolute;
       right: 16px;
@@ -1368,6 +1457,195 @@
     body[data-role="owner"] .store-pill-wrap { display: none; }
     .genkey-item .di-icon { background: linear-gradient(145deg, #FFE9B0, #FFD4B5); }
     .synchook-item .di-icon { background: linear-gradient(145deg, var(--st-cyan), var(--st-green)); }
+    .upload-item .di-icon { background: linear-gradient(145deg, var(--st-orange), var(--st-pink)); }
+    .settings-item .di-icon { background: linear-gradient(145deg, #E2E8F0, #CBD5E1); }
+
+    /* UPLOAD & SETTINGS MODALS */
+    .up-choice-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .up-choice-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 224, 237, 0.78);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #E4F3F4, #F6E0EA);
+      box-shadow: var(--st-clay-sm);
+      color: var(--st-text);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 0.15s var(--ease-pop);
+    }
+    .up-choice-btn:active { transform: scale(0.97); }
+    .up-choice-ico {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #2A3B47;
+    }
+    .up-choice-ico.c1 { background: linear-gradient(145deg, var(--st-orange), var(--st-pink)); }
+    .up-choice-ico.c2 { background: linear-gradient(145deg, var(--st-cyan), var(--st-green)); }
+    .up-choice-ico.c3 { background: linear-gradient(145deg, #FFE9B0, #FFD4B5); }
+    .up-choice-btn strong { display: block; font-size: 14.5px; font-weight: 800; }
+    .up-choice-btn small { display: block; font-size: 12px; font-weight: 600; color: var(--st-muted); margin-top: 2px; }
+
+    .up-queue {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 8px 0 12px;
+      max-height: 44vh;
+      overflow-y: auto;
+    }
+    .up-row {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 224, 237, 0.8);
+    }
+    .up-row-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .up-name {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--st-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+    }
+    .up-pct {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #12707A;
+      flex: none;
+    }
+    .up-bar {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(42, 59, 71, 0.12);
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .up-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #FB923C, #F472B6);
+      transition: width 0.2s ease;
+    }
+    .up-row.done .up-fill { background: #22C55E; }
+    .up-row.fail .up-fill { background: #EF4444; }
+    .up-status {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--st-muted);
+      word-break: break-word;
+    }
+    .up-row.done .up-status { color: #15803D; }
+    .up-row.fail .up-status { color: #B91C1C; }
+    .token-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+    .token-badge.ok { background: #DCFCE7; color: #166534; }
+    .token-badge.miss { background: #FEE2E2; color: #991B1B; }
+
+    /* IN-APP YOUTUBE PLAYER MODAL */
+    .yt-modal-card {
+      width: min(430px, 100%);
+      padding: 18px;
+    }
+    .yt-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .yt-head h2 {
+      margin: 0;
+      text-align: left;
+      font-size: 16.5px;
+      line-height: 1.3;
+      flex: 1;
+      min-width: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .yt-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border-radius: 20px;
+      overflow: hidden;
+      background: #0B0B0D;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 26px rgba(11, 11, 13, 0.25);
+    }
+    .yt-stage iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .yt-stage.is-fs-fallback {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      width: 100vw;
+      height: 100dvh;
+      border-radius: 0;
+      margin: 0;
+    }
+    .yt-fs-exit {
+      display: none;
+      position: absolute;
+      top: calc(12px + var(--safe-top));
+      right: 12px;
+      z-index: 5;
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      background: rgba(11, 11, 13, 0.72);
+      cursor: pointer;
+    }
+    .yt-stage.is-fs-fallback .yt-fs-exit { display: inline-flex; align-items: center; gap: 6px; }
+    .yt-desc {
+      margin: 0 0 12px;
+      font-size: 13.5px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: var(--st-muted);
+      white-space: pre-wrap;
+      max-height: 120px;
+      overflow-y: auto;
+    }
 
     /* MODALS */
     .modal {
@@ -2010,6 +2288,21 @@
             <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
           </button>
 
+          <button class="drawer-item upload-item owner-only" id="btnUploadMenu" type="button">
+            <span class="di-icon">
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+              </svg>
+            </span>
+            <span class="di-text">
+              <strong>Upload</strong>
+              <small>File, Preview ya URL</small>
+            </span>
+            <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+
           <button class="drawer-item synchook-item owner-only" id="btnSyncHookMenu" type="button">
             <span class="di-icon">
               <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -2022,6 +2315,20 @@
             <span class="di-text">
               <strong>Sync Hook</strong>
               <small>Fetch GitHub Releases</small>
+            </span>
+            <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+
+          <button class="drawer-item settings-item owner-only" id="btnSettingsMenu" type="button">
+            <span class="di-icon">
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+              </svg>
+            </span>
+            <span class="di-text">
+              <strong>Settings</strong>
+              <small>GitHub Upload Token</small>
             </span>
             <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
           </button>
@@ -2092,6 +2399,98 @@
           </div>
         </div>
 
+        <!-- OWNER CARD ACTION MENU MODAL -->
+        <div class="modal" id="ownerActionModal" role="dialog" aria-modal="true" aria-labelledby="ownerMenuTitle" aria-hidden="true">
+          <div class="modal-card">
+            <button class="close-x" id="ownerActionClose" type="button" aria-label="Close" style="position:absolute;top:14px;right:14px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+            <div class="owner-menu-head">
+              <span class="owner-menu-pill" id="ownerMenuCat">HOOK</span>
+              <h2 id="ownerMenuTitle">Card Options</h2>
+            </div>
+            <div class="owner-menu-list" id="ownerMenuList"></div>
+          </div>
+        </div>
+
+        <!-- OWNER CARD EDIT MODAL -->
+        <div class="modal" id="ownerEditModal" role="dialog" aria-modal="true" aria-labelledby="ownerEditTitle" aria-hidden="true">
+          <div class="modal-card">
+            <h2 id="ownerEditTitle">Edit Card</h2>
+            <p class="modal-sub" id="ownerEditSub"></p>
+            <div id="ownerEditFields"></div>
+            <div class="modal-actions">
+              <button class="btn" id="ownerEditCancel" type="button">Cancel</button>
+              <button class="btn btn-orange" id="ownerEditSave" type="button">Save</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- OWNER UPLOAD MODAL -->
+        <div class="modal" id="uploadModal" role="dialog" aria-modal="true" aria-labelledby="uploadModalTitle" aria-hidden="true">
+          <div class="modal-card">
+            <button class="close-x" id="uploadModalClose" type="button" aria-label="Close" style="position:absolute;top:14px;right:14px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+            </button>
+            <h2 id="uploadModalTitle" style="padding:0 32px;">Upload Content</h2>
+            <p class="modal-sub" id="uploadModalSub">Max 25 MB per file (GitHub Repo).</p>
+            <div id="uploadModalBody"></div>
+          </div>
+        </div>
+
+        <!-- OWNER SETTINGS MODAL (GITHUB TOKEN) -->
+        <div class="modal" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle" aria-hidden="true">
+          <div class="modal-card">
+            <h2 id="settingsModalTitle">GitHub Settings</h2>
+            <p class="modal-sub">Fine-grained token (only <strong>PIKAZOOARMY/PAID</strong>, Contents: Read &amp; Write). Sirf aap ke device mein save hota hai.</p>
+            <div style="text-align:center;"><span class="token-badge miss" id="tokenStatusBadge">Token Not Set</span></div>
+            <input type="password" class="owner-input" id="ghTokenInput" placeholder="github_pat_..." autocomplete="off" spellcheck="false" />
+            <div class="modal-actions">
+              <button class="btn" id="settingsCancelBtn" type="button">Close</button>
+              <button class="btn btn-cyan" id="settingsClearBtn" type="button">Clear</button>
+              <button class="btn btn-orange" id="settingsSaveBtn" type="button">Save Token</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- PERMANENT DELETE CONFIRM MODAL -->
+        <div class="modal" id="confirmDeleteModal" role="dialog" aria-modal="true" aria-labelledby="delConfirmTitle" aria-hidden="true">
+          <div class="modal-card">
+            <h2 id="delConfirmTitle">Permanent Delete?</h2>
+            <p class="modal-sub" id="delConfirmText">Ye file GitHub aur Firebase dono se hamesha ke liye delete ho jayegi.</p>
+            <div class="modal-actions">
+              <button class="btn" id="delCancelBtn" type="button">Cancel</button>
+              <button class="btn btn-orange" id="delConfirmBtn" type="button">Delete</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- HIDDEN FILE INPUTS FOR OWNER UPLOAD & REPLACE -->
+        <input type="file" id="upFilePicker" multiple hidden />
+        <input type="file" id="upPreviewMediaPicker" accept="image/*,video/*" multiple hidden />
+        <input type="file" id="upPreviewFilesPicker" multiple hidden />
+        <input type="file" id="upReplacePicker" hidden />
+
+        <!-- IN-APP YOUTUBE PLAYER MODAL -->
+        <div class="modal" id="ytModal" role="dialog" aria-modal="true" aria-labelledby="ytModalTitle" aria-hidden="true">
+          <div class="modal-card yt-modal-card">
+            <div class="yt-head">
+              <h2 id="ytModalTitle">YouTube Video</h2>
+              <button class="close-x" id="ytCloseBtn" type="button" aria-label="Close player">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </div>
+            <div class="yt-stage" id="ytStage">
+              <button class="yt-fs-exit" id="ytFsExitOverlay" type="button">Exit Fullscreen</button>
+              <iframe id="ytFrame" src="about:blank" title="YouTube video player" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+            </div>
+            <p class="yt-desc" id="ytModalDesc"></p>
+            <div class="modal-actions">
+              <button class="btn btn-cyan" id="ytFsBtn" type="button">Fullscreen / Landscape</button>
+            </div>
+          </div>
+        </div>
+
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
       </section>
 
@@ -2104,7 +2503,7 @@
       getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import {
-      getFirestore, collection, query, where, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch, onSnapshot, serverTimestamp
+      getFirestore, collection, query, where, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, writeBatch, onSnapshot, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     (function () {
@@ -2203,6 +2602,8 @@
         "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFD6E4'/%3E%3Cstop offset='1' stop-color='%23D1F0F0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E"
       ];
       const DL_ICON_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>';
+      const PLAY_ICON_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><polygon points="7 4 20 12 7 20 7 4"/></svg>';
+      const LINK_ICON_SVG = '<svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';
 
       function safeMediaUrl(u) {
         if (typeof u !== 'string') return '';
@@ -2223,6 +2624,9 @@
         art.dataset.category = card.category || 'hook';
         art.dataset.kind = card.kind || '';
         art.dataset.desc = card.description || '';
+        art.dataset.repoPath = card.repoPath || '';
+        art.dataset.title = card.title || '';
+        art.dataset.url = isGuest ? '#' : safeHrefUrl(card.downloadUrl);
 
         const thumb = document.createElement('div');
         thumb.className = 'thumb';
@@ -2260,11 +2664,13 @@
 
         const dl = document.createElement('a');
         dl.className = 'dl';
-        dl.href = isGuest ? '#' : safeHrefUrl(card.downloadUrl);
+        const isYtCard = !isGuest && card.kind === 'youtube';
+        const isLinkCard = !isGuest && card.kind === 'link';
+        dl.href = (isGuest || isYtCard) ? '#' : safeHrefUrl(card.downloadUrl);
         dl.target = '_blank';
         dl.rel = 'noopener';
-        dl.setAttribute('aria-label', isGuest ? 'Sign up to download' : ('Download ' + (card.title || 'item')));
-        dl.innerHTML = DL_ICON_SVG;
+        dl.setAttribute('aria-label', isGuest ? 'Sign up to download' : (isYtCard ? ('Play ' + (card.title || 'video')) : ('Download ' + (card.title || 'item'))));
+        dl.innerHTML = isYtCard ? PLAY_ICON_SVG : (isLinkCard ? LINK_ICON_SVG : DL_ICON_SVG);
 
         art.appendChild(thumb);
         art.appendChild(body);
@@ -2351,6 +2757,33 @@
         }
       }
       window.pikazooSyncPublicMeta = syncPublicMetaIfNeeded;
+      window.pikazooUpdateCard = async function (cardId, fields) {
+        if (document.body.dataset.role !== 'owner') throw new Error('Owner only');
+        const payload = Object.assign({}, fields, { updatedAt: serverTimestamp() });
+        await updateDoc(doc(db, 'cards', cardId), payload);
+      };
+      window.pikazooCreateCard = async function (cardId, data) {
+        if (document.body.dataset.role !== 'owner') throw new Error('Owner only');
+        const payload = Object.assign({}, data, {
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+        await setDoc(doc(db, 'cards', cardId), payload);
+      };
+      window.pikazooDeleteCard = async function (cardId) {
+        if (document.body.dataset.role !== 'owner') throw new Error('Owner only');
+        await deleteDoc(doc(db, 'cards', cardId));
+      };
+      window.pikazooNextOrder = function (category) {
+        const list = window.pikazooCards || [];
+        let max = -1;
+        list.forEach((c) => {
+          if (c.category === category && typeof c.order === 'number' && c.order > max) {
+            max = c.order;
+          }
+        });
+        return max + 1;
+      };
 
       let isHookSyncing = false;
 
@@ -3079,8 +3512,10 @@
       var scrim           = $('#scrim');
       var closeDrawerEl   = $('#closeDrawer');
       var btnWhatsapp     = $('#btnWhatsapp');
+      var btnUploadMenu   = $('#btnUploadMenu');
       var btnGenerateKey  = $('#btnGenerateKeyMenu');
       var btnSyncHook     = $('#btnSyncHookMenu');
+      var btnSettingsMenu = $('#btnSettingsMenu');
       var btnLogoutMenu   = $('#btnLogoutMenu');
 
       var modal           = $('#logoutModal');
@@ -3234,6 +3669,12 @@
       });
 
       window.addEventListener('pikazoo-force-guest', function (e) {
+        if (typeof closeYtModal === 'function') closeYtModal();
+        if (typeof closeConfirmDelete === 'function') closeConfirmDelete();
+        if (typeof closeSettingsModal === 'function') closeSettingsModal();
+        if (typeof closeUploadModal === 'function') closeUploadModal(true);
+        if (typeof closeOwnerEdit === 'function') closeOwnerEdit();
+        if (typeof closeOwnerAction === 'function') closeOwnerAction();
         closeCardModal();
         closeLogoutModal();
         closeDrawer();
@@ -3362,7 +3803,12 @@
         cardModalSub.textContent = (!isGuest && card.dataset.desc) ? card.dataset.desc : (sub ? sub.textContent : '');
         if (cardModalDl && dl) {
           var href = dl.getAttribute('href') || '#';
+          var kind = card.dataset.kind || '';
           cardModalDl.href = href;
+          cardModalDl.dataset.kind = kind;
+          cardModalDl.dataset.repoPath = card.dataset.repoPath || '';
+          cardModalDl.dataset.filename = card.dataset.title || 'download';
+          cardModalDl.textContent = (kind === 'link' || kind === 'youtube') ? 'Open Link' : 'Download Pack';
           cardModalDl.style.display = (!isGuest && href !== '#') ? '' : 'none';
         }
         cardModal.classList.add('show');
@@ -3384,9 +3830,363 @@
         });
       }
 
+      /* OWNER ACTION MENU & EDIT MODALS */
+      var ownerActionModal = $('#ownerActionModal');
+      var ownerActionClose = $('#ownerActionClose');
+      var ownerMenuCat     = $('#ownerMenuCat');
+      var ownerMenuTitle   = $('#ownerMenuTitle');
+      var ownerMenuList    = $('#ownerMenuList');
+
+      var ownerEditModal   = $('#ownerEditModal');
+      var ownerEditTitle   = $('#ownerEditTitle');
+      var ownerEditSub     = $('#ownerEditSub');
+      var ownerEditFields  = $('#ownerEditFields');
+      var ownerEditCancel  = $('#ownerEditCancel');
+      var ownerEditSave    = $('#ownerEditSave');
+
+      var activeEditHandler = null;
+
+      function findCardById(cardId) {
+        var list = window.pikazooCards || [];
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].id === cardId) return list[i];
+        }
+        return null;
+      }
+
+      function closeOwnerAction() {
+        if (!ownerActionModal || !ownerActionModal.classList.contains('show')) return;
+        ownerActionModal.classList.remove('show');
+        ownerActionModal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+      }
+
+      function closeOwnerEdit() {
+        if (!ownerEditModal || !ownerEditModal.classList.contains('show')) return;
+        ownerEditModal.classList.remove('show');
+        ownerEditModal.setAttribute('aria-hidden', 'true');
+        activeEditHandler = null;
+        ownerEditSave.disabled = false;
+        ownerEditSave.textContent = 'Save';
+        unlockScroll();
+      }
+
+      function compressImageFile(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onerror = function () { reject(new Error('Image read failed')); };
+          reader.onload = function () {
+            var img = new Image();
+            img.onerror = function () { reject(new Error('Invalid image')); };
+            img.onload = function () {
+              var maxW = 720;
+              var scale = img.width > maxW ? (maxW / img.width) : 1;
+              var w = Math.max(1, Math.round(img.width * scale));
+              var h = Math.max(1, Math.round(img.height * scale));
+              var canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              var ctx = canvas.getContext('2d');
+              ctx.fillStyle = '#FFFFFF';
+              ctx.fillRect(0, 0, w, h);
+              ctx.drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL('image/jpeg', 0.82));
+            };
+            img.src = reader.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function openEditField(card, mode) {
+        closeOwnerAction();
+        ownerEditFields.innerHTML = '';
+
+        if (mode === 'title') {
+          ownerEditTitle.textContent = 'Change Card Name';
+          ownerEditSub.textContent = 'Members par 1 second mein update ho jayega.';
+          var inp = document.createElement('input');
+          inp.type = 'text';
+          inp.className = 'owner-input';
+          inp.maxLength = 120;
+          inp.placeholder = 'Enter card title';
+          inp.value = card.title || '';
+          ownerEditFields.appendChild(inp);
+
+          activeEditHandler = async function () {
+            var val = inp.value.trim();
+            if (!val) { showToast('Title khali nahi ho sakta'); return; }
+            await window.pikazooUpdateCard(card.id, { title: val });
+            showToast('Card name updated');
+            closeOwnerEdit();
+          };
+          setTimeout(function () { inp.focus(); }, 60);
+        } else if (mode === 'desc') {
+          ownerEditTitle.textContent = 'Change Description';
+          ownerEditSub.textContent = 'Full description card open karne par dikhegi.';
+          var ta = document.createElement('textarea');
+          ta.className = 'owner-textarea';
+          ta.maxLength = 2000;
+          ta.placeholder = 'Enter full description';
+          ta.value = card.description || '';
+          ownerEditFields.appendChild(ta);
+
+          activeEditHandler = async function () {
+            await window.pikazooUpdateCard(card.id, { description: ta.value.trim() });
+            showToast('Description updated');
+            closeOwnerEdit();
+          };
+          setTimeout(function () { ta.focus(); }, 60);
+        } else if (mode === 'thumb') {
+          ownerEditTitle.textContent = 'Change Thumbnail';
+          ownerEditSub.textContent = 'Image URL paste karein ya phone se image choose karein.';
+
+          var prevBox = document.createElement('div');
+          prevBox.className = 'owner-thumb-preview';
+          var prevImg = document.createElement('img');
+          prevImg.alt = 'Preview';
+          prevImg.src = card.thumbnailUrl || '';
+          if (!card.thumbnailUrl) prevBox.style.display = 'none';
+          prevBox.appendChild(prevImg);
+
+          var urlInp = document.createElement('input');
+          urlInp.type = 'url';
+          urlInp.className = 'owner-input';
+          urlInp.placeholder = 'https://... image URL';
+          urlInp.value = card.thumbnailUrl || '';
+
+          var fileInp = document.createElement('input');
+          fileInp.type = 'file';
+          fileInp.accept = 'image/*';
+          fileInp.hidden = true;
+
+          var row = document.createElement('div');
+          row.className = 'owner-thumb-row';
+
+          var pickBtn = document.createElement('button');
+          pickBtn.type = 'button';
+          pickBtn.className = 'btn btn-cyan';
+          pickBtn.textContent = 'Pick Image';
+
+          var resetBtn = document.createElement('button');
+          resetBtn.type = 'button';
+          resetBtn.className = 'btn';
+          resetBtn.textContent = 'Reset Default';
+
+          row.appendChild(pickBtn);
+          row.appendChild(resetBtn);
+
+          urlInp.addEventListener('input', function () {
+            var v = urlInp.value.trim();
+            if (/^(https?:\/\/|data:image\/)/i.test(v)) {
+              prevImg.src = v;
+              prevBox.style.display = '';
+            } else {
+              prevBox.style.display = 'none';
+            }
+          });
+
+          pickBtn.addEventListener('click', function () { fileInp.click(); });
+          fileInp.addEventListener('change', async function () {
+            var f = fileInp.files && fileInp.files[0];
+            if (!f) return;
+            try {
+              pickBtn.disabled = true;
+              pickBtn.textContent = 'Loading...';
+              var dataUrl = await compressImageFile(f);
+              urlInp.value = dataUrl;
+              prevImg.src = dataUrl;
+              prevBox.style.display = '';
+            } catch (err) {
+              showToast('Image load failed');
+            } finally {
+              pickBtn.disabled = false;
+              pickBtn.textContent = 'Pick Image';
+              fileInp.value = '';
+            }
+          });
+
+          resetBtn.addEventListener('click', function () {
+            urlInp.value = '';
+            prevImg.src = '';
+            prevBox.style.display = 'none';
+          });
+
+          ownerEditFields.appendChild(prevBox);
+          ownerEditFields.appendChild(urlInp);
+          ownerEditFields.appendChild(fileInp);
+          ownerEditFields.appendChild(row);
+
+          activeEditHandler = async function () {
+            var val = urlInp.value.trim();
+            if (val && !/^(https?:\/\/|data:image\/)/i.test(val)) {
+              showToast('Valid image URL ya Pick Image use karein');
+              return;
+            }
+            if (val.indexOf('data:image/') === 0 && getGhToken()) {
+              ownerEditSave.textContent = 'Uploading...';
+              var b64 = val.split(',')[1] || '';
+              var thumbPath = 'Thumb/thumb_' + sanitizeFileName(card.id) + '_' + Date.now() + '.jpg';
+              await githubPutContent(thumbPath, b64, 'Upload thumbnail ' + thumbPath, null, null);
+              val = buildRawUrl(thumbPath);
+            }
+            await window.pikazooUpdateCard(card.id, { thumbnailUrl: val });
+            showToast('Thumbnail updated');
+            closeOwnerEdit();
+          };
+        }
+
+        ownerEditModal.classList.add('show');
+        ownerEditModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+
+      if (ownerEditCancel) ownerEditCancel.addEventListener('click', closeOwnerEdit);
+      if (ownerEditModal) {
+        ownerEditModal.addEventListener('click', function (e) {
+          if (e.target === ownerEditModal) closeOwnerEdit();
+        });
+      }
+      if (ownerEditSave) {
+        ownerEditSave.addEventListener('click', async function () {
+          if (!activeEditHandler || ownerEditSave.disabled) return;
+          ownerEditSave.disabled = true;
+          ownerEditSave.textContent = 'Saving...';
+          try {
+            await activeEditHandler();
+          } catch (err) {
+            showToast('Save failed: ' + (err && err.message ? err.message : 'Error'));
+          } finally {
+            if (ownerEditModal.classList.contains('show')) {
+              ownerEditSave.disabled = false;
+              ownerEditSave.textContent = 'Save';
+            }
+          }
+        });
+      }
+
+      function addActionBtn(label, cls, onClick) {
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'owner-act-btn' + (cls ? ' ' + cls : '');
+        b.innerHTML = '<span></span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';
+        b.querySelector('span').textContent = label;
+        b.addEventListener('click', onClick);
+        ownerMenuList.appendChild(b);
+      }
+
+      function openOwnerActionMenu(cardId) {
+        if (document.body.dataset.role !== 'owner') return;
+        var card = findCardById(cardId);
+        if (!card) return;
+
+        ownerMenuCat.textContent = String(card.category || 'ITEM').toUpperCase();
+        ownerMenuTitle.textContent = card.title || 'Card Options';
+        ownerMenuList.innerHTML = '';
+
+        addActionBtn('Change Card Name', '', function () { openEditField(card, 'title'); });
+        addActionBtn('Change Thumbnail', '', function () { openEditField(card, 'thumb'); });
+        addActionBtn('Change Description', '', function () { openEditField(card, 'desc'); });
+        if (card.category === 'file' || card.category === 'preview') {
+          var replaceLabel = card.category === 'file'
+            ? 'Replace Uploaded File'
+            : ((card.kind === 'youtube' || card.kind === 'link') ? 'Change URL' : 'Replace Video/Image');
+          addActionBtn(replaceLabel, '', function () {
+            startReplaceFlow(card);
+          });
+        }
+
+        addActionBtn(
+          card.hidden ? 'Show Card Member Side' : 'Hide Card Member Side',
+          'is-warn',
+          async function () {
+            closeOwnerAction();
+            try {
+              await window.pikazooUpdateCard(card.id, { hidden: !card.hidden });
+              showToast(card.hidden ? 'Card ab members ko dikhega' : 'Card member side se hide ho gaya');
+            } catch (err) {
+              showToast('Update failed');
+            }
+          }
+        );
+
+        if (card.category === 'file' || card.category === 'preview') {
+          addActionBtn('Permanent Delete File', 'is-danger', function () {
+            openConfirmDelete(card);
+          });
+        }
+
+        ownerActionModal.classList.add('show');
+        ownerActionModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+
+      if (ownerActionClose) ownerActionClose.addEventListener('click', closeOwnerAction);
+      if (ownerActionModal) {
+        ownerActionModal.addEventListener('click', function (e) {
+          if (e.target === ownerActionModal) closeOwnerAction();
+        });
+      }
+
+      /* STORE CLICK + OWNER LONG-PRESS */
       var storeMainEl = $('#storeMain');
+      var lpState = null;
+      var lpFiredAt = 0;
+
       if (storeMainEl) {
+        storeMainEl.addEventListener('pointerdown', function (e) {
+          if (document.body.dataset.role !== 'owner') return;
+          if (e.button && e.button !== 0) return;
+          if (e.target.closest('.dl')) return;
+          var card = e.target.closest('.card');
+          if (!card || !card.dataset.id) return;
+
+          if (lpState && lpState.timer) clearTimeout(lpState.timer);
+          var state = {
+            id: e.pointerId,
+            cardId: card.dataset.id,
+            x: e.clientX,
+            y: e.clientY,
+            timer: null
+          };
+          state.timer = setTimeout(function () {
+            if (lpState !== state) return;
+            lpState = null;
+            lpFiredAt = Date.now();
+            if (navigator.vibrate) { try { navigator.vibrate(18); } catch (err) {} }
+            openOwnerActionMenu(state.cardId);
+          }, 460);
+          lpState = state;
+        }, { passive: true });
+
+        storeMainEl.addEventListener('pointermove', function (e) {
+          if (!lpState || e.pointerId !== lpState.id) return;
+          if (Math.hypot(e.clientX - lpState.x, e.clientY - lpState.y) > 10) {
+            clearTimeout(lpState.timer);
+            lpState = null;
+          }
+        }, { passive: true });
+
+        function cancelLongPress(e) {
+          if (!lpState || e.pointerId !== lpState.id) return;
+          clearTimeout(lpState.timer);
+          lpState = null;
+        }
+        storeMainEl.addEventListener('pointerup', cancelLongPress);
+        storeMainEl.addEventListener('pointercancel', cancelLongPress);
+
+        storeMainEl.addEventListener('contextmenu', function (e) {
+          if (document.body.dataset.role === 'owner' && e.target.closest('.card')) {
+            e.preventDefault();
+          }
+        });
+
         storeMainEl.addEventListener('click', function (e) {
+          if (Date.now() - lpFiredAt < 450) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
           var dlBtn = e.target.closest('.dl');
           if (dlBtn) {
             if (document.body.classList.contains('guest-mode')) {
@@ -3395,14 +4195,71 @@
               showToast('Download ke liye pehle Sign Up karein');
               return;
             }
-            if ((dlBtn.getAttribute('href') || '#') === '#') {
+            var href = dlBtn.getAttribute('href') || '#';
+            if (href === '#') {
               e.preventDefault();
+              return;
+            }
+            var parentCard = dlBtn.closest('.card');
+            var cKind = parentCard ? (parentCard.dataset.kind || '') : '';
+            if (cKind === 'youtube') {
+              e.preventDefault();
+              openYtModal(parentCard.dataset.title, parentCard.dataset.url, parentCard.dataset.desc);
+              return;
+            }
+            if (href === '#') {
+              e.preventDefault();
+              return;
+            }
+            if (cKind === 'repo' || cKind === 'image' || cKind === 'video') {
+              e.preventDefault();
+              var fname = (parentCard.dataset.repoPath || '').split('/').pop() || parentCard.dataset.title || 'download';
+              forceDownloadFile(href, fname);
             }
             return;
           }
           var card = e.target.closest('.card');
-          if (card) openCardModal(card);
+          if (card) {
+            if (!document.body.classList.contains('guest-mode') && card.dataset.kind === 'youtube') {
+              openYtModal(card.dataset.title, card.dataset.url, card.dataset.desc);
+              return;
+            }
+            openCardModal(card);
+          }
         });
+      }
+
+      if (cardModalDl) {
+        cardModalDl.addEventListener('click', function (e) {
+          if (document.body.classList.contains('guest-mode')) { e.preventDefault(); return; }
+          var href = cardModalDl.getAttribute('href') || '#';
+          if (href === '#') { e.preventDefault(); return; }
+          var k = cardModalDl.dataset.kind || '';
+          if (k === 'repo' || k === 'image' || k === 'video') {
+            e.preventDefault();
+            var fn = (cardModalDl.dataset.repoPath || '').split('/').pop() || cardModalDl.dataset.filename || 'download';
+            forceDownloadFile(href, fn);
+          }
+        });
+      }
+
+      async function forceDownloadFile(url, filename) {
+        showToast('Downloading ' + (filename || 'file') + '...');
+        try {
+          var res = await fetch(url);
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          var blob = await res.blob();
+          var blobUrl = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = blobUrl;
+          a.download = filename || 'download';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 5000);
+        } catch (err) {
+          window.open(url, '_blank', 'noopener');
+        }
       }
 
       if (btnSignup) {
@@ -3476,8 +4333,947 @@
         }
       });
 
+      /* GITHUB REPO UPLOAD / REPLACE / DELETE / SETTINGS */
+      var GH_TOKEN_KEY = 'pikazoo_gh_token_v1';
+      var GH_OWNER = 'PIKAZOOARMY';
+      var GH_REPO  = 'PAID';
+      var GH_BRANCH = 'main';
+      var MAX_REPO_BYTES = 25 * 1024 * 1024;
+
+      var uploadModal      = $('#uploadModal');
+      var uploadModalClose = $('#uploadModalClose');
+      var uploadModalTitle = $('#uploadModalTitle');
+      var uploadModalSub   = $('#uploadModalSub');
+      var uploadModalBody  = $('#uploadModalBody');
+
+      var settingsModal     = $('#settingsModal');
+      var tokenStatusBadge  = $('#tokenStatusBadge');
+      var ghTokenInput      = $('#ghTokenInput');
+      var settingsCancelBtn = $('#settingsCancelBtn');
+      var settingsClearBtn  = $('#settingsClearBtn');
+      var settingsSaveBtn   = $('#settingsSaveBtn');
+
+      var confirmDeleteModal = $('#confirmDeleteModal');
+      var delConfirmText     = $('#delConfirmText');
+      var delCancelBtn       = $('#delCancelBtn');
+      var delConfirmBtn      = $('#delConfirmBtn');
+
+      var upFilePicker         = $('#upFilePicker');
+      var upPreviewMediaPicker = $('#upPreviewMediaPicker');
+      var upPreviewFilesPicker = $('#upPreviewFilesPicker');
+      var upReplacePicker      = $('#upReplacePicker');
+
+      var isUploading = false;
+      var replaceTargetCard = null;
+      var deleteTargetCard  = null;
+
+      function getGhToken() {
+        if (document.body.dataset.role !== 'owner') return '';
+        try { return (window.localStorage.getItem(GH_TOKEN_KEY) || '').trim(); } catch (err) { return ''; }
+      }
+      function setGhToken(t) {
+        try {
+          if (t) window.localStorage.setItem(GH_TOKEN_KEY, t.trim());
+          else window.localStorage.removeItem(GH_TOKEN_KEY);
+        } catch (err) {}
+      }
+
+      function encodeRepoPath(p) {
+        return String(p || '').split('/').map(encodeURIComponent).join('/');
+      }
+      function buildRawUrl(repoPath) {
+        return 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + encodeRepoPath(repoPath);
+      }
+      function sanitizeFileName(name) {
+        var clean = String(name || 'file').trim().replace(/[^a-zA-Z0-9._-]/g, '_').replace(/_+/g, '_');
+        if (!clean || clean === '.' || clean === '..') clean = 'file_' + Date.now();
+        return clean.slice(0, 120);
+      }
+      function splitNameExt(name) {
+        var idx = name.lastIndexOf('.');
+        if (idx > 0) return { base: name.slice(0, idx), ext: name.slice(idx) };
+        return { base: name, ext: '' };
+      }
+      function isPreviewMediaFile(file) {
+        var t = (file && file.type) || '';
+        if (t.indexOf('image/') === 0 || t.indexOf('video/') === 0) return true;
+        return /\.(jpg|jpeg|png|gif|webp|bmp|mp4|mov|webm|mkv|avi|m4v|3gp)$/i.test((file && file.name) || '');
+      }
+      function isVideoFile(file) {
+        var t = (file && file.type) || '';
+        if (t.indexOf('video/') === 0) return true;
+        return /\.(mp4|mov|webm|mkv|avi|m4v|3gp)$/i.test((file && file.name) || '');
+      }
+      function formatSizeText(bytes) {
+        var n = Number(bytes) || 0;
+        if (n < 1024) return n + ' B';
+        if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+        return (n / (1024 * 1024)).toFixed(2) + ' MB';
+      }
+
+      async function githubGetMeta(repoPath) {
+        var token = getGhToken();
+        if (!token) throw new Error('GitHub token set nahi hai (Menu -> Settings)');
+        var url = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + encodeRepoPath(repoPath) + '?ref=' + encodeURIComponent(GH_BRANCH);
+        var res = await fetch(url, {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/vnd.github+json'
+          },
+          cache: 'no-store'
+        });
+        if (res.status === 404) return null;
+        if (!res.ok) {
+          var errTxt = '';
+          try { var j = await res.json(); errTxt = j && j.message ? j.message : ''; } catch (e) {}
+          throw new Error('HTTP ' + res.status + (errTxt ? ': ' + errTxt : ''));
+        }
+        return await res.json();
+      }
+
+      async function resolveUniqueRepoPath(folder, originalName) {
+        var clean = sanitizeFileName(originalName);
+        var parts = splitNameExt(clean);
+        var candidate = folder + '/' + clean;
+        var existing = await githubGetMeta(candidate);
+        if (!existing) return candidate;
+        var stamp = Date.now().toString(36).slice(-5);
+        candidate = folder + '/' + parts.base + '_' + stamp + parts.ext;
+        var check2 = await githubGetMeta(candidate);
+        if (!check2) return candidate;
+        return folder + '/' + parts.base + '_' + Date.now() + parts.ext;
+      }
+
+      function readFileBase64(file) {
+        return new Promise(function (resolve, reject) {
+          var reader = new FileReader();
+          reader.onerror = function () { reject(new Error('File read error')); };
+          reader.onload = function () {
+            var res = String(reader.result || '');
+            var comma = res.indexOf(',');
+            resolve(comma !== -1 ? res.slice(comma + 1) : res);
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      function githubPutContent(repoPath, base64Content, commitMsg, sha, onProgress) {
+        return new Promise(function (resolve, reject) {
+          var token = getGhToken();
+          if (!token) { reject(new Error('GitHub token set nahi hai (Menu -> Settings)')); return; }
+          if (!navigator.onLine) { reject(new Error('Network Error: Internet band hai')); return; }
+
+          var url = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + encodeRepoPath(repoPath);
+          var bodyObj = { message: commitMsg, content: base64Content, branch: GH_BRANCH };
+          if (sha) bodyObj.sha = sha;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open('PUT', url, true);
+          xhr.setRequestHeader('Authorization', 'Bearer ' + token);
+          xhr.setRequestHeader('Accept', 'application/vnd.github+json');
+          xhr.setRequestHeader('Content-Type', 'application/json');
+
+          xhr.upload.onprogress = function (ev) {
+            if (onProgress && ev.lengthComputable && ev.total > 0) {
+              onProgress(Math.round((ev.loaded / ev.total) * 100));
+            }
+          };
+          xhr.onerror = function () {
+            reject(new Error('Network Error: Connection failed'));
+          };
+          xhr.ontimeout = function () {
+            reject(new Error('Network Error: Request timed out'));
+          };
+          xhr.onload = function () {
+            var json = null;
+            try { json = JSON.parse(xhr.responseText || '{}'); } catch (e) {}
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve(json);
+            } else {
+              var msg = (json && json.message) ? json.message : (xhr.statusText || 'Unknown error');
+              reject(new Error('HTTP ' + xhr.status + ': ' + msg));
+            }
+          };
+          xhr.send(JSON.stringify(bodyObj));
+        });
+      }
+
+      async function githubDeleteContent(repoPath, commitMsg) {
+        var meta = await githubGetMeta(repoPath);
+        if (!meta || !meta.sha) return;
+        var token = getGhToken();
+        var url = 'https://api.github.com/repos/' + GH_OWNER + '/' + GH_REPO + '/contents/' + encodeRepoPath(repoPath);
+        var res = await fetch(url, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/vnd.github+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: commitMsg, sha: meta.sha, branch: GH_BRANCH })
+        });
+        if (!res.ok && res.status !== 404) {
+          var errTxt = '';
+          try { var j = await res.json(); errTxt = j && j.message ? j.message : ''; } catch (e) {}
+          throw new Error('GitHub delete HTTP ' + res.status + (errTxt ? ': ' + errTxt : ''));
+        }
+      }
+
+      function captureVideoThumbDataUrl(file) {
+        return new Promise(function (resolve) {
+          var done = false;
+          var url = URL.createObjectURL(file);
+          var video = document.createElement('video');
+          video.muted = true;
+          video.playsInline = true;
+          video.preload = 'metadata';
+
+          var timer = setTimeout(function () { finish(''); }, 4500);
+          function finish(val) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            URL.revokeObjectURL(url);
+            resolve(val);
+          }
+          function drawFrame() {
+            try {
+              var vw = video.videoWidth || 640;
+              var vh = video.videoHeight || 360;
+              var maxW = 720;
+              var scale = vw > maxW ? (maxW / vw) : 1;
+              var w = Math.max(1, Math.round(vw * scale));
+              var h = Math.max(1, Math.round(vh * scale));
+              var canvas = document.createElement('canvas');
+              canvas.width = w;
+              canvas.height = h;
+              var ctx = canvas.getContext('2d');
+              ctx.drawImage(video, 0, 0, w, h);
+              finish(canvas.toDataURL('image/jpeg', 0.8));
+            } catch (err) {
+              finish('');
+            }
+          }
+          video.onerror = function () { finish(''); };
+          video.onloadeddata = function () {
+            try { video.currentTime = Math.min(0.5, (video.duration || 1) * 0.1); }
+            catch (err) { drawFrame(); }
+          };
+          video.onseeked = drawFrame;
+          video.src = url;
+        });
+      }
+
+      /* SETTINGS MODAL */
+      function openSettingsModal() {
+        if (document.body.dataset.role !== 'owner') return;
+        closeDrawer();
+        var tok = getGhToken();
+        ghTokenInput.value = tok;
+        tokenStatusBadge.className = 'token-badge ' + (tok ? 'ok' : 'miss');
+        tokenStatusBadge.textContent = tok ? 'Token Saved' : 'Token Not Set';
+        settingsModal.classList.add('show');
+        settingsModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+      function closeSettingsModal() {
+        if (!settingsModal || !settingsModal.classList.contains('show')) return;
+        settingsModal.classList.remove('show');
+        settingsModal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+      }
+      if (btnSettingsMenu) btnSettingsMenu.addEventListener('click', openSettingsModal);
+      if (settingsCancelBtn) settingsCancelBtn.addEventListener('click', closeSettingsModal);
+      if (settingsModal) settingsModal.addEventListener('click', function (e) { if (e.target === settingsModal) closeSettingsModal(); });
+      if (settingsClearBtn) {
+        settingsClearBtn.addEventListener('click', function () {
+          setGhToken('');
+          ghTokenInput.value = '';
+          tokenStatusBadge.className = 'token-badge miss';
+          tokenStatusBadge.textContent = 'Token Not Set';
+          showToast('GitHub token cleared');
+        });
+      }
+      if (settingsSaveBtn) {
+        settingsSaveBtn.addEventListener('click', function () {
+          var v = ghTokenInput.value.trim();
+          if (!v) { showToast('Token paste karein ya Clear dabayein'); return; }
+          setGhToken(v);
+          tokenStatusBadge.className = 'token-badge ok';
+          tokenStatusBadge.textContent = 'Token Saved';
+          showToast('GitHub token saved');
+          closeSettingsModal();
+        });
+      }
+
+      /* UPLOAD MODAL */
+      function closeUploadModal(force) {
+        if (!uploadModal || !uploadModal.classList.contains('show')) return;
+        if (isUploading && !force) {
+          showToast('Upload chal raha hai, wait karein...');
+          return;
+        }
+        uploadModal.classList.remove('show');
+        uploadModal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+      }
+
+      function renderUploadHome() {
+        uploadModalTitle.textContent = 'Upload Content';
+        uploadModalSub.textContent = 'Max 25 MB per file (GitHub Repo).';
+        uploadModalBody.innerHTML = '';
+
+        var grid = document.createElement('div');
+        grid.className = 'up-choice-grid';
+
+        function makeChoice(title, sub, cls, svgHtml, onClick) {
+          var b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'up-choice-btn';
+          b.innerHTML = '<span class="up-choice-ico ' + cls + '">' + svgHtml + '</span><span><strong></strong><small></small></span>';
+          b.querySelector('strong').textContent = title;
+          b.querySelector('small').textContent = sub;
+          b.addEventListener('click', onClick);
+          grid.appendChild(b);
+        }
+
+        makeChoice('File', 'APK, ZIP, OBB, PAK, SAV, LUA & other files', 'c1',
+          '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+          function () {
+            if (!getGhToken()) { closeUploadModal(true); openSettingsModal(); showToast('Pehle Settings mein GitHub token daalein'); return; }
+            upFilePicker.value = '';
+            upFilePicker.click();
+          }
+        );
+
+        makeChoice('Preview', 'Images & Videos (Media Picker / File Manager)', 'c2',
+          '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',
+          function () {
+            if (!getGhToken()) { closeUploadModal(true); openSettingsModal(); showToast('Pehle Settings mein GitHub token daalein'); return; }
+            renderPreviewSourcePicker();
+          }
+        );
+
+        makeChoice('Add URL', 'YouTube video ya koi bhi custom URL', 'c3',
+          '<svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+          function () { renderAddUrlView(); }
+        );
+
+        uploadModalBody.appendChild(grid);
+      }
+
+      function renderPreviewSourcePicker() {
+        uploadModalTitle.textContent = 'Select Preview Media';
+        uploadModalSub.textContent = 'Images & Videos up to 25 MB each (Multi-select).';
+        uploadModalBody.innerHTML = '';
+
+        var grid = document.createElement('div');
+        grid.className = 'up-choice-grid';
+
+        var bMedia = document.createElement('button');
+        bMedia.type = 'button';
+        bMedia.className = 'up-choice-btn';
+        bMedia.innerHTML = '<span class="up-choice-ico c2"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></span><span><strong>Select From Media Picker</strong><small>Gallery / Photos / Videos</small></span>';
+        bMedia.addEventListener('click', function () { upPreviewMediaPicker.value = ''; upPreviewMediaPicker.click(); });
+
+        var bFiles = document.createElement('button');
+        bFiles.type = 'button';
+        bFiles.className = 'up-choice-btn';
+        bFiles.innerHTML = '<span class="up-choice-ico c1"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></span><span><strong>From File Manager</strong><small>Browse folders for video/image</small></span>';
+        bFiles.addEventListener('click', function () { upPreviewFilesPicker.value = ''; upPreviewFilesPicker.click(); });
+
+        grid.appendChild(bMedia);
+        grid.appendChild(bFiles);
+
+        var backBtn = document.createElement('button');
+        backBtn.type = 'button';
+        backBtn.className = 'btn';
+        backBtn.style.width = '100%';
+        backBtn.textContent = 'Back';
+        backBtn.addEventListener('click', renderUploadHome);
+
+        uploadModalBody.appendChild(grid);
+        uploadModalBody.appendChild(backBtn);
+      }
+
+      function extractYoutubeId(url) {
+        var m = String(url || '').match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
+        return m ? m[1] : null;
+      }
+
+      async function fetchYoutubeTitle(ytId) {
+        try {
+          var target = 'https://www.youtube.com/watch?v=' + ytId;
+          var res = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent(target) + '&format=json');
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          var data = await res.json();
+          return (data && data.title) ? String(data.title) : 'YouTube Video';
+        } catch (err) {
+          return 'YouTube Video';
+        }
+      }
+
+      function renderAddUrlView(existingCard) {
+        uploadModalTitle.textContent = existingCard ? 'Change URL' : 'Add URL';
+        uploadModalSub.textContent = 'YouTube link se Preview video card khud banega; baqi URL new tab mein khulenge.';
+        uploadModalBody.innerHTML = '';
+
+        var urlInp = document.createElement('input');
+        urlInp.type = 'url';
+        urlInp.className = 'owner-input';
+        urlInp.placeholder = 'https://youtube.com/... ya koi bhi URL';
+        urlInp.value = existingCard ? (existingCard.downloadUrl || '') : '';
+
+        var titleInp = document.createElement('input');
+        titleInp.type = 'text';
+        titleInp.className = 'owner-input';
+        titleInp.placeholder = 'Title (YouTube ke liye khali chhod dein, khud aayega)';
+        titleInp.value = existingCard ? (existingCard.title || '') : '';
+
+        var actions = document.createElement('div');
+        actions.className = 'modal-actions';
+
+        var backBtn = document.createElement('button');
+        backBtn.type = 'button';
+        backBtn.className = 'btn';
+        backBtn.textContent = existingCard ? 'Cancel' : 'Back';
+        backBtn.addEventListener('click', function () {
+          if (existingCard) closeUploadModal(true);
+          else renderUploadHome();
+        });
+
+        var saveBtn = document.createElement('button');
+        saveBtn.type = 'button';
+        saveBtn.className = 'btn btn-orange';
+        saveBtn.textContent = existingCard ? 'Save URL' : 'Add Card';
+
+        saveBtn.addEventListener('click', async function () {
+          var rawUrl = urlInp.value.trim();
+          if (!/^https?:\/\/.+/i.test(rawUrl)) {
+            showToast('Valid http/https URL daalein');
+            return;
+          }
+          saveBtn.disabled = true;
+          saveBtn.textContent = 'Saving...';
+          try {
+            var ytId = extractYoutubeId(rawUrl);
+            var customTitle = titleInp.value.trim();
+            if (ytId) {
+              var ytTitle = customTitle || await fetchYoutubeTitle(ytId);
+              var ytThumb = 'https://i.ytimg.com/vi/' + ytId + '/hqdefault.jpg';
+              var watchUrl = 'https://www.youtube.com/watch?v=' + ytId;
+              if (existingCard) {
+                await window.pikazooUpdateCard(existingCard.id, {
+                  title: ytTitle,
+                  downloadUrl: watchUrl,
+                  thumbnailUrl: ytThumb,
+                  kind: 'youtube'
+                });
+              } else {
+                var cid = 'prev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+                await window.pikazooCreateCard(cid, {
+                  category: 'preview',
+                  title: ytTitle,
+                  description: 'YouTube Video Preview',
+                  thumbnailUrl: ytThumb,
+                  downloadUrl: watchUrl,
+                  kind: 'youtube',
+                  repoPath: '',
+                  sizeBytes: 0,
+                  order: window.pikazooNextOrder('preview'),
+                  hidden: false
+                });
+              }
+              showToast('YouTube card saved');
+            } else {
+              var hostTitle = customTitle;
+              if (!hostTitle) {
+                try { hostTitle = new URL(rawUrl).hostname.replace(/^www\./, ''); }
+                catch (e) { hostTitle = 'Custom Link'; }
+              }
+              if (existingCard) {
+                await window.pikazooUpdateCard(existingCard.id, {
+                  title: hostTitle,
+                  downloadUrl: rawUrl,
+                  kind: 'link'
+                });
+              } else {
+                var cid2 = 'prev_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+                await window.pikazooCreateCard(cid2, {
+                  category: 'preview',
+                  title: hostTitle,
+                  description: rawUrl,
+                  thumbnailUrl: '',
+                  downloadUrl: rawUrl,
+                  kind: 'link',
+                  repoPath: '',
+                  sizeBytes: 0,
+                  order: window.pikazooNextOrder('preview'),
+                  hidden: false
+                });
+              }
+              showToast('URL card saved');
+            }
+            closeUploadModal(true);
+          } catch (err) {
+            showToast('Failed: ' + (err && err.message ? err.message : 'Error'));
+            saveBtn.disabled = false;
+            saveBtn.textContent = existingCard ? 'Save URL' : 'Add Card';
+          }
+        });
+
+        actions.appendChild(backBtn);
+        actions.appendChild(saveBtn);
+        uploadModalBody.appendChild(urlInp);
+        uploadModalBody.appendChild(titleInp);
+        uploadModalBody.appendChild(actions);
+        setTimeout(function () { urlInp.focus(); }, 60);
+      }
+
+      async function runUploadQueue(files, category) {
+        if (!files || !files.length) return;
+        isUploading = true;
+        uploadModalTitle.textContent = 'Uploading (' + files.length + ')';
+        uploadModalSub.textContent = 'Ek-ek file GitHub par upload ho rahi hai...';
+        uploadModalBody.innerHTML = '';
+
+        var queueBox = document.createElement('div');
+        queueBox.className = 'up-queue';
+        uploadModalBody.appendChild(queueBox);
+
+        var rows = [];
+        for (var i = 0; i < files.length; i++) {
+          var f = files[i];
+          var rowEl = document.createElement('div');
+          rowEl.className = 'up-row';
+          rowEl.innerHTML = '<div class="up-row-top"><span class="up-name"></span><span class="up-pct">0%</span></div><div class="up-bar"><div class="up-fill"></div></div><div class="up-status">Waiting...</div>';
+          rowEl.querySelector('.up-name').textContent = f.name + ' (' + formatSizeText(f.size) + ')';
+          queueBox.appendChild(rowEl);
+          rows.push({
+            el: rowEl,
+            pct: rowEl.querySelector('.up-pct'),
+            fill: rowEl.querySelector('.up-fill'),
+            status: rowEl.querySelector('.up-status')
+          });
+        }
+
+        function setRow(idx, pct, text, stateCls) {
+          var r = rows[idx];
+          var p = Math.max(0, Math.min(100, Math.round(pct)));
+          r.pct.textContent = p + '%';
+          r.fill.style.width = p + '%';
+          r.status.textContent = text;
+          r.el.classList.remove('done', 'fail');
+          if (stateCls) r.el.classList.add(stateCls);
+        }
+
+        var folder = category === 'file' ? 'File' : 'Preview';
+
+        for (var j = 0; j < files.length; j++) {
+          var file = files[j];
+          try {
+            if (file.size > MAX_REPO_BYTES) {
+              throw new Error('25 MB limit se zyada hai (' + formatSizeText(file.size) + ')');
+            }
+            if (category === 'preview' && !isPreviewMediaFile(file)) {
+              throw new Error('Sirf Image ya Video file select karein');
+            }
+
+            setRow(j, 5, 'Checking duplicate...');
+            var repoPath = await resolveUniqueRepoPath(folder, file.name);
+
+            setRow(j, 12, 'Preparing file...');
+            var base64 = await readFileBase64(file);
+
+            setRow(j, 15, 'Uploading to GitHub...');
+            await githubPutContent(repoPath, base64, 'Upload ' + repoPath, null, function (p) {
+              setRow(j, 15 + (p * 0.72), 'Uploading... ' + p + '%');
+            });
+
+            var rawUrl = buildRawUrl(repoPath);
+            var thumbUrl = '';
+            var kind = 'repo';
+
+            if (category === 'preview') {
+              if (isVideoFile(file)) {
+                kind = 'video';
+                setRow(j, 90, 'Capturing video thumbnail...');
+                var capDataUrl = await captureVideoThumbDataUrl(file);
+                if (capDataUrl) {
+                  var tPath = 'Thumb/vthumb_' + Date.now() + '_' + j + '.jpg';
+                  var tB64 = capDataUrl.split(',')[1] || '';
+                  try {
+                    await githubPutContent(tPath, tB64, 'Upload video thumb ' + tPath, null, null);
+                    thumbUrl = buildRawUrl(tPath);
+                  } catch (eThumb) {
+                    thumbUrl = capDataUrl;
+                  }
+                }
+              } else {
+                kind = 'image';
+                thumbUrl = rawUrl;
+              }
+            }
+
+            setRow(j, 95, 'Saving card...');
+            var cardId = (category === 'file' ? 'file_' : 'prev_') + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+            await window.pikazooCreateCard(cardId, {
+              category: category,
+              title: file.name,
+              description: formatSizeText(file.size),
+              thumbnailUrl: thumbUrl,
+              downloadUrl: rawUrl,
+              kind: kind,
+              repoPath: repoPath,
+              sizeBytes: Number(file.size) || 0,
+              order: window.pikazooNextOrder(category),
+              hidden: false
+            });
+
+            setRow(j, 100, 'Upload Done', 'done');
+          } catch (err) {
+            var em = (err && err.message) ? err.message : String(err);
+            var prefix = (!navigator.onLine || /Network Error/i.test(em)) ? 'Network Error: ' : 'Upload Unsuccessful: ';
+            setRow(j, 100, prefix + em.replace(/^Network Error:\s*/i, ''), 'fail');
+          }
+        }
+
+        isUploading = false;
+        var doneBtn = document.createElement('button');
+        doneBtn.type = 'button';
+        doneBtn.className = 'btn btn-orange';
+        doneBtn.style.width = '100%';
+        doneBtn.textContent = 'Done';
+        doneBtn.addEventListener('click', function () { closeUploadModal(true); });
+        uploadModalBody.appendChild(doneBtn);
+      }
+
+      function openUploadModal() {
+        if (document.body.dataset.role !== 'owner') return;
+        closeDrawer();
+        renderUploadHome();
+        uploadModal.classList.add('show');
+        uploadModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+
+      if (btnUploadMenu) btnUploadMenu.addEventListener('click', openUploadModal);
+      if (uploadModalClose) uploadModalClose.addEventListener('click', function () { closeUploadModal(false); });
+      if (uploadModal) uploadModal.addEventListener('click', function (e) { if (e.target === uploadModal) closeUploadModal(false); });
+
+      if (upFilePicker) {
+        upFilePicker.addEventListener('change', function () {
+          var files = Array.prototype.slice.call(upFilePicker.files || []);
+          if (files.length) runUploadQueue(files, 'file');
+        });
+      }
+      if (upPreviewMediaPicker) {
+        upPreviewMediaPicker.addEventListener('change', function () {
+          var files = Array.prototype.slice.call(upPreviewMediaPicker.files || []);
+          if (files.length) runUploadQueue(files, 'preview');
+        });
+      }
+      if (upPreviewFilesPicker) {
+        upPreviewFilesPicker.addEventListener('change', function () {
+          var files = Array.prototype.slice.call(upPreviewFilesPicker.files || []);
+          if (files.length) runUploadQueue(files, 'preview');
+        });
+      }
+
+      /* REPLACE UPLOADED FILE / VIDEO / IMAGE / URL */
+      function startReplaceFlow(card) {
+        closeOwnerAction();
+        if (card.category === 'preview' && (card.kind === 'youtube' || card.kind === 'link')) {
+          renderAddUrlView(card);
+          uploadModal.classList.add('show');
+          uploadModal.setAttribute('aria-hidden', 'false');
+          lockScroll();
+          return;
+        }
+        if (!getGhToken()) { openSettingsModal(); showToast('Pehle Settings mein GitHub token daalein'); return; }
+        replaceTargetCard = card;
+        upReplacePicker.value = '';
+        upReplacePicker.accept = card.category === 'preview' ? 'image/*,video/*' : '';
+        upReplacePicker.click();
+      }
+
+      if (upReplacePicker) {
+        upReplacePicker.addEventListener('change', async function () {
+          var file = upReplacePicker.files && upReplacePicker.files[0];
+          var card = replaceTargetCard;
+          replaceTargetCard = null;
+          if (!file || !card) return;
+
+          if (file.size > MAX_REPO_BYTES) {
+            showToast('File 25 MB se badi hai');
+            return;
+          }
+          if (card.category === 'preview' && !isPreviewMediaFile(file)) {
+            showToast('Sirf Image ya Video select karein');
+            return;
+          }
+
+          isUploading = true;
+          uploadModalTitle.textContent = 'Replacing File...';
+          uploadModalSub.textContent = file.name;
+          uploadModalBody.innerHTML = '<div class="up-queue"><div class="up-row" id="repRow"><div class="up-row-top"><span class="up-name"></span><span class="up-pct">0%</span></div><div class="up-bar"><div class="up-fill"></div></div><div class="up-status">Preparing...</div></div></div>';
+          var repRow = $('#repRow');
+          repRow.querySelector('.up-name').textContent = file.name + ' (' + formatSizeText(file.size) + ')';
+          uploadModal.classList.add('show');
+          uploadModal.setAttribute('aria-hidden', 'false');
+          lockScroll();
+
+          function setRep(pct, msg, cls) {
+            var p = Math.max(0, Math.min(100, Math.round(pct)));
+            repRow.querySelector('.up-pct').textContent = p + '%';
+            repRow.querySelector('.up-fill').style.width = p + '%';
+            repRow.querySelector('.up-status').textContent = msg;
+            repRow.classList.remove('done', 'fail');
+            if (cls) repRow.classList.add(cls);
+          }
+
+          try {
+            var folder = card.category === 'file' ? 'File' : 'Preview';
+            var oldRepoPath = card.repoPath || '';
+            var desiredPath = folder + '/' + sanitizeFileName(file.name);
+            var existingSha = null;
+            var newRepoPath = desiredPath;
+
+            setRep(8, 'Checking GitHub...');
+            if (oldRepoPath && desiredPath === oldRepoPath) {
+              var curMeta = await githubGetMeta(oldRepoPath);
+              existingSha = curMeta ? curMeta.sha : null;
+            } else {
+              newRepoPath = await resolveUniqueRepoPath(folder, file.name);
+            }
+
+            setRep(15, 'Preparing file...');
+            var b64 = await readFileBase64(file);
+            await githubPutContent(newRepoPath, b64, 'Replace ' + newRepoPath, existingSha, function (p) {
+              setRep(15 + (p * 0.7), 'Uploading... ' + p + '%');
+            });
+
+            if (oldRepoPath && newRepoPath !== oldRepoPath) {
+              setRep(88, 'Removing old file...');
+              try { await githubDeleteContent(oldRepoPath, 'Remove replaced ' + oldRepoPath); } catch (eOld) {}
+            }
+
+            var rawUrl = buildRawUrl(newRepoPath);
+            var updates = {
+              downloadUrl: rawUrl,
+              repoPath: newRepoPath,
+              sizeBytes: Number(file.size) || 0
+            };
+
+            if (card.category === 'preview') {
+              if (isVideoFile(file)) {
+                updates.kind = 'video';
+                var cap = await captureVideoThumbDataUrl(file);
+                if (cap) {
+                  var tp = 'Thumb/vthumb_' + Date.now() + '.jpg';
+                  try {
+                    await githubPutContent(tp, cap.split(',')[1] || '', 'Upload video thumb ' + tp, null, null);
+                    updates.thumbnailUrl = buildRawUrl(tp);
+                  } catch (eT) { updates.thumbnailUrl = cap; }
+                }
+              } else {
+                updates.kind = 'image';
+                updates.thumbnailUrl = rawUrl;
+              }
+            } else {
+              updates.kind = 'repo';
+            }
+
+            setRep(95, 'Updating card...');
+            await window.pikazooUpdateCard(card.id, updates);
+            setRep(100, 'Upload Done', 'done');
+            showToast('File replaced');
+          } catch (err) {
+            var em = (err && err.message) ? err.message : String(err);
+            setRep(100, (/Network Error/i.test(em) ? 'Network Error: ' : 'Upload Unsuccessful: ') + em, 'fail');
+          } finally {
+            isUploading = false;
+            var doneBtn = document.createElement('button');
+            doneBtn.type = 'button';
+            doneBtn.className = 'btn btn-orange';
+            doneBtn.style.width = '100%';
+            doneBtn.textContent = 'Close';
+            doneBtn.addEventListener('click', function () { closeUploadModal(true); });
+            uploadModalBody.appendChild(doneBtn);
+          }
+        });
+      }
+
+      /* PERMANENT DELETE FILE + CARD */
+      function openConfirmDelete(card) {
+        closeOwnerAction();
+        deleteTargetCard = card;
+        delConfirmText.textContent = 'Permanently delete "' + (card.title || 'card') + '"? GitHub file aur Firestore card dono delete ho jayenge.';
+        delConfirmBtn.disabled = false;
+        delConfirmBtn.textContent = 'Delete';
+        confirmDeleteModal.classList.add('show');
+        confirmDeleteModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+      function closeConfirmDelete() {
+        if (!confirmDeleteModal || !confirmDeleteModal.classList.contains('show')) return;
+        confirmDeleteModal.classList.remove('show');
+        confirmDeleteModal.setAttribute('aria-hidden', 'true');
+        deleteTargetCard = null;
+        unlockScroll();
+      }
+      if (delCancelBtn) delCancelBtn.addEventListener('click', closeConfirmDelete);
+      if (confirmDeleteModal) confirmDeleteModal.addEventListener('click', function (e) { if (e.target === confirmDeleteModal) closeConfirmDelete(); });
+
+      if (delConfirmBtn) {
+        delConfirmBtn.addEventListener('click', async function () {
+          var card = deleteTargetCard;
+          if (!card || delConfirmBtn.disabled) return;
+          if (card.repoPath && !getGhToken()) {
+            closeConfirmDelete();
+            openSettingsModal();
+            showToast('GitHub file delete karne ke liye token daalein');
+            return;
+          }
+          delConfirmBtn.disabled = true;
+          delConfirmBtn.textContent = 'Deleting...';
+          try {
+            if (card.repoPath) {
+              await githubDeleteContent(card.repoPath, 'Delete ' + card.repoPath);
+            }
+            var thumbPrefix = 'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/Thumb/';
+            if (card.thumbnailUrl && card.thumbnailUrl.indexOf(thumbPrefix) === 0) {
+              var thumbRepoPath = 'Thumb/' + decodeURIComponent(card.thumbnailUrl.slice(thumbPrefix.length));
+              try { await githubDeleteContent(thumbRepoPath, 'Delete ' + thumbRepoPath); } catch (eT) {}
+            }
+            await window.pikazooDeleteCard(card.id);
+            showToast('Permanently deleted');
+            closeConfirmDelete();
+          } catch (err) {
+            showToast('Delete failed: ' + (err && err.message ? err.message : 'Error'));
+            delConfirmBtn.disabled = false;
+            delConfirmBtn.textContent = 'Delete';
+          }
+        });
+      }
+
+      /* IN-APP YOUTUBE PLAYER (NO EXTERNAL REDIRECT) */
+      var ytModal         = $('#ytModal');
+      var ytModalTitle    = $('#ytModalTitle');
+      var ytModalDesc     = $('#ytModalDesc');
+      var ytCloseBtn      = $('#ytCloseBtn');
+      var ytStage         = $('#ytStage');
+      var ytFrame         = $('#ytFrame');
+      var ytFsBtn         = $('#ytFsBtn');
+      var ytFsExitOverlay = $('#ytFsExitOverlay');
+
+      function isYtFullscreen() {
+        return !!(document.fullscreenElement || document.webkitFullscreenElement || (ytStage && ytStage.classList.contains('is-fs-fallback')));
+      }
+
+      function syncYtFsUi() {
+        if (!ytStage) return;
+        var fs = isYtFullscreen();
+        ytStage.classList.toggle('is-fs', fs);
+        if (ytFsBtn) ytFsBtn.textContent = fs ? 'Exit Fullscreen' : 'Fullscreen / Landscape';
+      }
+
+      async function enterYtFullscreen() {
+        if (!ytStage) return;
+        try {
+          if (ytStage.requestFullscreen) {
+            await ytStage.requestFullscreen();
+          } else if (ytStage.webkitRequestFullscreen) {
+            ytStage.webkitRequestFullscreen();
+          } else {
+            ytStage.classList.add('is-fs-fallback');
+          }
+        } catch (err) {
+          ytStage.classList.add('is-fs-fallback');
+        }
+        try {
+          if (screen.orientation && typeof screen.orientation.lock === 'function') {
+            await screen.orientation.lock('landscape');
+          }
+        } catch (err) {}
+        syncYtFsUi();
+      }
+
+      async function exitYtFullscreen() {
+        if (ytStage) ytStage.classList.remove('is-fs-fallback');
+        try {
+          if (document.fullscreenElement && document.exitFullscreen) {
+            await document.exitFullscreen();
+          } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+          }
+        } catch (err) {}
+        try {
+          if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+            screen.orientation.unlock();
+          }
+        } catch (err) {}
+        syncYtFsUi();
+      }
+
+      function openYtModal(title, url, desc) {
+        if (document.body.classList.contains('guest-mode')) return;
+        var ytId = extractYoutubeId(url);
+        if (!ytId) {
+          if (url && url !== '#') window.open(url, '_blank', 'noopener');
+          return;
+        }
+        ytModalTitle.textContent = title || 'YouTube Video';
+        ytModalDesc.textContent = desc || '';
+        ytModalDesc.style.display = desc ? '' : 'none';
+        ytFrame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(ytId) + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+        syncYtFsUi();
+        ytModal.classList.add('show');
+        ytModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+
+      function closeYtModal() {
+        if (!ytModal || !ytModal.classList.contains('show')) return;
+        exitYtFullscreen();
+        ytFrame.src = 'about:blank';
+        ytModal.classList.remove('show');
+        ytModal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+      }
+
+      if (ytCloseBtn) ytCloseBtn.addEventListener('click', closeYtModal);
+      if (ytModal) ytModal.addEventListener('click', function (e) { if (e.target === ytModal) closeYtModal(); });
+      if (ytFsBtn) {
+        ytFsBtn.addEventListener('click', function () {
+          if (isYtFullscreen()) exitYtFullscreen();
+          else enterYtFullscreen();
+        });
+      }
+      if (ytFsExitOverlay) ytFsExitOverlay.addEventListener('click', exitYtFullscreen);
+
+      function onYtFsChange() {
+        var nativeFs = !!(document.fullscreenElement || document.webkitFullscreenElement);
+        if (!nativeFs) {
+          try {
+            if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+              screen.orientation.unlock();
+            }
+          } catch (err) {}
+        }
+        syncYtFsUi();
+      }
+      document.addEventListener('fullscreenchange', onYtFsChange);
+      document.addEventListener('webkitfullscreenchange', onYtFsChange);
+
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return;
+        if (ytModal && ytModal.classList.contains('show')) { closeYtModal(); return; }
+        if (confirmDeleteModal && confirmDeleteModal.classList.contains('show')) { closeConfirmDelete(); return; }
+        if (settingsModal && settingsModal.classList.contains('show')) { closeSettingsModal(); return; }
+        if (uploadModal && uploadModal.classList.contains('show')) { closeUploadModal(false); return; }
+        if (ownerEditModal && ownerEditModal.classList.contains('show')) { closeOwnerEdit(); return; }
+        if (ownerActionModal && ownerActionModal.classList.contains('show')) { closeOwnerAction(); return; }
         if (cardModal.classList.contains('show')) { closeCardModal(); return; }
         if (modal.classList.contains('show')) { closeLogoutModal(); return; }
         closeDrawer();
