@@ -1270,31 +1270,6 @@ window.handleFileImportOld = async (input) => {
             });
         };
 
-        window.unblockKey = async (keyId) => {
-            const k = getKeyData(keyId);
-            if (k.permanentlyInvalidated) {
-                return showToast("Deleted/Restored key ko unblock nahi kar sakte", "danger");
-            }
-            const targetStatus = (k.previousStatus === 'USED' || k.previousStatus === 'GENERATED')
-                ? k.previousStatus
-                : (k.userName ? 'USED' : 'GENERATED');
-            confirmAction(`Unblock key ${keyId} (${targetStatus})?`, async () => {
-                try {
-                    await updateDoc(doc(db, "keys", keyId), {
-                        status: targetStatus,
-                        previousStatus: null,
-                        unblockedAt: serverTimestamp(),
-                        unblockedBy: currentUser.uid,
-                        updatedAt: serverTimestamp()
-                    });
-                    await logAudit(keyId, 'UNBLOCK', 'BLOCKED', targetStatus);
-                    showToast("Key unblocked (" + targetStatus + ")");
-                } catch (e) {
-                    showToast(e.message, "danger");
-                }
-            });
-        };
-
         window.revokeKey = async (keyId) => {
             if (getKeyData(keyId).permanentlyInvalidated) {
                 return showToast("Deleted key ko revoke nahi kar sakte", "danger");
@@ -1422,10 +1397,7 @@ window.handleFileImportOld = async (input) => {
                     <td>
                         <div class="action-group">
                             <button class="btn-icon" onclick="copyKey('${k.key}')" title="Copy"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
-                            ${(k.status === 'BLOCKED' && !k.permanentlyInvalidated)
-                                ? `<button class="btn-icon" onclick="unblockKey('${k.id}')" title="Unblock" style="color: var(--success);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="20 6 9 17 4 12"></polyline></svg></button>`
-                                : `<button class="btn-icon" onclick="blockKey('${k.id}')" title="Block"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></button>`
-                            }
+                            <button class="btn-icon" onclick="blockKey('${k.id}')" title="Block"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg></button>
                             <button class="btn-icon" onclick="revokeKey('${k.id}')" title="Revoke"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 8 12 17 21 8"></polyline></svg></button>
                             <button class="btn-icon danger" onclick="deleteKey('${k.id}')" title="Delete"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>
                         </div>
