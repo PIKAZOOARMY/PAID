@@ -973,6 +973,19 @@
 
         // --- TXT IMPORT SYSTEM ---
         window.handleFileImport = async (input) => {
+    const file = input.files[0];
+    if (!file) return;
+    showToast("File mil gayi: " + file.name + " - upload ho rahi hai...", "info");
+    try {
+        await window.handleFileImportInner(input);
+    } catch (e) {
+        showToast("Import FAIL: " + e.message, "danger");
+        alert("Import fail hua:\n\n" + e.message);
+        input.value = '';
+    }
+};
+
+window.handleFileImportInner = async (input) => {
             const file = input.files[0];
             if (!file) return;
             if (!db || !currentUser) {
