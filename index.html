@@ -1367,6 +1367,7 @@
     body:not([data-role="owner"]) .owner-only { display: none; }
     body[data-role="owner"] .store-pill-wrap { display: none; }
     .genkey-item .di-icon { background: linear-gradient(145deg, #FFE9B0, #FFD4B5); }
+    .synchook-item .di-icon { background: linear-gradient(145deg, var(--st-cyan), var(--st-green)); }
 
     /* MODALS */
     .modal {
@@ -2009,6 +2010,22 @@
             <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
           </button>
 
+          <button class="drawer-item synchook-item owner-only" id="btnSyncHookMenu" type="button">
+            <span class="di-icon">
+              <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                <path d="M3 3v5h5"/>
+                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                <path d="M16 16h5v5"/>
+              </svg>
+            </span>
+            <span class="di-text">
+              <strong>Sync Hook</strong>
+              <small>Fetch GitHub Releases</small>
+            </span>
+            <svg class="di-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>
+          </button>
+
           <button class="drawer-item danger" id="btnLogoutMenu" type="button">
             <span class="di-icon">
               <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -2087,7 +2104,7 @@
       getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import {
-      getFirestore, collection, query, where, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp
+      getFirestore, collection, query, where, doc, getDoc, getDocs, setDoc, updateDoc, writeBatch, onSnapshot, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     (function () {
@@ -2335,6 +2352,151 @@
       }
       window.pikazooSyncPublicMeta = syncPublicMetaIfNeeded;
 
+      let isHookSyncing = false;
+
+      function formatBytes(bytes) {
+        const n = Number(bytes) || 0;
+        if (n <= 0) return '';
+        const units = ['B', 'KB', 'MB', 'GB'];
+        let u = 0;
+        let v = n;
+        while (v >= 1024 && u < units.length - 1) { v /= 1024; u++; }
+        return (u === 0 ? v : v.toFixed(v >= 10 ? 1 : 2)) + ' ' + units[u];
+      }
+
+      async function syncHookReleases(manual) {
+        if (document.body.dataset.role !== 'owner') return;
+        if (isHookSyncing) {
+          if (manual) window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'Sync already running...' } }));
+          return;
+        }
+        isHookSyncing = true;
+        if (manual) {
+          window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'Syncing GitHub Releases...' } }));
+        }
+        try {
+          const res = await fetch('https://api.github.com/repos/PIKAZOOARMY/PAID/releases?per_page=100', {
+            headers: { 'Accept': 'application/vnd.github+json' },
+            cache: 'no-store'
+          });
+          if (!res.ok) {
+            throw new Error('GitHub HTTP ' + res.status);
+          }
+          const releases = await res.json();
+          if (!Array.isArray(releases)) {
+            throw new Error('Invalid GitHub response');
+          }
+
+          const hookSnap = await getDocs(query(collection(db, 'cards'), where('category', '==', 'hook')));
+          const existingMap = new Map();
+          let maxOrder = -1;
+          hookSnap.forEach((d) => {
+            const data = d.data();
+            existingMap.set(d.id, data);
+            if (typeof data.order === 'number' && data.order > maxOrder) {
+              maxOrder = data.order;
+            }
+          });
+
+          const activeIds = new Set();
+          const ops = [];
+          let added = 0;
+          let updated = 0;
+          let hiddenCount = 0;
+          let nextOrder = maxOrder + 1;
+
+          for (const rel of releases) {
+            const assets = Array.isArray(rel.assets) ? rel.assets : [];
+            const tagText = rel.tag_name ? ('Release ' + rel.tag_name) : (rel.name || 'GitHub Release');
+            for (const asset of assets) {
+              if (!asset || !asset.id) continue;
+              const cardId = 'hook_' + String(asset.id);
+              activeIds.add(cardId);
+              const dlUrl = asset.browser_download_url || '';
+              const sizeB = Number(asset.size) || 0;
+              const existing = existingMap.get(cardId);
+
+              if (!existing) {
+                const sizeLabel = formatBytes(sizeB);
+                const desc = sizeLabel ? (tagText + ' \u00B7 ' + sizeLabel) : tagText;
+                ops.push({
+                  type: 'set',
+                  ref: doc(db, 'cards', cardId),
+                  data: {
+                    category: 'hook',
+                    title: asset.name || ('Release ' + asset.id),
+                    description: desc,
+                    thumbnailUrl: '',
+                    downloadUrl: dlUrl,
+                    kind: 'release',
+                    repoPath: '',
+                    sizeBytes: sizeB,
+                    order: nextOrder++,
+                    hidden: false,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                  }
+                });
+                added++;
+              } else if (existing.downloadUrl !== dlUrl || Number(existing.sizeBytes || 0) !== sizeB) {
+                ops.push({
+                  type: 'update',
+                  ref: doc(db, 'cards', cardId),
+                  data: {
+                    downloadUrl: dlUrl,
+                    sizeBytes: sizeB,
+                    updatedAt: serverTimestamp()
+                  }
+                });
+                updated++;
+              }
+            }
+          }
+
+          existingMap.forEach((data, id) => {
+            if ((data.kind === 'release' || id.indexOf('hook_') === 0) && !activeIds.has(id) && data.hidden !== true) {
+              ops.push({
+                type: 'update',
+                ref: doc(db, 'cards', id),
+                data: {
+                  hidden: true,
+                  updatedAt: serverTimestamp()
+                }
+              });
+              hiddenCount++;
+            }
+          });
+
+          const CHUNK = 400;
+          for (let i = 0; i < ops.length; i += CHUNK) {
+            const batch = writeBatch(db);
+            ops.slice(i, i + CHUNK).forEach((op) => {
+              if (op.type === 'set') batch.set(op.ref, op.data);
+              else batch.update(op.ref, op.data);
+            });
+            await batch.commit();
+          }
+
+          if (manual) {
+            let msg = 'Hook already up to date';
+            if (added || hiddenCount || updated) {
+              msg = 'Synced: ' + added + ' new, ' + hiddenCount + ' hidden';
+            }
+            window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: msg } }));
+          }
+        } catch (err) {
+          console.warn('Hook sync failed:', err);
+          if (manual) {
+            window.dispatchEvent(new CustomEvent('pikazoo-toast', {
+              detail: { message: 'Hook sync failed: ' + (err && err.message ? err.message : 'Network error') }
+            }));
+          }
+        } finally {
+          isHookSyncing = false;
+        }
+      }
+      window.pikazooSyncHook = syncHookReleases;
+
       function startStoreFeed(mode) {
         if (unsubStoreFeed) {
           try { unsubStoreFeed(); } catch (err) {}
@@ -2366,6 +2528,10 @@
         }, (err) => {
           console.warn('Cards listener error:', err);
         }));
+
+        if (mode === 'owner') {
+          syncHookReleases(false);
+        }
       }
 
       function genSessionId() {
@@ -2914,6 +3080,7 @@
       var closeDrawerEl   = $('#closeDrawer');
       var btnWhatsapp     = $('#btnWhatsapp');
       var btnGenerateKey  = $('#btnGenerateKeyMenu');
+      var btnSyncHook     = $('#btnSyncHookMenu');
       var btnLogoutMenu   = $('#btnLogoutMenu');
 
       var modal           = $('#logoutModal');
@@ -3052,6 +3219,19 @@
           window.open('https://pikazooarmy.github.io/PAID/keys.html', '_blank', 'noopener');
         });
       }
+
+      if (btnSyncHook) {
+        btnSyncHook.addEventListener('click', function () {
+          closeDrawer();
+          if (typeof window.pikazooSyncHook === 'function') {
+            window.pikazooSyncHook(true);
+          }
+        });
+      }
+
+      window.addEventListener('pikazoo-toast', function (e) {
+        if (e && e.detail && e.detail.message) showToast(e.detail.message);
+      });
 
       window.addEventListener('pikazoo-force-guest', function (e) {
         closeCardModal();
