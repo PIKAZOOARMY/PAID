@@ -263,7 +263,7 @@
     }
 
     .welcome-header {
-      text-align: center;
+      text-align: start;
       margin-top: 8px;
     }
     .welcome-to {
@@ -1188,7 +1188,7 @@
     }
     .empty-state {
       grid-column: 1 / -1;
-      text-align: center;
+      text-align: start;
       padding: 44px 20px;
       border-radius: 26px;
       background: rgba(255, 255, 255, 0.42);
@@ -1198,13 +1198,110 @@
       font-weight: 700;
     }
     #cardModalSub { white-space: pre-wrap; }
+    .desc-link {
+      color: #E11D74;
+      font-weight: 700;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      word-break: break-all;
+      direction: ltr;
+      unicode-bidi: isolate;
+      cursor: pointer;
+    }
+    .desc-link:active { opacity: 0.72; }
+
+    /* APP ICON BEFORE FILE TITLE (HOOK & FILE) */
+    .card-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-right: 60px;
+      margin: 0 0 6px;
+    }
+    .card-title-row .card-title {
+      padding-right: 0;
+      margin: 0;
+      flex: 1;
+      min-width: 0;
+      word-break: break-word;
+    }
+    .card-app-icon {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 224, 237, 0.85);
+      box-shadow: 0 4px 10px rgba(42, 59, 71, 0.14);
+    }
+    .card-app-icon-add {
+      flex: 0 0 auto;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      border: 2px dashed rgba(42, 59, 71, 0.45);
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--st-text);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.15s var(--ease-pop);
+    }
+    .card-app-icon-add:active { transform: scale(0.92); }
+    body:not([data-role="owner"]) .card-app-icon-add { display: none; }
+
+    .card-modal-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin: 0 0 8px;
+    }
+    .card-modal-title-row h2 {
+      margin: 0;
+      text-align: start;
+      flex: 1;
+      min-width: 0;
+    }
+    .card-modal-app-icon {
+      flex: 0 0 auto;
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      object-fit: cover;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(255, 224, 237, 0.85);
+      box-shadow: 0 4px 10px rgba(42, 59, 71, 0.14);
+    }
+    .guest-mode #cardModalCard .card-modal-app-icon {
+      filter: blur(6px);
+      opacity: 0.55;
+    }
+    .owner-icon-preview {
+      width: 72px;
+      height: 72px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(42, 59, 71, 0.16);
+      margin: 0 auto 12px;
+      display: grid;
+      place-items: center;
+    }
+    .owner-icon-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
     /* OWNER ACTION & EDIT MODALS */
     .owner-menu-head {
-      text-align: center;
+      text-align: start;
       margin-bottom: 14px;
       padding-right: 34px;
-      padding-left: 34px;
+      padding-left: 6px;
     }
     .owner-menu-pill {
       display: inline-block;
@@ -1258,6 +1355,7 @@
       font-family: inherit;
       font-size: 15px;
       font-weight: 600;
+      text-align: start;
       padding: 12px 14px;
       outline: none;
       margin-bottom: 12px;
@@ -1492,7 +1590,7 @@
       letter-spacing: 0.14em;
       color: rgba(60, 84, 96, 0.75);
       text-transform: uppercase;
-      text-align: center;
+      text-align: start;
     }
 
     .guest-mode #btnLogoutMenu { display: none; }
@@ -1629,7 +1727,7 @@
     }
     .yt-head h2 {
       margin: 0;
-      text-align: left;
+      text-align: start;
       font-size: 16.5px;
       line-height: 1.3;
       flex: 1;
@@ -1766,7 +1864,7 @@
     }
     .modal-card h2 {
       margin: 0 0 8px;
-      text-align: center;
+      text-align: start;
       font-size: 20px;
       font-weight: 800;
       letter-spacing: -0.02em;
@@ -1774,7 +1872,7 @@
     }
     .modal-sub {
       margin: 0 0 16px;
-      text-align: center;
+      text-align: start;
       font-size: 14px;
       font-weight: 600;
       line-height: 1.48;
@@ -1810,7 +1908,7 @@
 
     .modal-hint {
       margin: 0 0 16px;
-      text-align: center;
+      text-align: start;
       font-size: 13px;
       font-weight: 700;
       color: #A4480F;
@@ -1958,7 +2056,7 @@
       padding: 22px 12px;
       border-radius: 16px;
       border: 1.5px dashed rgba(42, 59, 71, 0.22);
-      text-align: center;
+      text-align: start;
       font-size: 13px;
       font-weight: 700;
       color: var(--st-muted);
@@ -2608,7 +2706,7 @@
           <div class="modal-card">
             <h2 id="settingsModalTitle">GitHub Settings</h2>
             <p class="modal-sub">Fine-grained token (only <strong>PIKAZOOARMY/PAID</strong>, Contents: Read &amp; Write). Sirf aap ke device mein save hota hai.</p>
-            <div style="text-align:center;"><span class="token-badge miss" id="tokenStatusBadge">Token Not Set</span></div>
+            <div style="text-align:start;"><span class="token-badge miss" id="tokenStatusBadge">Token Not Set</span></div>
             <input type="password" class="owner-input" id="ghTokenInput" placeholder="github_pat_..." autocomplete="off" spellcheck="false" />
             <div class="modal-actions">
               <button class="btn" id="settingsCancelBtn" type="button">Close</button>
@@ -2782,6 +2880,87 @@
         return /^https?:\/\//i.test(s) ? s : '#';
       }
 
+      const RTL_CHAR_RE = /[\u0591-\u07FF\u200F\u202B\u202E\uFB1D-\uFDFD\uFE70-\uFEFC]/;
+      const LTR_CHAR_RE = /[A-Za-z\u00C0-\u024F\u1E00-\u1EFF]/;
+
+      function detectTextDir(text) {
+        const s = String(text || '');
+        let rtlCount = 0;
+        let ltrCount = 0;
+        let firstDir = '';
+        for (let i = 0; i < s.length; i++) {
+          const ch = s[i];
+          if (RTL_CHAR_RE.test(ch)) {
+            if (!firstDir) firstDir = 'rtl';
+            rtlCount++;
+          } else if (LTR_CHAR_RE.test(ch)) {
+            if (!firstDir) firstDir = 'ltr';
+            ltrCount++;
+          }
+        }
+        if (!rtlCount && !ltrCount) {
+          const docLang = (document.documentElement.lang || navigator.language || 'en').toLowerCase();
+          return /^(ar|ur|fa|ps|sd|he)/.test(docLang) ? 'rtl' : 'ltr';
+        }
+        if (rtlCount > ltrCount) return 'rtl';
+        if (ltrCount > rtlCount) return 'ltr';
+        return firstDir || 'ltr';
+      }
+
+      function applyTextDir(el, text) {
+        if (!el) return 'ltr';
+        const dir = detectTextDir(text);
+        el.setAttribute('dir', dir);
+        el.style.textAlign = (dir === 'rtl') ? 'right' : 'left';
+        return dir;
+      }
+      window.pikazooApplyTextDir = applyTextDir;
+
+      const URL_IN_TEXT_RE = /https?:\/\/[^\s<>"'`]+/gi;
+
+      function renderTextWithLinks(el, text, allowLinks) {
+        if (!el) return;
+        const s = String(text || '');
+        el.textContent = '';
+        if (!allowLinks) {
+          el.textContent = s;
+          return;
+        }
+        URL_IN_TEXT_RE.lastIndex = 0;
+        let lastIdx = 0;
+        let match;
+        while ((match = URL_IN_TEXT_RE.exec(s)) !== null) {
+          let rawUrl = match[0];
+          const start = match.index;
+          if (start > lastIdx) {
+            el.appendChild(document.createTextNode(s.slice(lastIdx, start)));
+          }
+          let trailing = '';
+          while (rawUrl.length > 8 && /[.,!?;:)\]]$/.test(rawUrl)) {
+            if (rawUrl.endsWith(')') && (rawUrl.match(/\(/g) || []).length >= (rawUrl.match(/\)/g) || []).length) {
+              break;
+            }
+            trailing = rawUrl.slice(-1) + trailing;
+            rawUrl = rawUrl.slice(0, -1);
+          }
+          const a = document.createElement('a');
+          a.className = 'desc-link';
+          a.href = rawUrl;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = rawUrl;
+          el.appendChild(a);
+          if (trailing) {
+            el.appendChild(document.createTextNode(trailing));
+          }
+          lastIdx = match.index + match[0].length;
+        }
+        if (lastIdx < s.length) {
+          el.appendChild(document.createTextNode(s.slice(lastIdx)));
+        }
+      }
+      window.pikazooRenderTextWithLinks = renderTextWithLinks;
+
       function formatCardDateTime(ts, fallbackTs) {
         let d = null;
         const src = ts || fallbackTs;
@@ -2931,6 +3110,7 @@
         art.dataset.repoPath = card.repoPath || '';
         art.dataset.title = card.title || '';
         art.dataset.url = isGuest ? '#' : safeHrefUrl(card.downloadUrl);
+        art.dataset.iconUrl = safeMediaUrl(card.iconUrl);
 
         const thumbs = getCardThumbs(card);
         const curIdx = thumbs.length > 1 ? (thumbSlideTick % thumbs.length) : 0;
@@ -2963,14 +3143,47 @@
         const body = document.createElement('div');
         body.className = 'card-body';
 
+        const titleStr = card.title || 'Untitled';
         const h3 = document.createElement('h3');
         h3.className = 'card-title';
-        h3.textContent = card.title || 'Untitled';
-        body.appendChild(h3);
+        h3.textContent = titleStr;
+        applyTextDir(h3, titleStr);
 
+        if (card.category === 'hook' || card.category === 'file') {
+          const iconSrc = safeMediaUrl(card.iconUrl);
+          if (iconSrc || !isGuest) {
+            const titleRow = document.createElement('div');
+            titleRow.className = 'card-title-row';
+            titleRow.setAttribute('dir', detectTextDir(titleStr));
+            if (iconSrc) {
+              const ico = document.createElement('img');
+              ico.className = 'card-app-icon';
+              ico.src = iconSrc;
+              ico.alt = '';
+              ico.loading = 'lazy';
+              titleRow.appendChild(ico);
+            } else {
+              const addBtn = document.createElement('button');
+              addBtn.type = 'button';
+              addBtn.className = 'card-app-icon-add';
+              addBtn.setAttribute('aria-label', 'Set app icon');
+              addBtn.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+              titleRow.appendChild(addBtn);
+            }
+            titleRow.appendChild(h3);
+            body.appendChild(titleRow);
+          } else {
+            body.appendChild(h3);
+          }
+        } else {
+          body.appendChild(h3);
+        }
+
+        const descStr = card.description || '';
         const p = document.createElement('p');
         p.className = 'card-sub';
-        p.textContent = card.description || '';
+        renderTextWithLinks(p, descStr, !isGuest);
+        applyTextDir(p, descStr);
         body.appendChild(p);
 
         const dl = document.createElement('a');
@@ -3040,6 +3253,7 @@
               category: cat,
               title: (it && it.t) ? it.t : 'Locked Premium Pack',
               description: (it && it.d !== undefined) ? it.d : 'Sign up with a valid key to unlock',
+              iconUrl: safeMediaUrl(it && it.ic),
               thumbnailUrl: rawImgs[0] || FALLBACK_THUMBS[i % FALLBACK_THUMBS.length],
               thumbnails: rawImgs,
               dateText: (it && it.dt) ? it.dt : '00-00-0000 | 00-00-am',
@@ -3072,11 +3286,13 @@
         function pickItem(c) {
           const allThumbs = getCardThumbs(c);
           const safeThumbs = allThumbs.filter((u) => /^https?:\/\//i.test(u));
+          const rawIcon = /^https?:\/\//i.test(String(c.iconUrl || '').trim()) ? String(c.iconUrl).trim() : '';
           return {
             t: String(c.title || '').slice(0, 140),
             d: String(c.description || '').slice(0, 600),
             i: safeThumbs[0] || '',
             imgs: safeThumbs,
+            ic: rawIcon,
             dt: formatCardDateTime(c.createdAt, c.updatedAt)
           };
         }
@@ -3922,6 +4138,9 @@
 
       function showToast(msg) {
         toast.textContent = msg;
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(toast, msg);
+        }
         toast.classList.add('show');
         clearTimeout(toastTimer);
         toastTimer = setTimeout(function () {
@@ -4199,8 +4418,44 @@
           modalThumbBox._curIdx = curIdx;
         }
 
-        cardModalTitle.textContent = title ? title.textContent : '';
-        cardModalSub.textContent = card.dataset.desc ? card.dataset.desc : (sub ? sub.textContent : '');
+        var mTitleText = title ? title.textContent : '';
+        var mDescText  = card.dataset.desc ? card.dataset.desc : (sub ? sub.textContent : '');
+        cardModalTitle.textContent = mTitleText;
+        var iconUrl = card.dataset.iconUrl || '';
+        var mTitleRow = cardModalTitle.parentNode;
+        if (!mTitleRow.classList.contains('card-modal-title-row')) {
+          var mWrap = document.createElement('div');
+          mWrap.className = 'card-modal-title-row';
+          mTitleRow.insertBefore(mWrap, cardModalTitle);
+          mWrap.appendChild(cardModalTitle);
+          mTitleRow = mWrap;
+        }
+        var mTitleDir = (typeof window.pikazooApplyTextDir === 'function')
+          ? window.pikazooApplyTextDir(cardModalTitle, mTitleText)
+          : 'ltr';
+        mTitleRow.setAttribute('dir', mTitleDir);
+
+        var mIcon = mTitleRow.querySelector('.card-modal-app-icon');
+        if (iconUrl) {
+          if (!mIcon) {
+            mIcon = document.createElement('img');
+            mIcon.className = 'card-modal-app-icon';
+            mIcon.alt = '';
+            mTitleRow.insertBefore(mIcon, cardModalTitle);
+          }
+          mIcon.src = iconUrl;
+          mIcon.style.display = '';
+        } else if (mIcon) {
+          mIcon.style.display = 'none';
+        }
+        if (typeof window.pikazooRenderTextWithLinks === 'function') {
+          window.pikazooRenderTextWithLinks(cardModalSub, mDescText, !isGuest);
+        } else {
+          cardModalSub.textContent = mDescText;
+        }
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(cardModalSub, mDescText);
+        }
         if (cardModalDl && dl) {
           var href = dl.getAttribute('href') || '#';
           var kind = card.dataset.kind || '';
@@ -4348,6 +4603,12 @@
           inp.maxLength = 120;
           inp.placeholder = 'Enter card name';
           inp.value = baseTitle;
+          if (typeof window.pikazooApplyTextDir === 'function') {
+            window.pikazooApplyTextDir(inp, inp.value || inp.placeholder);
+            inp.addEventListener('input', function () {
+              window.pikazooApplyTextDir(inp, inp.value || inp.placeholder);
+            });
+          }
 
           if (fileExt) {
             var nameWrap = document.createElement('div');
@@ -4387,6 +4648,12 @@
           ta.maxLength = 2000;
           ta.placeholder = 'Enter full description';
           ta.value = card.description || '';
+          if (typeof window.pikazooApplyTextDir === 'function') {
+            window.pikazooApplyTextDir(ta, ta.value || ta.placeholder);
+            ta.addEventListener('input', function () {
+              window.pikazooApplyTextDir(ta, ta.value || ta.placeholder);
+            });
+          }
           ownerEditFields.appendChild(ta);
 
           activeEditHandler = async function () {
@@ -4581,6 +4848,136 @@
             showToast('Thumbnails updated (' + finalThumbs.length + ')');
             closeOwnerEdit();
           };
+        } else if (mode === 'icon') {
+          ownerEditTitle.textContent = 'Set App Icon';
+          ownerEditSub.textContent = 'Title ke aage dikhne wala square App Icon lagayein.';
+
+          var icoPrev = document.createElement('div');
+          icoPrev.className = 'owner-icon-preview';
+          var icoImg = document.createElement('img');
+          icoImg.alt = 'App Icon';
+          icoImg.src = card.iconUrl || '';
+          if (!card.iconUrl) icoPrev.style.display = 'none';
+          icoPrev.appendChild(icoImg);
+
+          var icoUrlInp = document.createElement('input');
+          icoUrlInp.type = 'url';
+          icoUrlInp.className = 'owner-input';
+          icoUrlInp.placeholder = 'https://... icon URL';
+          icoUrlInp.value = card.iconUrl || '';
+
+          var icoFileInp = document.createElement('input');
+          icoFileInp.type = 'file';
+          icoFileInp.accept = 'image/*';
+          icoFileInp.hidden = true;
+
+          var icoRow = document.createElement('div');
+          icoRow.className = 'owner-thumb-row';
+
+          var icoPickBtn = document.createElement('button');
+          icoPickBtn.type = 'button';
+          icoPickBtn.className = 'btn btn-cyan';
+          icoPickBtn.textContent = 'Pick Icon';
+
+          var icoResetBtn = document.createElement('button');
+          icoResetBtn.type = 'button';
+          icoResetBtn.className = 'btn';
+          icoResetBtn.textContent = 'Remove Icon';
+
+          icoRow.appendChild(icoPickBtn);
+          icoRow.appendChild(icoResetBtn);
+
+          icoUrlInp.addEventListener('input', function () {
+            var v = icoUrlInp.value.trim();
+            if (/^(https?:\/\/|data:image\/)/i.test(v)) {
+              icoImg.src = v;
+              icoPrev.style.display = '';
+            } else {
+              icoPrev.style.display = 'none';
+            }
+          });
+
+          icoPickBtn.addEventListener('click', function () {
+            if (!getGhToken()) {
+              closeOwnerEdit();
+              openSettingsModal();
+              showToast('Icon upload ke liye pehle Settings mein GitHub token daalein');
+              return;
+            }
+            icoFileInp.value = '';
+            icoFileInp.click();
+          });
+
+          icoFileInp.addEventListener('change', function () {
+            var f = icoFileInp.files && icoFileInp.files[0];
+            if (!f) return;
+            icoPickBtn.disabled = true;
+            icoPickBtn.textContent = 'Loading...';
+            var reader = new FileReader();
+            reader.onerror = function () {
+              showToast('Icon load failed');
+              icoPickBtn.disabled = false;
+              icoPickBtn.textContent = 'Pick Icon';
+            };
+            reader.onload = function () {
+              var im = new Image();
+              im.onerror = function () {
+                showToast('Invalid image');
+                icoPickBtn.disabled = false;
+                icoPickBtn.textContent = 'Pick Icon';
+              };
+              im.onload = function () {
+                var size = 256;
+                var canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                var ctx = canvas.getContext('2d');
+                var scale = Math.max(size / im.width, size / im.height);
+                var w = im.width * scale;
+                var h = im.height * scale;
+                ctx.drawImage(im, (size - w) / 2, (size - h) / 2, w, h);
+                var dataUrl = canvas.toDataURL('image/png');
+                icoUrlInp.value = dataUrl;
+                icoImg.src = dataUrl;
+                icoPrev.style.display = '';
+                icoPickBtn.disabled = false;
+                icoPickBtn.textContent = 'Pick Icon';
+                icoFileInp.value = '';
+              };
+              im.src = reader.result;
+            };
+            reader.readAsDataURL(f);
+          });
+
+          icoResetBtn.addEventListener('click', function () {
+            icoUrlInp.value = '';
+            icoImg.src = '';
+            icoPrev.style.display = 'none';
+          });
+
+          ownerEditFields.appendChild(icoPrev);
+          ownerEditFields.appendChild(icoUrlInp);
+          ownerEditFields.appendChild(icoFileInp);
+          ownerEditFields.appendChild(icoRow);
+
+          activeEditHandler = async function () {
+            var val = icoUrlInp.value.trim();
+            if (val && !/^(https?:\/\/|data:image\/)/i.test(val)) {
+              showToast('Valid image URL ya Pick Icon use karein');
+              return;
+            }
+            if (val.indexOf('data:image/') === 0) {
+              if (!getGhToken()) throw new Error('GitHub token set nahi hai (Menu -> Settings)');
+              ownerEditSave.textContent = 'Uploading...';
+              var b64 = val.split(',')[1] || '';
+              var iconPath = 'Thumb/icon_' + sanitizeFileName(card.id) + '_' + Date.now() + '.png';
+              await githubPutContent(iconPath, b64, 'Upload app icon ' + iconPath, null, null);
+              val = buildRawUrl(iconPath);
+            }
+            await window.pikazooUpdateCard(card.id, { iconUrl: val });
+            showToast(val ? 'App icon updated' : 'App icon removed');
+            closeOwnerEdit();
+          };
         }
 
         ownerEditModal.classList.add('show');
@@ -4629,9 +5026,15 @@
 
         ownerMenuCat.textContent = String(card.category || 'ITEM').toUpperCase();
         ownerMenuTitle.textContent = card.title || 'Card Options';
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(ownerMenuTitle, ownerMenuTitle.textContent);
+        }
         ownerMenuList.innerHTML = '';
 
         addActionBtn('Change Card Name', '', function () { openEditField(card, 'title'); });
+        if (card.category === 'hook' || card.category === 'file') {
+          addActionBtn('Set App Icon', '', function () { openEditField(card, 'icon'); });
+        }
         addActionBtn('Change Thumbnail', '', function () { openEditField(card, 'thumb'); });
         addActionBtn('Change Description', '', function () { openEditField(card, 'desc'); });
         if (card.category === 'file' || card.category === 'preview') {
@@ -4988,7 +5391,7 @@
         storeMainEl.addEventListener('touchstart', function (e) {
           if (document.body.dataset.role !== 'owner') return;
           if (!e.touches || e.touches.length !== 1) return;
-          if (e.target.closest('.dl')) return;
+          if (e.target.closest('.dl, .card-app-icon-add')) return;
           var card = e.target.closest('.card');
           if (!card || !card.dataset.id) return;
           var t = e.touches[0];
@@ -4999,7 +5402,7 @@
           if (e.pointerType !== 'mouse') return;
           if (document.body.dataset.role !== 'owner') return;
           if (e.button && e.button !== 0) return;
-          if (e.target.closest('.dl')) return;
+          if (e.target.closest('.dl, .card-app-icon-add')) return;
           var card = e.target.closest('.card');
           if (!card || !card.dataset.id) return;
           armLongPress('mouse', e.pointerId, card, e.clientX, e.clientY);
@@ -5014,6 +5417,26 @@
         storeMainEl.addEventListener('click', function (e) {
           if (Date.now() - lpFiredAt < 450) {
             e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          var addIcoBtn = e.target.closest('.card-app-icon-add');
+          if (addIcoBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (document.body.dataset.role === 'owner') {
+              var icoCard = addIcoBtn.closest('.card');
+              var icoObj = icoCard ? findCardById(icoCard.dataset.id) : null;
+              if (icoObj) openEditField(icoObj, 'icon');
+            }
+            return;
+          }
+          var descLink = e.target.closest('.desc-link');
+          if (descLink) {
+            if (document.body.classList.contains('guest-mode')) {
+              e.preventDefault();
+              return;
+            }
             e.stopPropagation();
             return;
           }
@@ -5567,6 +5990,12 @@
         titleInp.className = 'owner-input';
         titleInp.placeholder = 'Title (YouTube ke liye khali chhod dein, khud aayega)';
         titleInp.value = existingCard ? (existingCard.title || '') : '';
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(titleInp, titleInp.value || titleInp.placeholder);
+          titleInp.addEventListener('input', function () {
+            window.pikazooApplyTextDir(titleInp, titleInp.value || titleInp.placeholder);
+          });
+        }
 
         var actions = document.createElement('div');
         actions.className = 'modal-actions';
@@ -5947,6 +6376,9 @@
         closeOwnerAction();
         deleteTargetCard = card;
         delConfirmText.textContent = 'Permanently delete "' + (card.title || 'card') + '"? GitHub file aur Firestore card dono delete ho jayenge.';
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(delConfirmText, delConfirmText.textContent);
+        }
         delConfirmBtn.disabled = false;
         delConfirmBtn.textContent = 'Delete';
         confirmDeleteModal.classList.add('show');
@@ -5988,6 +6420,9 @@
             }
             if (card.thumbnailUrl && card.thumbnailUrl.indexOf(thumbPrefix) === 0 && toDelThumbs.indexOf(card.thumbnailUrl) === -1) {
               toDelThumbs.push(card.thumbnailUrl);
+            }
+            if (card.iconUrl && card.iconUrl.indexOf(thumbPrefix) === 0 && toDelThumbs.indexOf(card.iconUrl) === -1) {
+              toDelThumbs.push(card.iconUrl);
             }
             for (var ti = 0; ti < toDelThumbs.length; ti++) {
               var thumbRepoPath = 'Thumb/' + decodeURIComponent(toDelThumbs[ti].slice(thumbPrefix.length));
@@ -6071,8 +6506,16 @@
           return;
         }
         ytModalTitle.textContent = title || 'YouTube Video';
-        ytModalDesc.textContent = desc || '';
+        if (typeof window.pikazooRenderTextWithLinks === 'function') {
+          window.pikazooRenderTextWithLinks(ytModalDesc, desc || '', true);
+        } else {
+          ytModalDesc.textContent = desc || '';
+        }
         ytModalDesc.style.display = desc ? '' : 'none';
+        if (typeof window.pikazooApplyTextDir === 'function') {
+          window.pikazooApplyTextDir(ytModalTitle, ytModalTitle.textContent);
+          window.pikazooApplyTextDir(ytModalDesc, ytModalDesc.textContent);
+        }
         ytFrame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(ytId) + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
         syncYtFsUi();
         ytModal.classList.add('show');
