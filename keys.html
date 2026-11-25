@@ -862,7 +862,7 @@
 
         function setupAuthListener() {
             onAuthStateChanged(auth, (user) => {
-                if (user) {
+                if (user && !user.isAnonymous) {
                     currentUser = user;
                     startRealtimeListeners();
                 } else {
