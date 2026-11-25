@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PIKAZOO KEY MANAGER</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><text y=%2220%22 font-size=%2220%22>🔑</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0D13;
+    --surface:#141924;
+    --surface-2:#1C2230;
+    --surface-3:#242B3B;
+    --border:#2A3344;
+    --border-soft:#1F2633;
+    --text:#E9ECF3;
+    --text-dim:#8B93A8;
+    --text-faint:#5B6477;
+    --gold:#E8B84B;
+    --gold-dim:#8A703A;
+    --teal:#3FBF9E;
+    --teal-dim:#255245;
+    --indigo:#6C8CF5;
+    --indigo-dim:#2E3A63;
+    --red:#E2594E;
+    --red-dim:#5C2B28;
+    --grey:#6C7A94;
+    --grey-dim:#323A49;
+    --radius-s:8px;
+    --radius-m:12px;
+    --radius-l:18px;
+    --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 24px rgba(0,0,0,0.35);
+    color-scheme: dark;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(900px 500px at 85% -10%, rgba(232,184,75,0.06), transparent 60%),
+      radial-gradient(700px 500px at 0% 0%, rgba(108,140,245,0.05), transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+  }
+  h1,h2,h3,.display{ font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em; }
+  .mono{ font-family:'JetBrains Mono', monospace; }
+  button{ font-family:inherit; }
+  ::selection{ background:rgba(232,184,75,0.25); }
+
+  /* ---------- Layout ---------- */
+  .app{ display:flex; min-height:100vh; }
+  .sidebar{
+    width:248px; flex-shrink:0; background:var(--surface);
+    border-right:1px solid var(--border-soft);
+    display:flex; flex-direction:column;
+    position:fixed; top:0; bottom:0; left:0; z-index:40;
+    transform:translateX(0); transition:transform .28s ease;
+  }
+  .sidebar.collapsed{ transform:translateX(-100%); }
+  .brand{ display:flex; align-items:center; gap:10px; padding:22px 20px 18px; border-bottom:1px solid var(--border-soft); }
+  .brand-mark{ width:34px;height:34px;border-radius:9px; background:linear-gradient(145deg, var(--gold), #B88A2E); display:flex;align-items:center;justify-content:center; font-size:16px; box-shadow:0 4px 14px rgba(232,184,75,0.25);}
+  .brand-text{ font-weight:700; font-size:14.5px; line-height:1.15; }
+  .brand-text span{ display:block; font-size:10.5px; color:var(--text-faint); font-weight:500; letter-spacing:.02em; }
+
+  .nav{ padding:14px 12px; display:flex; flex-direction:column; gap:2px; flex:1; }
+  .nav-item{
+    display:flex; align-items:center; gap:11px; padding:10px 12px; border-radius:var(--radius-s);
+    color:var(--text-dim); cursor:pointer; font-size:13.5px; font-weight:500; border:1px solid transparent;
+    transition:background .15s, color .15s;
+  }
+  .nav-item svg{ width:17px;height:17px; flex-shrink:0; opacity:.85; }
+  .nav-item:hover{ background:var(--surface-2); color:var(--text); }
+  .nav-item.active{ background:var(--surface-2); color:var(--gold); border-color:var(--border); }
+  .nav-item.active svg{ opacity:1; }
+  .nav-divider{ height:1px; background:var(--border-soft); margin:10px 4px; }
+
+  .conn-box{ margin:0 12px 12px; padding:11px 12px; border-radius:var(--radius-s); background:var(--surface-2); border:1px solid var(--border-soft); font-size:12px; }
+  .conn-row{ display:flex; align-items:center; gap:8px; color:var(--text-dim); }
+  .dot{ width:7px;height:7px;border-radius:50%; background:var(--red); flex-shrink:0; }
+  .dot.live{ background:var(--teal); box-shadow:0 0 0 3px rgba(63,191,158,0.18); }
+  .dot.pending{ background:var(--gold); animation:pulse 1.4s infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;} }
+
+  .admin-box{ margin:0 12px 16px; padding:11px 12px; border-radius:var(--radius-s); border:1px solid var(--border-soft); display:flex; align-items:center; gap:9px; }
+  .avatar{ width:28px;height:28px;border-radius:50%; background:var(--surface-3); display:flex;align-items:center;justify-content:center; font-size:12px; font-weight:700; color:var(--gold); flex-shrink:0; }
+  .admin-meta{ font-size:12px; line-height:1.3; overflow:hidden; }
+  .admin-meta .name{ color:var(--text); font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .admin-meta .role{ color:var(--text-faint); }
+
+  .main{ flex:1; margin-left:248px; min-width:0; transition:margin .28s ease; }
+  .main.full{ margin-left:0; }
+  .topbar{
+    position:sticky; top:0; z-index:30; display:flex; align-items:center; gap:14px;
+    padding:16px 28px; background:rgba(10,13,19,0.72); backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border-soft);
+  }
+  .burger{ width:36px;height:36px; border-radius:var(--radius-s); background:var(--surface); border:1px solid var(--border); color:var(--text-dim); cursor:pointer; display:flex;align-items:center;justify-content:center; flex-shrink:0; }
+  .burger:hover{ color:var(--text); }
+  .topbar h1{ font-size:16.5px; margin:0; font-weight:600; flex:1; }
+  .top-actions{ display:flex; gap:10px; }
+
+  .content{ padding:24px 28px 60px; max-width:1180px; }
+
+  /* ---------- Buttons ---------- */
+  .btn{ display:inline-flex; align-items:center; gap:7px; padding:9px 15px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:13px; font-weight:600; cursor:pointer; transition:transform .1s, border-color .15s, background .15s; white-space:nowrap; }
+  .btn:hover{ border-color:#3A4458; background:var(--surface-3); }
+  .btn:active{ transform:scale(0.97); }
+  .btn:disabled{ opacity:.45; cursor:not-allowed; }
+  .btn svg{ width:15px;height:15px; }
+  .btn-gold{ background:linear-gradient(165deg, var(--gold), #C99A36); border-color:#C99A36; color:#1A1304; font-weight:700; }
+  .btn-gold:hover{ filter:brightness(1.07); }
+  .btn-ghost{ background:transparent; border-color:var(--border-soft); color:var(--text-dim); }
+  .btn-danger{ background:rgba(226,89,78,0.12); border-color:rgba(226,89,78,0.35); color:#F3A49D; }
+  .btn-danger:hover{ background:rgba(226,89,78,0.2); }
+  .btn-sm{ padding:6px 10px; font-size:12px; border-radius:7px; }
+  .btn-icon{ padding:7px; }
+
+  /* ---------- Stat cards ---------- */
+  .stats-grid{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:26px; }
+  @media (max-width:980px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:520px){ .stats-grid{ grid-template-columns:1fr 1fr; } }
+  .stat-card{ background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-m); padding:17px 18px; box-shadow:var(--shadow-card); position:relative; overflow:hidden; }
+  .stat-card .bar{ position:absolute; left:0;top:0;bottom:0;width:3px; }
+  .stat-label{ font-size:11.5px; color:var(--text-faint); font-weight:600; margin-bottom:9px; }
+  .stat-value{ font-size:29px; font-weight:700; font-family:'Space Grotesk', sans-serif; line-height:1; }
+  .stat-sub{ font-size:11px; color:var(--text-faint); margin-top:6px; }
+
+  /* ---------- Panels ---------- */
+  .panel{ background:var(--surface); border:1px solid var(--border-soft); border-radius:var(--radius-l); margin-bottom:22px; box-shadow:var(--shadow-card); }
+  .panel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:19px 22px; border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
+  .panel-head h2{ font-size:15px; margin:0; font-weight:600; }
+  .panel-body{ padding:22px; }
+  .empty{ text-align:center; padding:38px 20px; color:var(--text-faint); font-size:13.5px; }
+  .empty svg{ width:34px;height:34px; margin-bottom:10px; opacity:.5; }
+
+  .gen-row{ display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+  .gen-note{ font-size:12.5px; color:var(--text-dim); }
+
+  /* search/filter bar */
+  .toolbar{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .search-box{ position:relative; flex:1; min-width:200px; }
+  .search-box input{ width:100%; padding:9px 12px 9px 34px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:13px; }
+  .search-box input:focus{ outline:none; border-color:var(--gold-dim); }
+  .search-box svg{ position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px;height:14px; color:var(--text-faint); }
+  select{ padding:9px 10px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--surface-2); color:var(--text); font-size:12.5px; }
+
+  /* key rows */
+  .key-row{ display:flex; align-items:center; gap:14px; padding:13px 0; border-bottom:1px solid var(--border-soft); flex-wrap:wrap; }
+  .key-row:last-child{ border-bottom:none; }
+  .key-main{ flex:1; min-width:220px; }
+  .key-code{ font-size:14px; font-weight:600; letter-spacing:.01em; }
+  .key-meta{ font-size:11.5px; color:var(--text-faint); margin-top:3px; }
+  .badge{ font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; letter-spacing:.02em; display:inline-flex; align-items:center; gap:5px; }
+  .badge::before{ content:''; width:6px;height:6px;border-radius:50%; }
+  .badge-UNUSED{ background:var(--teal-dim); color:#8EE4CA; } .badge-UNUSED::before{ background:var(--teal); }
+  .badge-GENERATED{ background:var(--gold-dim); color:#F3D48C; } .badge-GENERATED::before{ background:var(--gold); }
+  .badge-USED{ background:var(--indigo-dim); color:#B4C4FA; } .badge-USED::before{ background:var(--indigo); }
+  .badge-BLOCKED{ background:var(--red-dim); color:#F3A49D; } .badge-BLOCKED::before{ background:var(--red); }
+  .badge-DELETED{ background:var(--grey-dim); color:#AEB8CC; } .badge-DELETED::before{ background:var(--grey); }
+  .key-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+
+  /* toasts */
+  .toasts{ position:fixed; bottom:20px; right:20px; z-index:200; display:flex; flex-direction:column; gap:9px; max-width:320px; }
+  .toast{ background:var(--surface-3); border:1px solid var(--border); border-radius:var(--radius-s); padding:12px 14px; font-size:12.5px; display:flex; gap:9px; align-items:flex-start; box-shadow:0 10px 30px rgba(0,0,0,0.4); animation:toastIn .22s ease; }
+  @keyframes toastIn{ from{ opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;} }
+  .toast.success{ border-color:rgba(63,191,158,0.4); }
+  .toast.error{ border-color:rgba(226,89,78,0.45); }
+  .toast svg{ width:15px;height:15px; flex-shrink:0; margin-top:1px; }
+  .toast.success svg{ color:var(--teal); } .toast.error svg{ color:var(--red); }
+
+  /* modal */
+  .overlay{ position:fixed; inset:0; background:rgba(5,6,10,0.68); backdrop-filter:blur(3px); display:flex; align-items:center; justify-content:center; z-index:150; padding:20px; }
+  .modal{ background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-l); padding:24px; width:100%; max-width:420px; box-shadow:0 30px 70px rgba(0,0,0,0.5); animation:modalIn .18s ease; }
+  @keyframes modalIn{ from{opacity:0; transform:scale(.97) translateY(6px);} to{opacity:1; transform:none;} }
+  .modal h3{ margin:0 0 9px; font-size:16px; }
+  .modal p{ margin:0 0 18px; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
+  .modal .mono{ color:var(--text); background:var(--surface-3); padding:2px 7px; border-radius:5px; font-size:12.5px; }
+  .modal-actions{ display:flex; gap:10px; justify-content:flex-end; }
+
+  input[type=file]{ display:none; }
+  .drop{ border:1.5px dashed var(--border); border-radius:var(--radius-m); padding:30px 20px; text-align:center; cursor:pointer; color:var(--text-dim); font-size:13px; transition:border-color .15s, background .15s; }
+  .drop:hover{ border-color:var(--gold-dim); background:rgba(232,184,75,0.03); }
+  .drop svg{ width:26px;height:26px; margin-bottom:8px; opacity:.6; }
+
+  .report-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:16px; }
+  .report-item{ background:var(--surface-3); border-radius:var(--radius-s); padding:10px 12px; }
+  .report-item b{ display:block; font-size:18px; font-family:'Space Grotesk',sans-serif; }
+  .report-item span{ font-size:11px; color:var(--text-faint); }
+  progress{ width:100%; height:6px; border-radius:4px; overflow:hidden; border:none; margin-top:14px; }
+  progress::-webkit-progress-bar{ background:var(--surface-3); border-radius:4px; }
+  progress::-webkit-progress-value{ background:linear-gradient(90deg, var(--gold), var(--teal)); border-radius:4px; }
+
+  .cfg-form label{ display:block; font-size:12px; color:var(--text-dim); margin:12px 0 5px; }
+  .cfg-form input, .cfg-form textarea{ width:100%; padding:9px 11px; border-radius:var(--radius-s); border:1px solid var(--border); background:var(--surface-3); color:var(--text); font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .cfg-form textarea{ min-height:120px; resize:vertical; }
+  .hint{ font-size:11.5px; color:var(--text-faint); margin-top:4px; }
+
+  .overlay-hidden, [hidden]{ display:none !important; }
+
+  @media (max-width:860px){
+    .sidebar{ transform:translateX(-100%); }
+    .sidebar.open{ transform:translateX(0); box-shadow:20px 0 40px rgba(0,0,0,.4); }
+    .main{ margin-left:0; }
+    .content{ padding:18px 16px 50px; }
+    .topbar{ padding:14px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">🔑</div>
+      <div class="brand-text">PIKAZOO<span>KEY MANAGER</span></div>
+    </div>
+
+    <nav class="nav">
+      <div class="nav-item active" data-view="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-action="import">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+        Import TXT File
+      </div>
+      <div class="nav-item" data-action="firebase">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2l9 16H3z"/><path d="M12 9v5"/></svg>
+        Connect Firebase
+      </div>
+      <div class="nav-item" data-view="trash">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 13a1 1 0 001 1h6a1 1 0 001-1l1-13"/></svg>
+        Trash
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-item" data-action="logout">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        Logout
+      </div>
+    </nav>
+
+    <div class="conn-box">
+      <div class="conn-row"><span class="dot" id="connDot"></span><span id="connText">Firebase disconnected</span></div>
+    </div>
+    <div class="admin-box">
+      <div class="avatar" id="adminInitial">–</div>
+      <div class="admin-meta">
+        <div class="name" id="adminName">Not signed in</div>
+        <div class="role">Administrator</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main" id="main">
+    <div class="topbar">
+      <button class="burger" id="burgerBtn" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <h1 id="viewTitle">Dashboard</h1>
+      <div class="top-actions">
+        <button class="btn btn-ghost btn-sm" id="refreshBtn" title="Refresh">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4v6h6M20 20v-6h-6"/><path d="M5 15a8 8 0 0014 3M19 9A8 8 0 005 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD VIEW -->
+      <section id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="bar" style="background:var(--text-faint)"></div><div class="stat-label">TOTAL KEYS</div><div class="stat-value" id="statTotal">0</div><div class="stat-sub">incl. trash</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--teal)"></div><div class="stat-label">UNUSED KEYS</div><div class="stat-value" id="statUnused">0</div><div class="stat-sub">ready to generate</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--gold)"></div><div class="stat-label">GENERATED</div><div class="stat-value" id="statGenerated">0</div><div class="stat-sub">pending activation</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--indigo)"></div><div class="stat-label">USED KEYS</div><div class="stat-value" id="statUsed">0</div><div class="stat-sub">activated</div></div>
+          <div class="stat-card"><div class="bar" style="background:var(--red)"></div><div class="stat-label">BLOCKED KEYS</div><div class="stat-value" id="statBlocked">0</div><div class="stat-sub"><span id="statDeleted">0</span> deleted</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Generate Key</h2>
+            <span class="gen-note" id="genEligibleNote">— unused keys available</span>
+          </div>
+          <div class="panel-body gen-row">
+            <button class="btn btn-gold" id="generateBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.4 6.5L21 11l-6.6 2.5L12 20l-2.4-6.5L3 11l6.6-2.5z"/></svg>
+              GENERATE KEY
+            </button>
+            <span class="gen-note">Selects one existing imported <b>UNUSED</b> key and marks it <b>GENERATED</b>.</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Generated Keys History</h2>
+            <div class="toolbar" style="flex:0;">
+              <select id="historySort">
+                <option value="new">Newest first</option>
+                <option value="old">Oldest first</option>
+              </select>
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="toolbar" style="margin-bottom:14px;">
+              <div class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                <input type="text" id="searchInput" placeholder="Search by key, user UID or status…" />
+              </div>
+              <select id="filterStatus">
+                <option value="ALL">All statuses</option>
+                <option value="GENERATED">Generated</option>
+                <option value="USED">Used</option>
+                <option value="BLOCKED">Blocked</option>
+              </select>
+            </div>
+            <div id="historyList"></div>
+            <div class="empty" id="historyEmpty" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2l2.4 6.5L21 11l-6.6 2.5L12 20l-2.4-6.5L3 11l6.6-2.5z"/></svg>
+              <div>No generated keys yet. Import a TXT file, then click Generate Key.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TRASH VIEW -->
+      <section id="view-trash" hidden>
+        <div class="panel">
+          <div class="panel-head"><h2>Trash</h2><span class="gen-note" id="trashCount">0 deleted keys</span></div>
+          <div class="panel-body">
+            <div id="trashList"></div>
+            <div class="empty" id="trashEmpty" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2m-8 0l1 13a1 1 0 001 1h6a1 1 0 001-1l1-13"/></svg>
+              <div>Trash is empty.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</div>
+
+<!-- ================= IMPORT MODAL ================= -->
+<div class="overlay" id="importOverlay" hidden>
+  <div class="modal" style="max-width:480px;">
+    <h3>Import TXT File</h3>
+    <p>Only lines matching <span class="mono">PIKAZOO</span> + 7 alphanumeric characters (14 chars total) are imported. Headings and blank lines are ignored.</p>
+    <label class="drop" id="dropZone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3v12m0 0l-4-4m4 4l4-4"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/></svg>
+      <div>Click to choose a <span class="mono">.txt</span> file</div>
+      <input type="file" id="fileInput" accept=".txt" />
+    </label>
+    <progress id="importProgress" value="0" max="100" hidden></progress>
+    <div class="report-grid" id="importReport" hidden></div>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="btn btn-ghost" id="importClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FIREBASE CONFIG MODAL ================= -->
+<div class="overlay" id="fbOverlay" hidden>
+  <div class="modal" style="max-width:460px;">
+    <h3>Connect Firebase</h3>
+    <p>Paste your Firebase web app config. This stays in this browser tab only — it is not a secret, but never put Admin SDK / service-account keys here.</p>
+    <div class="cfg-form">
+      <label>Firebase config (JSON)</label>
+      <textarea id="fbConfigInput" placeholder='{"apiKey":"…","authDomain":"…","projectId":"…", …}'></textarea>
+      <div class="hint">Security rules and admin custom claims must be deployed separately — see the notes in the page source.</div>
+    </div>
+    <div class="modal-actions" style="margin-top:18px;">
+      <button class="btn btn-ghost" id="fbCancel">Cancel</button>
+      <button class="btn btn-gold" id="fbConnect">Connect</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= GENERIC CONFIRM MODAL ================= -->
+<div class="overlay" id="confirmOverlay" hidden>
+  <div class="modal">
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmBody">This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="confirmCancel">Cancel</button>
+      <button class="btn btn-danger" id="confirmOk">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script type="module">
+/* =========================================================================
+   PIKAZOO KEY MANAGER — single-file frontend
+   =========================================================================
+   FIREBASE / BACKEND NOTES (read before deploying):
+
+   This file is the complete admin frontend. It talks to Firebase
+   Authentication + Firestore directly from the client, which is normal for
+   a Firebase web app, PROVIDED your Firestore Security Rules enforce every
+   privileged check server-side. A client can always be modified by its
+   user, so this file alone is not sufficient security — it must be paired
+   with:
+
+     1. Firestore Security Rules that:
+          - only allow writes to `keys/{id}` from a signed-in UID present in
+            `adminUsers/{uid}` with role == "admin"
+          - never allow a non-admin to write `status`, `generatedAt`,
+            `blockedAt`, `deletedAt`, `permanentlyInvalidated`, etc.
+          - allow an authenticated end-user to create their OWN
+            `userSessions/{sessionId}` document and read their OWN key's
+            public status, nothing else.
+     2. A Cloud Function (callable or HTTPS) for:
+          - `activateKey(key)` — the only place a key transitions
+            GENERATED -> USED. Must run server-side so a user cannot set
+            status directly from the client.
+          - `generateKey()` — runs the UNUSED -> GENERATED transition
+            inside a Firestore transaction, so two admins clicking
+            "Generate Key" at once cannot select the same key. This file
+            also wraps the client-side call in `runTransaction` as a
+            second layer, but the authoritative guarantee must live in a
+            Function + security rules, since Firestore transactions alone
+            don't stop a malicious client from writing arbitrary fields.
+          - periodic / triggered `invalidateSession(keyId)` — called on
+            block / revoke / delete to flip `userSessions` docs to
+            invalidated.
+
+     Never put a Firebase Admin SDK key or service-account JSON in this
+     file or in any file served to a browser.
+
+   TXT KEY FORMAT (derived from the attached keys-for-telegram.txt, not
+   assumed): PIKAZOO + 7 alphanumeric characters = 14 characters total,
+   case-sensitive, casing preserved exactly. Example: PIKAZOO0NJ8uzG.
+   ========================================================================= */
+
+const KEY_REGEX = /^PIKAZOO[A-Za-z0-9]{7}$/;
+
+/* ---------------- Tiny toast / modal helpers ---------------- */
+const toastsEl = document.getElementById('toasts');
+function toast(msg, type='success'){
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `${type==='success'
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>'}<span>${msg}</span>`;
+  toastsEl.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),300); }, 3600);
+}
+function confirmDialog(title, body){
+  return new Promise(resolve=>{
+    const ov = document.getElementById('confirmOverlay');
+    document.getElementById('confirmTitle').textContent = title;
+    document.getElementById('confirmBody').innerHTML = body;
+    ov.hidden = false;
+    const ok = document.getElementById('confirmOk');
+    const cancel = document.getElementById('confirmCancel');
+    function cleanup(v){ ov.hidden = true; ok.onclick=null; cancel.onclick=null; resolve(v); }
+    ok.onclick = ()=>cleanup(true);
+    cancel.onclick = ()=>cleanup(false);
+  });
+}
+
+/* ---------------- Sidebar / nav ---------------- */
+const sidebar = document.getElementById('sidebar');
+const mainEl = document.getElementById('main');
+document.getElementById('burgerBtn').onclick = ()=>{
+  if (window.innerWidth <= 860) sidebar.classList.toggle('open');
+  else { sidebar.classList.toggle('collapsed'); mainEl.classList.toggle('full'); }
+};
+document.querySelectorAll('.nav-item[data-view]').forEach(item=>{
+  item.onclick = ()=>{
+    document.querySelectorAll('.nav-item[data-view]').forEach(n=>n.classList.remove('active'));
+    item.classList.add('active');
+    const view = item.dataset.view;
+    document.getElementById('view-dashboard').hidden = view!=='dashboard';
+    document.getElementById('view-trash').hidden = view!=='trash';
+    document.getElementById('viewTitle').textContent = view==='dashboard' ? 'Dashboard' : 'Trash';
+    if (window.innerWidth <= 860) sidebar.classList.remove('open');
+  };
+});
+document.querySelector('[data-action="import"]').onclick = ()=> document.getElementById('importOverlay').hidden = false;
+document.querySelector('[data-action="firebase"]').onclick = ()=> document.getElementById('fbOverlay').hidden = false;
+document.querySelector('[data-action="logout"]').onclick = async ()=>{
+  if (!auth) return toast('Not connected to Firebase.', 'error');
+  const ok = await confirmDialog('Log out?', 'You will need to sign in again to manage keys.');
+  if (ok) { await signOut(auth); toast('Signed out.'); }
+};
+document.getElementById('refreshBtn').onclick = ()=> renderAll();
+
+/* ---------------- Firebase (loaded lazily from CDN, only after Connect) ---------------- */
+let app=null, auth=null, db=null, unsubKeys=null;
+let keysCache = []; // [{id, ...data}]
+let isAdmin = false;
+
+const connDot = document.getElementById('connDot');
+const connText = document.getElementById('connText');
+function setConnState(state, label){
+  connDot.className = 'dot ' + (state==='live' ? 'live' : state==='pending' ? 'pending' : '');
+  connText.textContent = label;
+}
+
+document.getElementById('fbCancel').onclick = ()=> document.getElementById('fbOverlay').hidden = true;
+document.getElementById('fbConnect').onclick = async ()=>{
+  const raw = document.getElementById('fbConfigInput').value.trim();
+  let cfg;
+  try { cfg = JSON.parse(raw); }
+  catch(e){ return toast('Invalid JSON config.', 'error'); }
+  try {
+    setConnState('pending', 'Connecting…');
+    const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js');
+    const authMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js');
+    const fsMod = await import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js');
+    window.__fb = { ...authMod, ...fsMod };
+    app = initializeApp(cfg);
+    auth = authMod.getAuth(app);
+    db = fsMod.getFirestore(app);
+
+    authMod.onAuthStateChanged(auth, async (user)=>{
+      if (user){
+        document.getElementById('adminName').textContent = user.email || user.uid;
+        document.getElementById('adminInitial').textContent = (user.email||user.uid).slice(0,1).toUpperCase();
+        const snap = await fsMod.getDoc(fsMod.doc(db,'adminUsers',user.uid));
+        isAdmin = snap.exists() && snap.data().role === 'admin';
+        if (!isAdmin) toast('Signed in, but this account has no admin role in adminUsers/{uid}.', 'error');
+        attachKeysListener();
+      } else {
+        document.getElementById('adminName').textContent = 'Not signed in';
+        document.getElementById('adminInitial').textContent = '–';
+        isAdmin = false;
+      }
+    });
+
+    // Prompt a sign-in via redirectless email-link is out of scope here;
+    // expects the admin to already have an auth session or a sign-in UI
+    // wired to authMod.signInWithEmailAndPassword / provider of choice.
+    try {
+      await authMod.getRedirectResult(auth);
+    } catch(_e) {}
+
+    // Confirm a real connection with a lightweight Firestore read.
+    await fsMod.getDocs(fsMod.query(fsMod.collection(db,'keys'), fsMod.limit(1)));
+    setConnState('live', 'Firebase connected');
+    toast('Firebase connected.');
+    document.getElementById('fbOverlay').hidden = true;
+    attachKeysListener();
+  } catch(err){
+    console.error(err);
+    setConnState('off', 'Firebase disconnected');
+    toast('Could not connect: ' + (err.message||err), 'error');
+  }
+};
+// expose for the module-scope signOut call above
+let signOut = async (a)=>{ const m = window.__fb; if (m && m.signOut) await m.signOut(a); };
+
+function attachKeysListener(){
+  if (!db) return;
+  const m = window.__fb;
+  if (unsubKeys) unsubKeys();
+  unsubKeys = m.onSnapshot(m.collection(db,'keys'), (snap)=>{
+    keysCache = snap.docs.map(d=>({ id:d.id, ...d.data() }));
+    renderAll();
+  }, (err)=>{ console.error(err); toast('Realtime listener error: '+err.message, 'error'); });
+}
+
+/* ---------------- Rendering ---------------- */
+function fmtDate(ts){
+  if (!ts) return '—';
+  const d = ts.toDate ? ts.toDate() : new Date(ts);
+  return d.toLocaleDateString(undefined,{ day:'2-digit', month:'long', year:'numeric' }) + ' · ' +
+         d.toLocaleTimeString(undefined,{ hour:'2-digit', minute:'2-digit' });
+}
+
+function computeStats(){
+  const live = keysCache.filter(k=>k.status!=='DELETED');
+  return {
+    total: keysCache.length,
+    unused: keysCache.filter(k=>k.status==='UNUSED').length,
+    generated: keysCache.filter(k=>k.status==='GENERATED').length,
+    used: keysCache.filter(k=>k.status==='USED').length,
+    blocked: keysCache.filter(k=>k.status==='BLOCKED').length,
+    deleted: keysCache.filter(k=>k.status==='DELETED').length,
+  };
+}
+
+function renderAll(){
+  const s = computeStats();
+  statTotal.textContent = s.total;
+  statUnused.textContent = s.unused;
+  statGenerated.textContent = s.generated;
+  statUsed.textContent = s.used;
+  statBlocked.textContent = s.blocked;
+  statDeleted.textContent = s.deleted;
+  genEligibleNote.textContent = s.unused + ' unused key' + (s.unused===1?'':'s') + ' available';
+  renderHistory();
+  renderTrash();
+}
+
+function matchesFilters(k){
+  const q = searchInput.value.trim().toLowerCase();
+  const f = filterStatus.value;
+  if (f !== 'ALL' && k.status !== f) return false;
+  if (!q) return true;
+  return (k.key||'').toLowerCase().includes(q) ||
+         (k.userUid||'').toLowerCase().includes(q) ||
+         (k.status||'').toLowerCase().includes(q);
+}
+
+function renderHistory(){
+  const generated = keysCache.filter(k => ['GENERATED','USED','BLOCKED'].includes(k.status) && k.generatedAt).filter(matchesFilters);
+  const sort = historySort.value;
+  generated.sort((a,b)=>{
+    const ta = a.generatedAt?.toMillis ? a.generatedAt.toMillis() : 0;
+    const tb = b.generatedAt?.toMillis ? b.generatedAt.toMillis() : 0;
+    return sort==='new' ? tb-ta : ta-tb;
+  });
+  historyList.innerHTML = '';
+  historyEmpty.hidden = generated.length>0;
+  generated.forEach(k=>{
+    const row = document.createElement('div');
+    row.className = 'key-row';
+    row.innerHTML = `
+      <div class="key-main">
+        <div class="key-code mono">${escapeHtml(k.key)}</div>
+        <div class="key-meta">Generated ${fmtDate(k.generatedAt)}${k.userUid ? ' · user '+escapeHtml(k.userUid.slice(0,10))+'…' : ''}</div>
+      </div>
+      <span class="badge badge-${k.status}">${k.status}</span>
+      <div class="key-actions">
+        <button class="btn btn-sm btn-ghost act-copy" data-id="${k.id}">COPY</button>
+        <button class="btn btn-sm btn-danger act-block" data-id="${k.id}" ${k.status==='BLOCKED'?'disabled':''}>BLOCK</button>
+        <button class="btn btn-sm btn-ghost act-revoke" data-id="${k.id}">REVOKE</button>
+        <button class="btn btn-sm btn-danger act-delete" data-id="${k.id}">DELETE</button>
+      </div>`;
+    historyList.appendChild(row);
+  });
+  wireRowActions();
+}
+
+function renderTrash(){
+  const deleted = keysCache.filter(k=>k.status==='DELETED');
+  trashCount.textContent = deleted.length + ' deleted key' + (deleted.length===1?'':'s');
+  trashList.innerHTML = '';
+  trashEmpty.hidden = deleted.length>0;
+  deleted.forEach(k=>{
+    const row = document.createElement('div');
+    row.className = 'key-row';
+    row.innerHTML = `
+      <div class="key-main">
+        <div class="key-code mono">${escapeHtml(k.key)}</div>
+        <div class="key-meta">Generated ${fmtDate(k.generatedAt)} · Deleted ${fmtDate(k.deletedAt)} · was ${escapeHtml(k.previousStatus||'—')}</div>
+      </div>
+      <span class="badge badge-DELETED">DELETED</span>
+      <div class="key-actions">
+        <button class="btn btn-sm btn-ghost act-restore" data-id="${k.id}">RESTORE VISIBILITY</button>
+        <button class="btn btn-sm btn-danger act-purge" data-id="${k.id}">PERMANENT DELETE</button>
+      </div>`;
+    trashList.appendChild(row);
+  });
+  wireRowActions();
+}
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+searchInput?.addEventListener('input', renderHistory);
+filterStatus?.addEventListener('change', renderHistory);
+historySort?.addEventListener('change', renderHistory);
+
+/* ---------------- Key actions (all require db+isAdmin; see security notes) ---------------- */
+function wireRowActions(){
+  document.querySelectorAll('.act-copy').forEach(b=> b.onclick = ()=>copyKey(b.dataset.id, b));
+  document.querySelectorAll('.act-block').forEach(b=> b.onclick = ()=>blockKey(b.dataset.id));
+  document.querySelectorAll('.act-revoke').forEach(b=> b.onclick = ()=>revokeKey(b.dataset.id));
+  document.querySelectorAll('.act-delete').forEach(b=> b.onclick = ()=>deleteKey(b.dataset.id));
+  document.querySelectorAll('.act-restore').forEach(b=> b.onclick = ()=>restoreVisibility(b.dataset.id));
+  document.querySelectorAll('.act-purge').forEach(b=> b.onclick = ()=>purgeKey(b.dataset.id));
+}
+
+function requireAdminReady(){
+  if (!db) { toast('Connect Firebase first.', 'error'); return false; }
+  if (!isAdmin) { toast('This account is not an admin (adminUsers/{uid}.role must be "admin").', 'error'); return false; }
+  return true;
+}
+
+async function copyKey(id, btn){
+  const k = keysCache.find(x=>x.id===id); if (!k) return;
+  try {
+    await navigator.clipboard.writeText(k.key);
+    const old = btn.textContent; btn.textContent = 'COPIED';
+    setTimeout(()=> btn.textContent = old, 1400);
+    toast('Key copied to clipboard.');
+  } catch(e){ toast('Clipboard permission denied.', 'error'); }
+}
+
+async function blockKey(id){
+  if (!requireAdminReady()) return;
+  const k = keysCache.find(x=>x.id===id); if (!k) return;
+  const ok = await confirmDialog('Block this key?', `<span class="mono">${escapeHtml(k.key)}</span> will be blocked immediately and any active session invalidated.`);
+  if (!ok) return;
+  const m = window.__fb;
+  await m.runTransaction(db, async (tx)=>{
+    const ref = m.doc(db,'keys',id);
+    tx.update(ref, { status:'BLOCKED', blockedAt: m.serverTimestamp(), blockedBy: auth.currentUser.uid, updatedAt: m.serverTimestamp() });
+    tx.set(m.doc(m.collection(db,'keyAuditLogs')), { keyId:id, action:'BLOCK', previousStatus:k.status, newStatus:'BLOCKED', adminUid:auth.currentUser.uid, timestamp:m.serverTimestamp() });
+    if (k.sessionId) tx.update(m.doc(db,'userSessions',k.sessionId), { status:'INVALIDATED', invalidatedAt:m.serverTimestamp() });
+  });
+  toast('Key blocked.');
+}
+
+async function revokeKey(id){
+  if (!requireAdminReady()) return;
+  const k = keysCache.find(x=>x.id===id); if (!k) return;
+  const ok = await confirmDialog('Revoke activation?', `<span class="mono">${escapeHtml(k.key)}</span> will return to <b>UNUSED</b> and become available for generation again.`);
+  if (!ok) return;
+  const m = window.__fb;
+  await m.runTransaction(db, async (tx)=>{
+    const ref = m.doc(db,'keys',id);
+    tx.update(ref, { status:'UNUSED', revokedAt:m.serverTimestamp(), userUid:null, sessionId:null, activatedAt:null, updatedAt:m.serverTimestamp() });
+    tx.set(m.doc(m.collection(db,'keyAuditLogs')), { keyId:id, action:'REVOKE', previousStatus:k.status, newStatus:'UNUSED', adminUid:auth.currentUser.uid, timestamp:m.serverTimestamp() });
+    if (k.sessionId) tx.update(m.doc(db,'userSessions',k.sessionId), { status:'INVALIDATED', invalidatedAt:m.serverTimestamp() });
+  });
+  toast('Key revoked.');
+}
+
+async function deleteKey(id){
+  if (!requireAdminReady()) return;
+  const k = keysCache.find(x=>x.id===id); if (!k) return;
+  const ok = await confirmDialog('Are you sure you want to move this key to Trash?', `<span class="mono">${escapeHtml(k.key)}</span>`);
+  if (!ok) return;
+  const m = window.__fb;
+  await m.runTransaction(db, async (tx)=>{
+    const ref = m.doc(db,'keys',id);
+    tx.update(ref, { status:'DELETED', previousStatus:k.status, permanentlyInvalidated:true, deletedAt:m.serverTimestamp(), deletedBy:auth.currentUser.uid, updatedAt:m.serverTimestamp() });
+    tx.set(m.doc(m.collection(db,'keyAuditLogs')), { keyId:id, action:'DELETE', previousStatus:k.status, newStatus:'DELETED', adminUid:auth.currentUser.uid, timestamp:m.serverTimestamp() });
+    if (k.sessionId) tx.update(m.doc(db,'userSessions',k.sessionId), { status:'INVALIDATED', invalidatedAt:m.serverTimestamp() });
+  });
+  toast('Key moved to Trash.');
+}
+
+async function restoreVisibility(id){
+  if (!requireAdminReady()) return;
+  const m = window.__fb;
+  await m.updateDoc(m.doc(db,'keys',id), { trashVisibilityRestored:true, updatedAt:m.serverTimestamp() });
+  toast('Visibility restored. Key remains permanently invalidated.');
+}
+
+async function purgeKey(id){
+  if (!requireAdminReady()) return;
+  const k = keysCache.find(x=>x.id===id); if (!k) return;
+  const ok = await confirmDialog('Are you absolutely sure?', 'This key will be permanently removed from Firebase and cannot be recovered.');
+  if (!ok) return;
+  const m = window.__fb;
+  await m.deleteDoc(m.doc(db,'keys',id));
+  await m.addDoc(m.collection(db,'keyAuditLogs'), { keyId:id, action:'PERMANENT_DELETE', previousStatus:k.status, newStatus:null, adminUid:auth.currentUser.uid, timestamp:m.serverTimestamp() });
+  toast('Key permanently deleted.');
+}
+
+/* ---------------- Generate Key (transaction: pick one UNUSED key) ---------------- */
+document.getElementById('generateBtn').onclick = async ()=>{
+  if (!requireAdminReady()) return;
+  const m = window.__fb;
+  try {
+    await m.runTransaction(db, async (tx)=>{
+      const q = m.query(m.collection(db,'keys'), m.where('status','==','UNUSED'), m.limit(1));
+      const snap = await m.getDocs(q); // Note: a Cloud Function should re-check this inside the
+                                        // same trusted transaction server-side for full concurrency safety.
+      if (snap.empty) throw new Error('NO_UNUSED');
+      const d = snap.docs[0];
+      const ref = m.doc(db,'keys',d.id);
+      const fresh = await tx.get(ref);
+      if (fresh.data().status !== 'UNUSED') throw new Error('RACE');
+      tx.update(ref, { status:'GENERATED', generatedAt:m.serverTimestamp(), generatedBy:auth.currentUser.uid, updatedAt:m.serverTimestamp() });
+      tx.set(m.doc(m.collection(db,'keyAuditLogs')), { keyId:d.id, action:'GENERATE', previousStatus:'UNUSED', newStatus:'GENERATED', adminUid:auth.currentUser.uid, timestamp:m.serverTimestamp() });
+    });
+    toast('Key generated.');
+  } catch(e){
+    if (e.message==='NO_UNUSED') toast('No Unused Keys Available', 'error');
+    else if (e.message==='RACE') toast('Another admin just generated that key — try again.', 'error');
+    else toast('Generate failed: '+e.message, 'error');
+  }
+};
+
+/* ---------------- TXT Import ---------------- */
+const importOverlay = document.getElementById('importOverlay');
+document.getElementById('importClose').onclick = ()=>{
+  importOverlay.hidden = true;
+  importReport.hidden = true; importProgress.hidden = true; importReport.innerHTML='';
+  fileInput.value = '';
+};
+fileInput.addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!db){ toast('Connect Firebase first.', 'error'); return; }
+  if (!isAdmin){ toast('Admin role required to import.', 'error'); return; }
+  const text = await file.text();
+  const lines = text.split(/\r?\n/);
+  let valid=[], invalidCount=0, seenInFile=new Set(), dupInFile=0;
+  for (const line of lines){
+    const t = line.trim();
+    if (!t) continue; // blank line
+    if (/^member keys/i.test(t)) continue; // heading
+    if (!KEY_REGEX.test(t)) { invalidCount++; continue; }
+    if (seenInFile.has(t)) { dupInFile++; continue; }
+    seenInFile.add(t);
+    valid.push(t);
+  }
+  importProgress.hidden = false; importProgress.value = 5;
+
+  // check existing in Firebase (dedupe by deterministic doc id = the key itself)
+  const m = window.__fb;
+  let dupInDb=0, imported=0, failed=0;
+  for (let i=0;i<valid.length;i++){
+    const key = valid[i];
+    importProgress.value = Math.round(((i+1)/Math.max(valid.length,1))*95)+5;
+    try {
+      const ref = m.doc(db,'keys',key); // deterministic ID == key string, prevents duplicate records
+      const existing = await m.getDoc(ref);
+      if (existing.exists()) { dupInDb++; continue; }
+      await m.setDoc(ref, {
+        key, status:'UNUSED', createdAt:m.serverTimestamp(), updatedAt:m.serverTimestamp(),
+        permanentlyInvalidated:false
+      });
+      imported++;
+    } catch(err){ failed++; }
+  }
+  importProgress.value = 100;
+  importReport.hidden = false;
+  importReport.innerHTML = `
+    <div class="report-item"><b>${lines.length}</b><span>Total lines</span></div>
+    <div class="report-item"><b>${valid.length}</b><span>Valid keys</span></div>
+    <div class="report-item"><b>${imported}</b><span>Imported</span></div>
+    <div class="report-item"><b>${dupInFile+dupInDb}</b><span>Duplicates</span></div>
+    <div class="report-item"><b>${invalidCount}</b><span>Invalid lines</span></div>
+    <div class="report-item"><b>${failed}</b><span>Failed uploads</span></div>`;
+  toast(`Import complete: ${imported} new key(s) added.`);
+});
+
+/* ---------------- init ---------------- */
+renderAll();
+</script>
+</body>
+</html>
