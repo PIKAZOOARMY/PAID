@@ -2387,7 +2387,7 @@
       <section id="screen-signin" class="screen screen-signin" aria-label="Sign in">
         <div class="signin-amber-top">
           <div class="signin-video-wrap" aria-hidden="true">
-            <video id="signin-video" class="signin-video" muted loop playsinline preload="auto" disablepictureinpicture></video>
+            <video id="signin-video" class="signin-video" loop playsinline preload="auto" disablepictureinpicture></video>
           </div>
           <button id="signin-sound" class="signin-sound" type="button"></button>
           <div>
@@ -7202,7 +7202,15 @@
     if (state !== 2) return;
     if (scr.classList.contains('is-active') && !document.hidden) {
       var p = v.play();
-      if (p && p.catch) p.catch(function () {});
+      if (p && p.catch) p.catch(function () {
+        if (!v.muted) {
+          v.muted = true;
+          autoMuted = true;
+          paint();
+          var p2 = v.play();
+          if (p2 && p2.catch) p2.catch(function () {});
+        }
+      });
     } else {
       v.pause();
     }
@@ -7251,7 +7259,7 @@
     }
   });
 
-  v.muted = true;
+  v.muted = false;
   function paint() {
     btn.innerHTML = v.muted ? ICON_OFF : ICON_ON;
     btn.setAttribute('aria-label', v.muted ? 'Sound on karo' : 'Sound band karo');
@@ -7259,6 +7267,7 @@
   btn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
+    autoMuted = false;
     v.muted = !v.muted;
     if (!v.muted) {
       v.volume = 1;
@@ -7268,6 +7277,16 @@
     paint();
   });
   paint();
+
+  var autoMuted = false;
+  scr.addEventListener('pointerdown', function (e) {
+    if (!autoMuted || btn.contains(e.target)) return;
+    autoMuted = false;
+    v.muted = false;
+    paint();
+    var p3 = v.play();
+    if (p3 && p3.catch) p3.catch(function () {});
+  });
 
   var saved = null;
   try { saved = window.localStorage.getItem('pikazoo_premium_user_v1'); } catch (e) {}
