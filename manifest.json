@@ -1,0 +1,41 @@
+{
+  "name": "Pikazoo Premium",
+  "short_name": "Pikazoo",
+  "description": "Pikazoo Premium Store",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F7F7F9",
+  "theme_color": "#FEB80D",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Login",
+      "short_name": "Login",
+      "description": "Open Sign In Screen",
+      "url": "./?action=login",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Clear App Cache",
+      "short_name": "Clear Cache",
+      "description": "Clear cached images & app files",
+      "url": "./?action=clear-cache",
+      "icons": [{ "src": "./icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}

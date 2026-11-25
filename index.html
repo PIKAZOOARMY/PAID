@@ -6,6 +6,8 @@
   <meta name="theme-color" content="#FEB80D" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <title>Pikazoo Premium</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -2222,6 +2224,181 @@
       .grid { grid-template-columns: 1fr; gap: 15px; }
     }
 
+    /* LIGHT RED KICKED-OUT BOX */
+    .kicked-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 20px;
+      background: #FFE5E7;
+      border: 1.5px solid #FF9EA6;
+      color: #7A121C;
+      box-shadow: 0 8px 20px rgba(180, 20, 36, 0.12);
+    }
+    .kicked-box[hidden] { display: none; }
+    .kicked-title {
+      margin: 0 0 4px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #991B1B;
+    }
+    .kicked-desc {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 1.42;
+      color: #7F1D1D;
+    }
+    .kicked-key-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px 8px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid #FECACA;
+    }
+    .kicked-key-val {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      font-weight: 800;
+      color: #111827;
+      letter-spacing: 0.04em;
+      word-break: break-all;
+    }
+    .kicked-copy-btn {
+      flex: none;
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: #0B0B0D;
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .kicked-copy-btn:active { transform: scale(0.94); }
+
+    /* iOS TOP NOTIFICATION BANNER (PWA INSTALL & FORCE UPDATE) */
+    .pwa-notif {
+      position: absolute;
+      top: calc(var(--safe-top) + 12px);
+      left: 12px;
+      right: 12px;
+      z-index: 400;
+      padding: 14px 16px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(11, 11, 13, 0.08);
+      box-shadow: 0 18px 42px rgba(11, 11, 13, 0.22);
+      color: #0B0B0D;
+      transform: translate3d(0, -140%, 0) scale(0.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.52s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease;
+      touch-action: pan-x;
+      will-change: transform, opacity;
+    }
+    .pwa-notif.is-visible {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .pwa-notif-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pwa-notif-icon {
+      flex: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #FEB80D, #FF8A00);
+      display: grid;
+      place-items: center;
+      color: #0B0B0D;
+      box-shadow: 0 6px 14px rgba(254, 184, 13, 0.35);
+    }
+    .pwa-notif-icon.is-done {
+      background: linear-gradient(135deg, #22C55E, #16A34A);
+      color: #FFFFFF;
+    }
+    .pwa-notif-copy {
+      flex: 1;
+      min-width: 0;
+    }
+    .pwa-notif-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .pwa-notif-head strong {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: #0B0B0D;
+    }
+    .pwa-notif-right {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #5C5C66;
+      font-variant-numeric: tabular-nums;
+    }
+    .pwa-notif-copy p {
+      margin: 2px 0 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #5C5C66;
+      line-height: 1.35;
+    }
+    .pwa-notif-bar-wrap {
+      margin-top: 10px;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(11, 11, 13, 0.1);
+      overflow: hidden;
+    }
+    .pwa-notif-bar {
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #FEB80D, #FB923C);
+      transform-origin: left center;
+    }
+    .pwa-notif-bar.is-done {
+      background: #22C55E;
+    }
+    .pwa-notif-actions {
+      margin-top: 10px;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .pwa-notif-actions[hidden] { display: none; }
+    .pwa-install-btn {
+      width: 100%;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: #0B0B0D;
+      color: #FFFFFF;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .pwa-install-btn:active { transform: scale(0.97); }
+    .pwa-tick-anim {
+      stroke-dasharray: 28;
+      stroke-dashoffset: 28;
+      animation: pwaTickDraw 0.45s ease forwards;
+    }
+    @keyframes pwaTickDraw {
+      to { stroke-dashoffset: 0; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
@@ -2235,9 +2412,29 @@
   <div class="app-viewport">
     <main class="phone-stage" aria-live="polite">
 
-      <!-- Opening / Closing Amber Curtain -->
-      <div id="curtain" class="curtain" aria-hidden="true">
+      <!-- Opening / Closing Amber Curtain (Hidden on startup so Welcome shows directly) -->
+      <div id="curtain" class="curtain is-wiped-up" aria-hidden="true">
         <span class="curtain-mark">Pikazoo Premium</span>
+      </div>
+
+      <!-- iOS-style PWA Install / Update Top Notification -->
+      <div id="pwaNotif" class="pwa-notif" role="status" aria-live="polite" aria-hidden="true">
+        <div class="pwa-notif-top">
+          <div class="pwa-notif-icon" id="pwaNotifIcon"></div>
+          <div class="pwa-notif-copy">
+            <div class="pwa-notif-head">
+              <strong id="pwaNotifTitle">Install Pikazoo Premium</strong>
+              <span id="pwaNotifRight" class="pwa-notif-right">9s</span>
+            </div>
+            <p id="pwaNotifSub">Install app for full screen experience</p>
+          </div>
+        </div>
+        <div id="pwaNotifBarWrap" class="pwa-notif-bar-wrap">
+          <div id="pwaNotifBar" class="pwa-notif-bar"></div>
+        </div>
+        <div id="pwaNotifActions" class="pwa-notif-actions">
+          <button id="pwaInstallBtn" class="pwa-install-btn" type="button">Install</button>
+        </div>
       </div>
 
       <!-- Terms & Conditions bottom sheet -->
@@ -2358,6 +2555,15 @@
                   <circle cx="57" cy="40" r="3.6" stroke="#0B0B0D" stroke-width="1.9"/>
                   <path d="M21 66H77" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round"/>
                 </svg>
+              </div>
+            </div>
+
+            <div id="kickedBox" class="kicked-box" role="alert" hidden>
+              <p class="kicked-title">Logged Out</p>
+              <p class="kicked-desc">You are logged out because you logged in on another Browser/Phone.<br>You can login again by using your key:</p>
+              <div class="kicked-key-row">
+                <span id="kickedKeyVal" class="kicked-key-val"></span>
+                <button id="kickedCopyBtn" class="kicked-copy-btn" type="button">Copy</button>
               </div>
             </div>
 
@@ -2774,10 +2980,48 @@
 
       const HOME_URL = '';
       const STORAGE_KEY = 'pikazoo_premium_user_v1';
+      const LAST_KEY_STORAGE = 'pikazoo_last_key_v1';
       const PREFIX = 'PIKAZOO';
       const SUFFIX_LEN = 7;
       const OWNER_EMAIL = 'itsmesaudi.me@gmail.com';
       const WA_URL = 'https://wa.me/923041891897?text=' + encodeURIComponent('Share The Secret Key For PIKAZOO PREMIUM 4.7');
+
+      const kickedBox = document.getElementById('kickedBox');
+      const kickedKeyVal = document.getElementById('kickedKeyVal');
+      const kickedCopyBtn = document.getElementById('kickedCopyBtn');
+
+      function saveLastKeyCache(k) {
+        try { if (k) window.localStorage.setItem(LAST_KEY_STORAGE, k); } catch (err) {}
+      }
+      function readLastKeyCache() {
+        try { return (window.localStorage.getItem(LAST_KEY_STORAGE) || '').trim(); } catch (err) { return ''; }
+      }
+      function clearLastKeyCache() {
+        try { window.localStorage.removeItem(LAST_KEY_STORAGE); } catch (err) {}
+      }
+      function showKickedBox(keyStr) {
+        if (!kickedBox || !kickedKeyVal) return;
+        const k = keyStr || readLastKeyCache();
+        if (!k) { kickedBox.hidden = true; return; }
+        kickedKeyVal.textContent = k;
+        kickedBox.hidden = false;
+      }
+      function hideKickedBox() {
+        if (kickedBox) kickedBox.hidden = true;
+      }
+      if (kickedCopyBtn) {
+        kickedCopyBtn.addEventListener('click', () => {
+          const k = kickedKeyVal ? kickedKeyVal.textContent.trim() : '';
+          if (!k) return;
+          const onCopied = () => {
+            kickedCopyBtn.textContent = 'Copied!';
+            setTimeout(() => { kickedCopyBtn.textContent = 'Copy'; }, 1600);
+          };
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(k).then(onCopied).catch(() => {});
+          }
+        });
+      }
 
       const firebaseConfig = {
         apiKey: "AIzaSyDBhZLDSHKQ6c9brnCpPzta3_2ZTcDv1uo",
@@ -3583,23 +3827,30 @@
         }
       }
 
-      async function performAutoLogout(toastMsg) {
+      async function performAutoLogout(toastMsg, kickedByOther, kickedKey) {
         if (isHandlingLogout) return;
         isHandlingLogout = true;
         try {
           unsubscribeAllListeners();
           currentMemberKeyId = null;
           clearSavedUser();
+          if (!kickedByOther) {
+            clearLastKeyCache();
+            hideKickedBox();
+          }
           document.body.classList.add('guest-mode');
           delete document.body.dataset.role;
           if (roleBadge) roleBadge.hidden = true;
           window.dispatchEvent(new Event('pikazoo-user-ready'));
           try { await signOut(auth); } catch (err) {}
           resetSigninForm();
+          if (kickedByOther) {
+            showKickedBox(kickedKey);
+          }
           startStoreFeed('guest');
-          if (!screenHome.classList.contains('is-active')) {
-            showScreenImmediate(screenHome);
-            animateScreenContent(screenHome);
+          if (!screenSignin.classList.contains('is-active')) {
+            showScreenImmediate(screenSignin);
+            animateScreenContent(screenSignin);
           }
           window.dispatchEvent(new CustomEvent('pikazoo-force-guest', {
             detail: { message: toastMsg || 'Aap ki key revoke, block ya delete ho gayi hai' }
@@ -3620,29 +3871,36 @@
         unsubKeyWatch = trackUnsub(onSnapshot(keyRef, (snap) => {
           if (!currentMemberKeyId || isHandlingLogout) return;
           if (!snap.exists()) {
-            performAutoLogout('Key invalid ya delete ho gayi hai');
+            performAutoLogout('Key invalid ya delete ho gayi hai', false);
             return;
           }
           const data = snap.data();
-          if (data.status !== 'USED' || data.userUid !== uid) {
-            performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai');
+          if (data.status === 'USED' && data.userUid !== uid) {
+            performAutoLogout('Logged out: Another browser/phone signed in', true, keyId);
+            return;
+          }
+          if (data.status !== 'USED') {
+            performAutoLogout('Aap ki key block, revoke ya delete ho gayi hai', false);
           }
         }, () => {
           if (!currentMemberKeyId || isHandlingLogout) return;
-          performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai');
+          performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai', false);
         }));
       }
 
       async function verifyMemberSession(keyId, uid) {
         try {
           const keySnap = await getDoc(doc(db, 'keys', keyId));
-          if (!keySnap.exists()) return { ok: false };
+          if (!keySnap.exists()) return { ok: false, kicked: false };
           const keyData = keySnap.data();
-          if (keyData.status !== 'USED' || keyData.userUid !== uid) {
-            return { ok: false };
+          if (keyData.status === 'USED' && keyData.userUid !== uid) {
+            return { ok: false, kicked: true, keyId: keyId };
+          }
+          if (keyData.status !== 'USED' || keyData.permanentlyInvalidated) {
+            return { ok: false, kicked: false };
           }
           const saved = readSavedUser();
-          const memberName = (saved && saved.name) || keyData.userName || 'Member';
+          const memberName = keyData.userName || (saved && saved.name) || 'Member';
           const memRef = doc(db, 'members', uid);
           const memSnap = await getDoc(memRef);
           if (!memSnap.exists()) {
@@ -3654,7 +3912,7 @@
           }
           return { ok: true, name: String(memberName) };
         } catch (err) {
-          return { ok: false };
+          return { ok: false, kicked: false };
         }
       }
 
@@ -3799,19 +4057,69 @@
         welcomeBtnIcon.classList.remove('arrow-nudge');
         welcomeBtnIcon.innerHTML = getSpinnerSvg('#0B0B0D');
 
-        await delay(prefersReducedMotion ? 20 : 240);
+        try {
+          const user = auth.currentUser;
+          const saved = readSavedUser();
 
-        document.body.classList.add('guest-mode');
-        delete document.body.dataset.role;
-        if (roleBadge) roleBadge.hidden = true;
-        startStoreFeed('guest');
-        slideTransition(screenWelcome, screenHome, 'left');
+          // 1. Owner verification
+          if (user && !user.isAnonymous && user.email === OWNER_EMAIL) {
+            const ownerPayload = {
+              name: (saved && saved.role === 'owner' && saved.name) ? saved.name : 'Owner',
+              role: 'owner'
+            };
+            saveUser(ownerPayload);
+            populateHome(ownerPayload);
+            startStoreFeed('owner');
+            slideTransition(screenWelcome, screenHome, 'left');
+            return;
+          }
 
-        await delay(prefersReducedMotion ? 20 : 450);
-        welcomeBtnIcon.innerHTML = ARROW_BLACK_SVG;
-        welcomeBtnIcon.classList.add('arrow-nudge');
-        btnToSignin.disabled = false;
-        isNavigating = false;
+          // 2. Cached Member verification against Firebase
+          const savedKeyId = saved && (saved.keyId || saved.pass);
+          if (saved && saved.role === 'member' && savedKeyId) {
+            if (user && user.isAnonymous) {
+              const check = await verifyMemberSession(savedKeyId, user.uid);
+              if (check.ok) {
+                const memberPayload = { name: check.name, role: 'member', keyId: savedKeyId };
+                saveUser(memberPayload);
+                saveLastKeyCache(savedKeyId);
+                populateHome(memberPayload);
+                startMemberKeyWatcher(savedKeyId, user.uid);
+                startStoreFeed('member');
+                slideTransition(screenWelcome, screenHome, 'left');
+                return;
+              }
+              if (check.kicked) {
+                clearSavedUser();
+                try { await signOut(auth); } catch (e) {}
+                showKickedBox(savedKeyId);
+                slideTransition(screenWelcome, screenSignin, 'left');
+                return;
+              }
+            }
+            // Key blocked/revoked/deleted or auth expired -> go to Login Page
+            clearSavedUser();
+            clearLastKeyCache();
+            hideKickedBox();
+            try { await signOut(auth); } catch (e) {}
+            slideTransition(screenWelcome, screenSignin, 'left');
+            window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'Key verify nahi hui, login karein' } }));
+            return;
+          }
+
+          // 3. Fresh Guest Account -> Store Guest Mode
+          document.body.classList.add('guest-mode');
+          delete document.body.dataset.role;
+          if (roleBadge) roleBadge.hidden = true;
+          startStoreFeed('guest');
+          slideTransition(screenWelcome, screenHome, 'left');
+        } finally {
+          await delay(prefersReducedMotion ? 20 : 400);
+          welcomeBtnIcon.innerHTML = ARROW_BLACK_SVG;
+          welcomeBtnIcon.classList.add('arrow-nudge');
+          btnToSignin.disabled = false;
+          isNavigating = false;
+        }
       });
 
       const NAME_RE = /^[A-Za-z]{3,14}$/;
@@ -3831,6 +4139,29 @@
         return v.slice(0, SUFFIX_LEN);
       }
 
+      let lastLookedUpKey = '';
+      async function autoFillNameFromKey() {
+        const raw = inputPass.value;
+        if (!raw || raw.charAt(0) === '@') return;
+        const fullKey = fullPass();
+        if (!/^PIKAZOO[a-zA-Z0-9]{7}$/.test(fullKey)) return;
+        if (lastLookedUpKey === fullKey) return;
+        lastLookedUpKey = fullKey;
+        try {
+          if (!auth.currentUser) {
+            await signInAnonymously(auth);
+          }
+          const snap = await getDoc(doc(db, 'keys', fullKey));
+          if (snap.exists()) {
+            const d = snap.data();
+            if (d.status === 'USED' && d.userName && !d.permanentlyInvalidated) {
+              inputName.value = d.userName;
+              setFieldError(errorName, wrapName, '');
+            }
+          }
+        } catch (err) {}
+      }
+
       inputPass.addEventListener('paste', (e) => {
         const txt = (e.clipboardData || window.clipboardData).getData('text') || '';
         if (!txt.trim()) return;
@@ -3838,6 +4169,7 @@
         inputPass.value = normalizeSuffix(txt);
         syncPassMode();
         setFieldError(errorPass, wrapPass, '');
+        autoFillNameFromKey();
       });
 
       inputPass.addEventListener('input', () => {
@@ -3845,6 +4177,7 @@
         if (v !== inputPass.value) inputPass.value = v;
         syncPassMode();
         if (errorPass.classList.contains('is-visible')) setFieldError(errorPass, wrapPass, '');
+        autoFillNameFromKey();
       });
 
       inputPass.addEventListener('focus', () => {
@@ -3947,35 +4280,61 @@
         }
 
         try {
-          if (auth.currentUser) {
+          if (auth.currentUser && !auth.currentUser.isAnonymous) {
             await signOut(auth);
           }
-          const cred = await signInAnonymously(auth);
-          const uid = cred.user.uid;
+          const userNow = auth.currentUser || (await signInAnonymously(auth)).user;
+          const uid = userNow.uid;
 
-          await updateDoc(doc(db, 'keys', fullKey), {
-            status: 'USED',
-            userUid: uid,
-            userName: nameVal,
-            activatedAt: serverTimestamp(),
-            lastUsedAt: serverTimestamp(),
-            sessionId: genSessionId(),
-            updatedAt: serverTimestamp()
-          });
+          const keyRef = doc(db, 'keys', fullKey);
+          const keySnap = await getDoc(keyRef);
+          if (!keySnap.exists()) throw new Error('Invalid key');
+          const keyData = keySnap.data();
+          if (keyData.permanentlyInvalidated || (keyData.status !== 'GENERATED' && keyData.status !== 'USED')) {
+            throw new Error('Blocked or deleted');
+          }
 
-          await setDoc(doc(db, 'members', uid), {
-            keyId: fullKey,
-            name: nameVal,
-            createdAt: serverTimestamp()
-          });
+          let finalName = nameVal;
+          if (keyData.status === 'GENERATED') {
+            await updateDoc(keyRef, {
+              status: 'USED',
+              userUid: uid,
+              userName: finalName,
+              activatedAt: serverTimestamp(),
+              lastUsedAt: serverTimestamp(),
+              sessionId: genSessionId(),
+              updatedAt: serverTimestamp()
+            });
+          } else {
+            // Re-login on USED key: keep original locked name even if user typed another
+            finalName = keyData.userName || nameVal;
+            await updateDoc(keyRef, {
+              userUid: uid,
+              lastUsedAt: serverTimestamp(),
+              sessionId: genSessionId(),
+              updatedAt: serverTimestamp()
+            });
+          }
+
+          const memRef = doc(db, 'members', uid);
+          const memSnap = await getDoc(memRef);
+          if (!memSnap.exists()) {
+            await setDoc(memRef, {
+              keyId: fullKey,
+              name: String(finalName).slice(0, 30),
+              createdAt: serverTimestamp()
+            });
+          }
 
           const userPayload = {
-            name: nameVal,
+            name: finalName,
             role: 'member',
             keyId: fullKey,
             signedInAt: Date.now()
           };
           saveUser(userPayload);
+          saveLastKeyCache(fullKey);
+          hideKickedBox();
           startMemberKeyWatcher(fullKey, uid);
 
           await coverWithCurtainThen(async () => {
@@ -3991,7 +4350,7 @@
         } catch (err) {
           try { await signOut(auth); } catch (e2) {}
           clearSavedUser();
-          setFieldError(errorPass, wrapPass, 'Key invalid, used ya blocked');
+          setFieldError(errorPass, wrapPass, 'Key invalid, blocked ya deleted');
           btnSignin.disabled = false;
           signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
         } finally {
@@ -4008,6 +4367,8 @@
           delete document.body.dataset.role;
           if (roleBadge) roleBadge.hidden = true;
           clearSavedUser();
+          clearLastKeyCache();
+          hideKickedBox();
           try { await signOut(auth); } catch (err) {}
           resetSigninForm();
           window.dispatchEvent(new Event('pikazoo-user-ready'));
@@ -4031,47 +4392,72 @@
         if (!initialAuthResolved) {
           initialAuthResolved = true;
 
-          if (user && !user.isAnonymous && user.email === OWNER_EMAIL) {
-            const saved = readSavedUser();
-            const ownerPayload = {
-              name: (saved && saved.role === 'owner' && saved.name) ? saved.name : 'Owner',
-              role: 'owner'
-            };
-            saveUser(ownerPayload);
-            populateHome(ownerPayload);
-            startStoreFeed('owner');
-            showScreenImmediate(screenHome);
-            await wipeOpenCurtain(screenHome);
+          const urlParams = new URLSearchParams(window.location.search);
+          const actionParam = urlParams.get('action');
+          if (actionParam) {
+            try { window.history.replaceState({}, '', window.location.pathname); } catch (e) {}
+          }
+
+          if (actionParam === 'clear-cache') {
+            if ('caches' in window) {
+              try {
+                const cKeys = await caches.keys();
+                await Promise.all(cKeys.map((k) => caches.delete(k)));
+              } catch (e) {}
+            }
+            setTimeout(() => {
+              window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'App cache cleared!' } }));
+            }, 350);
+          }
+
+          let postUpdate = false;
+          try {
+            if (window.sessionStorage.getItem('pikazoo_post_update') === '1') {
+              postUpdate = true;
+              window.sessionStorage.removeItem('pikazoo_post_update');
+            }
+          } catch (e) {}
+
+          // If auto-restarted right after Force Update, resume store directly without asking password
+          if (postUpdate) {
+            if (user && !user.isAnonymous && user.email === OWNER_EMAIL) {
+              const saved = readSavedUser();
+              const ownerPayload = { name: (saved && saved.name) ? saved.name : 'Owner', role: 'owner' };
+              saveUser(ownerPayload);
+              populateHome(ownerPayload);
+              startStoreFeed('owner');
+              showScreenImmediate(screenHome);
+              animateScreenContent(screenHome);
+              return;
+            }
+            if (user && user.isAnonymous) {
+              const saved = readSavedUser();
+              const savedKeyId = saved && (saved.keyId || saved.pass);
+              if (savedKeyId) {
+                const check = await verifyMemberSession(savedKeyId, user.uid);
+                if (check.ok) {
+                  const memberPayload = { name: check.name, role: 'member', keyId: savedKeyId };
+                  saveUser(memberPayload);
+                  populateHome(memberPayload);
+                  startMemberKeyWatcher(savedKeyId, user.uid);
+                  startStoreFeed('member');
+                  showScreenImmediate(screenHome);
+                  animateScreenContent(screenHome);
+                  return;
+                }
+              }
+            }
+          }
+
+          if (actionParam === 'login') {
+            showScreenImmediate(screenSignin);
+            animateScreenContent(screenSignin);
             return;
           }
 
-          if (user && user.isAnonymous) {
-            const saved = readSavedUser();
-            const savedKeyId = saved && (saved.keyId || saved.pass);
-            if (savedKeyId) {
-              const check = await verifyMemberSession(savedKeyId, user.uid);
-              if (check.ok) {
-                const memberPayload = { name: check.name, role: 'member', keyId: savedKeyId };
-                saveUser(memberPayload);
-                populateHome(memberPayload);
-                startMemberKeyWatcher(savedKeyId, user.uid);
-                startStoreFeed('member');
-                showScreenImmediate(screenHome);
-                await wipeOpenCurtain(screenHome);
-                return;
-              }
-            }
-            clearSavedUser();
-            try { await signOut(auth); } catch (err) {}
-          }
-
-          document.body.classList.add('guest-mode');
-          delete document.body.dataset.role;
-          if (roleBadge) roleBadge.hidden = true;
-          window.dispatchEvent(new Event('pikazoo-user-ready'));
-          startStoreFeed('guest');
+          // ALWAYS open on Welcome Screen (No yellow splash screen)
           showScreenImmediate(screenWelcome);
-          await wipeOpenCurtain(screenWelcome);
+          animateScreenContent(screenWelcome);
           return;
         }
 
@@ -6722,6 +7108,288 @@
 
       sheet.addEventListener('pointerup', endDrag);
       sheet.addEventListener('pointercancel', endDrag);
+    })();
+  </script>
+
+  <!-- PWA SERVICE WORKER + INSTALL & FORCE UPDATE NOTIFICATIONS -->
+  <script>
+    (function () {
+      'use strict';
+
+      var notif      = document.getElementById('pwaNotif');
+      var notifIcon  = document.getElementById('pwaNotifIcon');
+      var notifTitle = document.getElementById('pwaNotifTitle');
+      var notifRight = document.getElementById('pwaNotifRight');
+      var notifSub   = document.getElementById('pwaNotifSub');
+      var barWrap    = document.getElementById('pwaNotifBarWrap');
+      var barEl      = document.getElementById('pwaNotifBar');
+      var actionsEl  = document.getElementById('pwaNotifActions');
+      var installBtn = document.getElementById('pwaInstallBtn');
+
+      if (!notif) return;
+
+      var APP_ICON_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>';
+      var UPD_ICON_SVG = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>';
+      var TICK_SVG     = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline class="pwa-tick-anim" points="20 6 9 17 4 12"/></svg>';
+
+      var deferredPrompt = null;
+      var activeMode = ''; // 'install-prompt' | 'installing' | 'updating'
+      var animRaf = null;
+      var autoHideTimer = null;
+
+      function isStandalone() {
+        return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+               window.navigator.standalone === true;
+      }
+
+      function stopTimers() {
+        if (animRaf) { cancelAnimationFrame(animRaf); animRaf = null; }
+        if (autoHideTimer) { clearTimeout(autoHideTimer); autoHideTimer = null; }
+      }
+
+      function showBanner() {
+        notif.style.transition = '';
+        notif.style.transform = '';
+        notif.style.opacity = '';
+        notif.setAttribute('aria-hidden', 'false');
+        requestAnimationFrame(function () {
+          notif.classList.add('is-visible');
+        });
+      }
+
+      function hideBanner() {
+        stopTimers();
+        activeMode = '';
+        notif.classList.remove('is-visible');
+        notif.setAttribute('aria-hidden', 'true');
+      }
+
+      // --- 1. INSTALL NOTIFICATION (9s Reverse Countdown + Swipe Up + 10s 1-100% Progress) ---
+      function startInstallPromptBanner() {
+        if (isStandalone() || !deferredPrompt || activeMode === 'updating' || activeMode === 'installing') return;
+        stopTimers();
+        activeMode = 'install-prompt';
+
+        notifIcon.classList.remove('is-done');
+        notifIcon.innerHTML = APP_ICON_SVG;
+        notifTitle.textContent = 'Install Pikazoo Premium';
+        notifSub.textContent = 'Install app for full screen experience';
+        notifRight.textContent = '9s';
+        barEl.classList.remove('is-done');
+        barEl.style.width = '100%';
+        actionsEl.hidden = false;
+        showBanner();
+
+        var totalMs = 9000;
+        var startTs = performance.now();
+
+        function step(now) {
+          if (activeMode !== 'install-prompt') return;
+          var elapsed = now - startTs;
+          var leftMs = Math.max(0, totalMs - elapsed);
+          var pct = (leftMs / totalMs) * 100;
+          barEl.style.width = pct.toFixed(2) + '%';
+          notifRight.textContent = Math.ceil(leftMs / 1000) + 's';
+          if (leftMs > 0) {
+            animRaf = requestAnimationFrame(step);
+          } else {
+            hideBanner();
+          }
+        }
+        animRaf = requestAnimationFrame(step);
+      }
+
+      function runInstallingAnimation() {
+        stopTimers();
+        activeMode = 'installing';
+        notifIcon.classList.remove('is-done');
+        notifIcon.innerHTML = APP_ICON_SVG;
+        notifTitle.textContent = 'Installing Pikazoo Premium...';
+        notifSub.textContent = 'Setting up full screen app';
+        notifRight.textContent = '1%';
+        barEl.classList.remove('is-done');
+        barEl.style.width = '1%';
+        actionsEl.hidden = true;
+        showBanner();
+
+        var duration = 10000; // 10 seconds 1% to 100%
+        var startTs = performance.now();
+
+        function step(now) {
+          if (activeMode !== 'installing') return;
+          var t = Math.min(1, (now - startTs) / duration);
+          var pct = Math.max(1, Math.round(1 + t * 99));
+          barEl.style.width = pct + '%';
+          notifRight.textContent = pct + '%';
+          if (t < 1) {
+            animRaf = requestAnimationFrame(step);
+          } else {
+            notifIcon.classList.add('is-done');
+            notifIcon.innerHTML = TICK_SVG;
+            barEl.classList.add('is-done');
+            notifTitle.textContent = 'App Installed!';
+            notifSub.textContent = 'Ready on your home screen';
+            notifRight.textContent = '100%';
+            autoHideTimer = setTimeout(hideBanner, 1300);
+          }
+        }
+        animRaf = requestAnimationFrame(step);
+      }
+
+      if (installBtn) {
+        installBtn.addEventListener('click', async function () {
+          if (!deferredPrompt) return;
+          stopTimers();
+          var promptEvent = deferredPrompt;
+          deferredPrompt = null;
+          try {
+            await promptEvent.prompt();
+            var choice = await promptEvent.userChoice;
+            if (choice && choice.outcome === 'accepted') {
+              runInstallingAnimation();
+            } else {
+              hideBanner();
+            }
+          } catch (err) {
+            hideBanner();
+          }
+        });
+      }
+
+      // Swipe Up to dismiss Install Notification ONLY (Blocked for Force Update)
+      var swipe = null;
+      notif.addEventListener('pointerdown', function (e) {
+        if (activeMode !== 'install-prompt') return;
+        if (e.target.closest('button')) return;
+        swipe = { id: e.pointerId, y0: e.clientY, dy: 0 };
+        notif.style.transition = 'none';
+      }, { passive: true });
+
+      notif.addEventListener('pointermove', function (e) {
+        if (!swipe || e.pointerId !== swipe.id || activeMode !== 'install-prompt') return;
+        var dy = Math.min(0, e.clientY - swipe.y0);
+        swipe.dy = dy;
+        notif.style.transform = 'translate3d(0,' + dy + 'px,0)';
+        notif.style.opacity = String(Math.max(0.2, 1 - Math.abs(dy) / 110));
+      }, { passive: true });
+
+      function endNotifSwipe(e) {
+        if (!swipe || e.pointerId !== swipe.id) return;
+        var dy = swipe.dy;
+        swipe = null;
+        notif.style.transition = '';
+        if (dy < -40) {
+          hideBanner();
+        } else {
+          notif.style.transform = '';
+          notif.style.opacity = '';
+        }
+      }
+      notif.addEventListener('pointerup', endNotifSwipe);
+      notif.addEventListener('pointercancel', endNotifSwipe);
+
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (!isStandalone()) {
+          setTimeout(startInstallPromptBanner, 650);
+        }
+      });
+
+      window.addEventListener('appinstalled', function () {
+        deferredPrompt = null;
+        if (activeMode !== 'installing') {
+          runInstallingAnimation();
+        }
+      });
+
+      // --- 2. FORCE UPDATE NOTIFICATION (3s 1-100%, Cannot Swipe Dismiss, ~6s Total -> Auto Reload) ---
+      var updateTriggered = false;
+      function triggerForceUpdate() {
+        if (updateTriggered) return;
+        updateTriggered = true;
+        stopTimers();
+        activeMode = 'updating';
+
+        notifIcon.classList.remove('is-done');
+        notifIcon.innerHTML = UPD_ICON_SVG;
+        notifTitle.textContent = 'Updating App...';
+        notifSub.textContent = 'New version ready. Restarting automatically...';
+        notifRight.textContent = '1%';
+        barEl.classList.remove('is-done');
+        barEl.style.width = '1%';
+        actionsEl.hidden = true;
+        showBanner();
+
+        // Wait ~550ms for smooth incoming slide, then 3s 1%->100%, then tick + outgoing + reload (within 6s)
+        setTimeout(function () {
+          var duration = 3000;
+          var startTs = performance.now();
+
+          function step(now) {
+            var t = Math.min(1, (now - startTs) / duration);
+            var pct = Math.max(1, Math.round(1 + t * 99));
+            barEl.style.width = pct + '%';
+            notifRight.textContent = pct + '%';
+            if (t < 1) {
+              animRaf = requestAnimationFrame(step);
+            } else {
+              notifIcon.classList.add('is-done');
+              notifIcon.innerHTML = TICK_SVG;
+              barEl.classList.add('is-done');
+              notifTitle.textContent = 'Update Complete!';
+              notifSub.textContent = 'Restarting now...';
+              notifRight.textContent = '100%';
+              setTimeout(function () {
+                hideBanner();
+                try { window.sessionStorage.setItem('pikazoo_post_update', '1'); } catch (err) {}
+                setTimeout(function () {
+                  window.location.reload();
+                }, 480);
+              }, 700);
+            }
+          }
+          animRaf = requestAnimationFrame(step);
+        }, 550);
+      }
+
+      // --- SERVICE WORKER REGISTRATION & LIVE UPDATE CHECK ---
+      if ('serviceWorker' in navigator) {
+        var hadController = !!navigator.serviceWorker.controller;
+
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (hadController) {
+            triggerForceUpdate();
+          }
+          hadController = true;
+        });
+
+        navigator.serviceWorker.addEventListener('message', function (event) {
+          var d = event.data || {};
+          if (d.type === 'UPDATE_READY') {
+            triggerForceUpdate();
+          } else if (d.type === 'CACHE_CLEARED') {
+            window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'App cache cleared!' } }));
+          }
+        });
+
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('./sw.js', { scope: './' }).then(function (reg) {
+            function askHtmlCheck() {
+              try {
+                reg.update();
+                if (navigator.serviceWorker.controller) {
+                  navigator.serviceWorker.controller.postMessage({ type: 'CHECK_HTML_UPDATE' });
+                }
+              } catch (err) {}
+            }
+            setTimeout(askHtmlCheck, 1500);
+            document.addEventListener('visibilitychange', function () {
+              if (document.visibilityState === 'visible') askHtmlCheck();
+            });
+          }).catch(function () {});
+        });
+      }
     })();
   </script>
 </body>
