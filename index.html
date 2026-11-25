@@ -3875,9 +3875,9 @@
         isNavigating = false;
       });
 
-      const NAME_RE = /^[A-Za-z]{3,14}$/;
+      const NAME_RE = /^(?=.{3,14}$)[A-Za-z]+(?: [A-Za-z]+)*$/;
       inputName.addEventListener('input', () => {
-        const clean = inputName.value.replace(/[^A-Za-z]/g, '').slice(0, 14);
+        const clean = inputName.value.replace(/[^A-Za-z ]/g, '').replace(/^ +/, '').replace(/ {2,}/g, ' ').slice(0, 14);
         if (clean !== inputName.value) inputName.value = clean;
         if (errorName.classList.contains('is-visible') && NAME_RE.test(clean)) {
           setFieldError(errorName, wrapName, '');
@@ -3922,7 +3922,7 @@
           if (snap.exists()) {
             const d = snap.data();
             if (d.status === 'USED' && d.userName) {
-              inputName.value = String(d.userName).replace(/[^A-Za-z]/g, '').slice(0, 14);
+              inputName.value = String(d.userName).slice(0, 14);
               setFieldError(errorName, wrapName, '');
             }
           }
@@ -3966,7 +3966,7 @@
         let firstInvalid = null;
 
         if (!nameOk) {
-          setFieldError(errorName, wrapName, 'Use 3 to 14 letters (A-Z only)');
+          setFieldError(errorName, wrapName, 'Use 3 to 14 letters (A-Z and spaces only)');
           firstInvalid = firstInvalid || inputName;
         } else {
           setFieldError(errorName, wrapName, '');
