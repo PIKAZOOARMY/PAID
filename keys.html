@@ -656,6 +656,7 @@
                         <tr>
                             <th>KEY</th>
                             <th>STATUS</th>
+                            <th>USER NAME</th>
                             <th>USER UID</th>
                             <th>LAST ACTION</th>
                             <th>ACTIONS</th>
@@ -1279,6 +1280,7 @@ window.handleFileImportOld = async (input) => {
                     await updateDoc(doc(db, "keys", keyId), {
                         status: 'UNUSED',
                         userUid: null,
+                        userName: null,
                         activatedAt: null,
                         sessionId: null,
                         generatedAt: null,
@@ -1358,6 +1360,15 @@ window.handleFileImportOld = async (input) => {
         }
 
         // --- RENDERING ---
+        function escapeHtml(str) {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
         window.applyFilters = () => {
             const search = document.getElementById('search-keys').value.toLowerCase();
             const statusFilter = currentStatusFilter;
@@ -1366,7 +1377,9 @@ window.handleFileImportOld = async (input) => {
             tbody.innerHTML = '';
 
             const filtered = allKeys.filter(k => {
-                const matchesSearch = k.key.toLowerCase().includes(search) || (k.userUid && k.userUid.toLowerCase().includes(search));
+                const matchesSearch = k.key.toLowerCase().includes(search)
+                    || (k.userUid && k.userUid.toLowerCase().includes(search))
+                    || (k.userName && k.userName.toLowerCase().includes(search));
                 const matchesStatus = statusFilter === 'ALL' || k.status === statusFilter;
                 return matchesSearch && matchesStatus && k.status !== 'DELETED';
             });
@@ -1376,9 +1389,10 @@ window.handleFileImportOld = async (input) => {
             filtered.forEach(k => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td style="font-family: monospace; font-weight: 600;">${k.key}</td>
-                    <td><span class="badge badge-${k.status.toLowerCase()}">${k.status}</span></td>
-                    <td style="color: var(--text-muted)">${k.userUid || '---'}</td>
+                    <td style="font-family: monospace; font-weight: 600;">${escapeHtml(k.key)}</td>
+                    <td><span class="badge badge-${escapeHtml(k.status.toLowerCase())}">${escapeHtml(k.status)}</span></td>
+                    <td style="font-weight: 700;">${k.userName ? escapeHtml(k.userName) : '---'}</td>
+                    <td style="color: var(--text-muted)">${k.userUid ? escapeHtml(k.userUid) : '---'}</td>
                     <td style="font-size: 0.75rem; color: var(--text-muted)">${k.updatedAt ? new Date(k.updatedAt.seconds * 1000).toLocaleDateString() : 'N/A'}</td>
                     <td>
                         <div class="action-group">
