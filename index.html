@@ -1155,7 +1155,39 @@
       color: var(--st-muted);
       padding-right: 60px;
       line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
+    .card.is-hidden { opacity: 0.56; }
+    .card.is-hidden .thumb img { filter: grayscale(0.35); }
+    .badge-hidden {
+      position: absolute;
+      z-index: 3;
+      right: 12px;
+      top: 12px;
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: #FFFFFF;
+      background: rgba(11, 11, 13, 0.78);
+      text-transform: uppercase;
+    }
+    .empty-state {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 44px 20px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.42);
+      border: 1px dashed rgba(42, 59, 71, 0.18);
+      color: var(--st-muted);
+      font-size: 14.5px;
+      font-weight: 700;
+    }
+    #cardModalSub { white-space: pre-wrap; }
 
     .dl {
       position: absolute;
@@ -1896,147 +1928,10 @@
             </nav>
           </div>
 
-          <div class="store-main">
-            <!-- HOOK -->
-            <section class="panel active" id="hook" role="tabpanel">
-              <div class="grid">
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">HOOK</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFC09A'/%3E%3Cstop offset='1' stop-color='%23FFD6E4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Neon Hook Pack 01" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Neon Hook Pack 01</h3>
-                    <p class="card-sub">Warm gradient hook transitions</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Neon Hook Pack 01">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">HOOK</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23B0E6E8'/%3E%3Cstop offset='1' stop-color='%23D4F5CF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Glow Hook Pack 02" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Glow Hook Pack 02</h3>
-                    <p class="card-sub">Soft pink neon glow hooks</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Glow Hook Pack 02">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">HOOK</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFD6E4'/%3E%3Cstop offset='1' stop-color='%23D1F0F0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Pulse Hook Pack 03" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Pulse Hook Pack 03</h3>
-                    <p class="card-sub">Cyan pulse motion hooks</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Pulse Hook Pack 03">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-              </div>
-            </section>
-
-            <!-- FILE -->
-            <section class="panel" id="file" role="tabpanel">
-              <div class="grid">
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">FILE</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFC09A'/%3E%3Cstop offset='1' stop-color='%23D4F5CF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Clay File Pack 01" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Clay File Pack 01</h3>
-                    <p class="card-sub">Claymorphism source files</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Clay File Pack 01">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">FILE</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23B0E6E8'/%3E%3Cstop offset='1' stop-color='%23FFD6E4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Blur File Pack 02" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Blur File Pack 02</h3>
-                    <p class="card-sub">Glass blur asset bundle</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Blur File Pack 02">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">FILE</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23D4F5CF'/%3E%3Cstop offset='1' stop-color='%23FFC09A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Glass File Pack 03" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Glass File Pack 03</h3>
-                    <p class="card-sub">Frosted glass UI files</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Glass File Pack 03">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-              </div>
-            </section>
-
-            <!-- PREVIEW -->
-            <section class="panel" id="preview" role="tabpanel">
-              <div class="grid">
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">PREVIEW</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFD6E4'/%3E%3Cstop offset='1' stop-color='%23FFC09A'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Preview Kit 01" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Preview Kit 01</h3>
-                    <p class="card-sub">Live preview layer kit</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Preview Kit 01">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">PREVIEW</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23B0E6E8'/%3E%3Cstop offset='1' stop-color='%23D4F5CF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Preview Kit 02" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Preview Kit 02</h3>
-                    <p class="card-sub">Cyan motion preview pack</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Preview Kit 02">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-
-                <article class="card">
-                  <div class="thumb">
-                    <span class="badge">PREVIEW</span>
-                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFC09A'/%3E%3Cstop offset='1' stop-color='%23D1F0F0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E" alt="Preview Kit 03" />
-                  </div>
-                  <div class="card-body">
-                    <h3 class="card-title">Preview Kit 03</h3>
-                    <p class="card-sub">Orange clay preview set</p>
-                  </div>
-                  <a class="dl" href="#" target="_blank" rel="noopener" aria-label="Download Preview Kit 03">
-                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>
-                  </a>
-                </article>
-              </div>
-            </section>
+          <div class="store-main" id="storeMain">
+            <section class="panel active" id="hook" role="tabpanel"><div class="grid"></div></section>
+            <section class="panel" id="file" role="tabpanel"><div class="grid"></div></section>
+            <section class="panel" id="preview" role="tabpanel"><div class="grid"></div></section>
           </div>
         </div>
 
@@ -2192,7 +2087,7 @@
       getAuth, signInWithEmailAndPassword, signInAnonymously, signOut, onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import {
-      getFirestore, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp
+      getFirestore, collection, query, where, doc, getDoc, setDoc, updateDoc, onSnapshot, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     (function () {
@@ -2270,16 +2165,208 @@
         if (typeof fn === 'function') activeUnsubs.add(fn);
         return fn;
       }
+      let unsubStoreFeed = null;
+      let lastSyncedMetaKey = null;
+
       function unsubscribeAllListeners() {
         activeUnsubs.forEach((fn) => {
           try { fn(); } catch (err) {}
         });
         activeUnsubs.clear();
         unsubKeyWatch = null;
+        unsubStoreFeed = null;
       }
       window.pikazooTrackUnsub = trackUnsub;
       window.pikazooAuth = auth;
       window.pikazooDb = db;
+
+      const FALLBACK_THUMBS = [
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFC09A'/%3E%3Cstop offset='1' stop-color='%23FFD6E4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E",
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23B0E6E8'/%3E%3Cstop offset='1' stop-color='%23D4F5CF'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E",
+        "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23FFD6E4'/%3E%3Cstop offset='1' stop-color='%23D1F0F0'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='400' height='300' fill='url(%23g)'/%3E%3C/svg%3E"
+      ];
+      const DL_ICON_SVG = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11.5"/><path d="m7.2 10.7 4.8 4.8 4.8-4.8"/><path d="M4.5 20.5h15"/></svg>';
+
+      function safeMediaUrl(u) {
+        if (typeof u !== 'string') return '';
+        const s = u.trim();
+        if (/^https?:\/\//i.test(s) || /^data:image\//i.test(s)) return s;
+        return '';
+      }
+      function safeHrefUrl(u) {
+        if (typeof u !== 'string') return '#';
+        const s = u.trim();
+        return /^https?:\/\//i.test(s) ? s : '#';
+      }
+
+      function buildCardElement(card, idx, isGuest) {
+        const art = document.createElement('article');
+        art.className = 'card' + (card.hidden ? ' is-hidden' : '');
+        art.dataset.id = card.id || '';
+        art.dataset.category = card.category || 'hook';
+        art.dataset.kind = card.kind || '';
+        art.dataset.desc = card.description || '';
+
+        const thumb = document.createElement('div');
+        thumb.className = 'thumb';
+
+        const badge = document.createElement('span');
+        badge.className = 'badge';
+        badge.textContent = String(card.category || 'ITEM').toUpperCase();
+        thumb.appendChild(badge);
+
+        if (card.hidden && !isGuest) {
+          const hb = document.createElement('span');
+          hb.className = 'badge-hidden';
+          hb.textContent = 'Hidden';
+          thumb.appendChild(hb);
+        }
+
+        const img = document.createElement('img');
+        img.src = safeMediaUrl(card.thumbnailUrl) || FALLBACK_THUMBS[idx % FALLBACK_THUMBS.length];
+        img.alt = isGuest ? 'Locked item' : (card.title || 'Item');
+        img.loading = 'lazy';
+        thumb.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'card-body';
+
+        const h3 = document.createElement('h3');
+        h3.className = 'card-title';
+        h3.textContent = card.title || 'Untitled';
+        body.appendChild(h3);
+
+        const p = document.createElement('p');
+        p.className = 'card-sub';
+        p.textContent = card.description || '';
+        body.appendChild(p);
+
+        const dl = document.createElement('a');
+        dl.className = 'dl';
+        dl.href = isGuest ? '#' : safeHrefUrl(card.downloadUrl);
+        dl.target = '_blank';
+        dl.rel = 'noopener';
+        dl.setAttribute('aria-label', isGuest ? 'Sign up to download' : ('Download ' + (card.title || 'item')));
+        dl.innerHTML = DL_ICON_SVG;
+
+        art.appendChild(thumb);
+        art.appendChild(body);
+        art.appendChild(dl);
+        return art;
+      }
+
+      function renderCategoryGrid(cat, items, isGuest) {
+        const grid = document.querySelector('#' + cat + ' .grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        if (!items.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.textContent = 'No items in ' + cat.toUpperCase() + ' yet';
+          grid.appendChild(empty);
+          return;
+        }
+        items.forEach((item, idx) => {
+          grid.appendChild(buildCardElement(item, idx, isGuest));
+        });
+      }
+
+      function renderAllCards(cards) {
+        const grouped = { hook: [], file: [], preview: [] };
+        cards.forEach((c) => {
+          if (grouped[c.category]) grouped[c.category].push(c);
+        });
+        Object.keys(grouped).forEach((cat) => {
+          grouped[cat].sort((a, b) => {
+            const ao = typeof a.order === 'number' ? a.order : 999999;
+            const bo = typeof b.order === 'number' ? b.order : 999999;
+            if (ao !== bo) return ao - bo;
+            const at = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+            const bt = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+            return at - bt;
+          });
+          renderCategoryGrid(cat, grouped[cat], false);
+        });
+      }
+
+      function renderGuestPlaceholders(counts) {
+        ['hook', 'file', 'preview'].forEach((cat) => {
+          const n = Math.max(0, Math.min(50, Number(counts && counts[cat]) || 0));
+          const placeholders = [];
+          for (let i = 0; i < n; i++) {
+            placeholders.push({
+              id: 'guest_' + cat + '_' + i,
+              category: cat,
+              title: 'Locked Premium Pack',
+              description: 'Sign up with a valid key to unlock',
+              thumbnailUrl: FALLBACK_THUMBS[i % FALLBACK_THUMBS.length],
+              downloadUrl: '#'
+            });
+          }
+          renderCategoryGrid(cat, placeholders, true);
+        });
+      }
+
+      async function syncPublicMetaIfNeeded(cards) {
+        if (document.body.dataset.role !== 'owner') return;
+        const counts = { hook: 0, file: 0, preview: 0 };
+        cards.forEach((c) => {
+          if (!c.hidden && Object.prototype.hasOwnProperty.call(counts, c.category)) {
+            counts[c.category]++;
+          }
+        });
+        const nextKey = counts.hook + ':' + counts.file + ':' + counts.preview;
+        if (nextKey === lastSyncedMetaKey) return;
+        try {
+          const metaRef = doc(db, 'meta', 'public');
+          const snap = await getDoc(metaRef);
+          if (snap.exists()) {
+            const d = snap.data();
+            if (d.hook === counts.hook && d.file === counts.file && d.preview === counts.preview) {
+              lastSyncedMetaKey = nextKey;
+              return;
+            }
+          }
+          await setDoc(metaRef, counts);
+          lastSyncedMetaKey = nextKey;
+        } catch (err) {
+          console.warn('meta/public sync error:', err);
+        }
+      }
+      window.pikazooSyncPublicMeta = syncPublicMetaIfNeeded;
+
+      function startStoreFeed(mode) {
+        if (unsubStoreFeed) {
+          try { unsubStoreFeed(); } catch (err) {}
+          activeUnsubs.delete(unsubStoreFeed);
+          unsubStoreFeed = null;
+        }
+        lastSyncedMetaKey = null;
+
+        if (mode === 'guest') {
+          renderGuestPlaceholders({ hook: 0, file: 0, preview: 0 });
+          unsubStoreFeed = trackUnsub(onSnapshot(doc(db, 'meta', 'public'), (snap) => {
+            if (!document.body.classList.contains('guest-mode')) return;
+            renderGuestPlaceholders(snap.exists() ? snap.data() : { hook: 0, file: 0, preview: 0 });
+          }, () => {
+            renderGuestPlaceholders({ hook: 0, file: 0, preview: 0 });
+          }));
+          return;
+        }
+
+        const q = mode === 'owner'
+          ? collection(db, 'cards')
+          : query(collection(db, 'cards'), where('hidden', '==', false));
+
+        unsubStoreFeed = trackUnsub(onSnapshot(q, (snap) => {
+          const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          window.pikazooCards = list;
+          renderAllCards(list);
+          if (mode === 'owner') syncPublicMetaIfNeeded(list);
+        }, (err) => {
+          console.warn('Cards listener error:', err);
+        }));
+      }
 
       function genSessionId() {
         if (window.crypto && typeof window.crypto.randomUUID === 'function') {
@@ -2321,6 +2408,7 @@
           window.dispatchEvent(new Event('pikazoo-user-ready'));
           try { await signOut(auth); } catch (err) {}
           resetSigninForm();
+          startStoreFeed('guest');
           if (!screenHome.classList.contains('is-active')) {
             showScreenImmediate(screenHome);
             animateScreenContent(screenHome);
@@ -2528,6 +2616,7 @@
         document.body.classList.add('guest-mode');
         delete document.body.dataset.role;
         if (roleBadge) roleBadge.hidden = true;
+        startStoreFeed('guest');
         slideTransition(screenWelcome, screenHome, 'left');
 
         await delay(prefersReducedMotion ? 20 : 450);
@@ -2651,6 +2740,7 @@
 
             await coverWithCurtainThen(async () => {
               populateHome(userPayload);
+              startStoreFeed('owner');
               showScreenImmediate(screenHome);
               await delay(40);
               animateScreenContent(screenHome);
@@ -2702,6 +2792,7 @@
 
           await coverWithCurtainThen(async () => {
             populateHome(userPayload);
+            startStoreFeed('member');
             showScreenImmediate(screenHome);
             await delay(40);
             animateScreenContent(screenHome);
@@ -2760,6 +2851,7 @@
             };
             saveUser(ownerPayload);
             populateHome(ownerPayload);
+            startStoreFeed('owner');
             showScreenImmediate(screenHome);
             await wipeOpenCurtain(screenHome);
             return;
@@ -2775,6 +2867,7 @@
                 saveUser(memberPayload);
                 populateHome(memberPayload);
                 startMemberKeyWatcher(savedKeyId, user.uid);
+                startStoreFeed('member');
                 showScreenImmediate(screenHome);
                 await wipeOpenCurtain(screenHome);
                 return;
@@ -2788,6 +2881,7 @@
           delete document.body.dataset.role;
           if (roleBadge) roleBadge.hidden = true;
           window.dispatchEvent(new Event('pikazoo-user-ready'));
+          startStoreFeed('guest');
           showScreenImmediate(screenWelcome);
           await wipeOpenCurtain(screenWelcome);
           return;
@@ -2801,6 +2895,7 @@
           delete document.body.dataset.role;
           if (roleBadge) roleBadge.hidden = true;
           window.dispatchEvent(new Event('pikazoo-user-ready'));
+          startStoreFeed('guest');
         }
       });
     })();
@@ -3081,10 +3176,15 @@
         var title = card.querySelector('.card-title');
         var sub   = card.querySelector('.card-sub');
         var dl    = card.querySelector('.dl');
+        var isGuest = document.body.classList.contains('guest-mode');
         cardModalImg.src = img ? img.src : '';
         cardModalTitle.textContent = title ? title.textContent : '';
-        cardModalSub.textContent = sub ? sub.textContent : '';
-        if (cardModalDl && dl) cardModalDl.href = dl.getAttribute('href') || '#';
+        cardModalSub.textContent = (!isGuest && card.dataset.desc) ? card.dataset.desc : (sub ? sub.textContent : '');
+        if (cardModalDl && dl) {
+          var href = dl.getAttribute('href') || '#';
+          cardModalDl.href = href;
+          cardModalDl.style.display = (!isGuest && href !== '#') ? '' : 'none';
+        }
         cardModal.classList.add('show');
         cardModal.setAttribute('aria-hidden', 'false');
         lockScroll();
@@ -3104,21 +3204,26 @@
         });
       }
 
-      $$('.card').forEach(function (card) {
-        card.addEventListener('click', function (e) {
-          if (e.target.closest('.dl')) return;
-          openCardModal(card);
+      var storeMainEl = $('#storeMain');
+      if (storeMainEl) {
+        storeMainEl.addEventListener('click', function (e) {
+          var dlBtn = e.target.closest('.dl');
+          if (dlBtn) {
+            if (document.body.classList.contains('guest-mode')) {
+              e.preventDefault();
+              e.stopPropagation();
+              showToast('Download ke liye pehle Sign Up karein');
+              return;
+            }
+            if ((dlBtn.getAttribute('href') || '#') === '#') {
+              e.preventDefault();
+            }
+            return;
+          }
+          var card = e.target.closest('.card');
+          if (card) openCardModal(card);
         });
-      });
-
-      $$('.dl').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-          if (!document.body.classList.contains('guest-mode')) return;
-          e.preventDefault();
-          e.stopPropagation();
-          showToast('Download ke liye pehle Sign Up karein');
-        });
-      });
+      }
 
       if (btnSignup) {
         btnSignup.addEventListener('click', function () {
