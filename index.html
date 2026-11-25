@@ -420,9 +420,59 @@
       display: flex;
       flex-direction: column;
     }
+    .signin-video-wrap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: -80px;
+      z-index: 0;
+      overflow: hidden;
+      background: var(--amber);
+    }
+    .signin-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s ease;
+    }
+    .signin-video.is-on { opacity: 1; }
+    .signin-amber-top > div:not(.signin-video-wrap) {
+      position: relative;
+      z-index: 1;
+    }
+    .signin-sound {
+      position: absolute;
+      top: calc(var(--safe-top) + 8px);
+      right: 14px;
+      z-index: 3;
+      width: 38px;
+      height: 38px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.78);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.9s ease;
+    }
+    .signin-sound.is-on {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .signin-amber-top {
       position: relative;
-      background: var(--amber);
+      background: transparent;
       padding:
         calc(var(--safe-top) + 46px)
         calc(var(--safe-right) + 28px)
@@ -645,11 +695,11 @@
       width: 100%;
       height: 84px;
       margin-top: -1px;
-      background: linear-gradient(to bottom, rgba(254, 184, 13, 0.12) 0%, rgba(247, 247, 249, 0) 65%);
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 84' preserveAspectRatio='none'%3E%3Cpath d='M0 84H400V12C392 14 384 18 377 16C372 23 360 22 352 27C347 21 339 29 331 28C323 33 314 27 308 34C299 30 291 38 282 35C274 42 263 36 256 42C247 38 238 45 229 43C221 49 211 43 204 50C193 45 186 54 176 51C168 57 157 52 149 58C139 54 132 62 121 59C113 66 101 60 94 67C83 62 75 70 64 67C56 73 44 68 37 74C26 70 17 77 7 75L0 77V84Z' fill='%23F7F7F9'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
       flex-shrink: 0;
     }
     .brush-divider-svg {
-      display: block;
+      display: none;
       width: 100%;
       height: 100%;
     }
@@ -2336,6 +2386,10 @@
       <!-- SCREEN 2: SIGN IN -->
       <section id="screen-signin" class="screen screen-signin" aria-label="Sign in">
         <div class="signin-amber-top">
+          <div class="signin-video-wrap" aria-hidden="true">
+            <video id="signin-video" class="signin-video" muted loop playsinline preload="auto" disablepictureinpicture></video>
+          </div>
+          <button id="signin-sound" class="signin-sound" type="button"></button>
           <div>
             <div class="signin-header">
               <div>
@@ -7108,5 +7162,89 @@
   })();
   </script>
 
+<script>
+(function () {
+  var scr = document.getElementById('screen-signin');
+  var v = document.getElementById('signin-video');
+  var btn = document.getElementById('signin-sound');
+  if (!scr || !v || !btn) return;
+  var VIDEO = './source/login-bg.mp4';
+  var CACHE = 'pz-media-v1';
+  var state = 0;
+  var ICON_OFF = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
+  var ICON_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
+
+  function sync() {
+    if (state !== 2) return;
+    if (scr.classList.contains('is-active') && !document.hidden) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    } else {
+      v.pause();
+    }
+  }
+  function useSrc(u) { state = 2; v.src = u; v.load(); sync(); }
+  function start() {
+    if (state) return;
+    state = 1;
+    if (!window.caches || !window.fetch) { useSrc(VIDEO); return; }
+    caches.open(CACHE).then(function (c) {
+      return c.match(VIDEO).then(function (hit) {
+        if (hit) return hit;
+        return fetch(VIDEO).then(function (res) {
+          if (!res.ok) throw new Error('video');
+          c.put(VIDEO, res.clone()).catch(function () {});
+          return res;
+        });
+      });
+    }).then(function (res) { return res.blob(); })
+      .then(function (b) { useSrc(URL.createObjectURL(b)); })
+      .catch(function () { useSrc(VIDEO); });
+  }
+
+  var triedDirect = false;
+  v.addEventListener('playing', function () {
+    v.classList.add('is-on');
+    btn.classList.add('is-on');
+  });
+  v.addEventListener('error', function () {
+    v.classList.remove('is-on');
+    btn.classList.remove('is-on');
+    if (!triedDirect && /^blob:/.test(v.src)) {
+      triedDirect = true;
+      v.src = VIDEO;
+      v.load();
+      sync();
+    }
+  });
+
+  v.muted = true;
+  function paint() {
+    btn.innerHTML = v.muted ? ICON_OFF : ICON_ON;
+    btn.setAttribute('aria-label', v.muted ? 'Sound on karo' : 'Sound band karo');
+  }
+  btn.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    v.muted = !v.muted;
+    if (!v.muted) {
+      v.volume = 1;
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    paint();
+  });
+  paint();
+
+  var saved = null;
+  try { saved = window.localStorage.getItem('pikazoo_premium_user_v1'); } catch (e) {}
+  if (!saved) setTimeout(start, 600);
+  new MutationObserver(function () {
+    if (scr.classList.contains('is-active')) start();
+    sync();
+  }).observe(scr, { attributes: true, attributeFilter: ['class'] });
+  document.addEventListener('visibilitychange', sync);
+})();
+</script>
 </body>
 </html>

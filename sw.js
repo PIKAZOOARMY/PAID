@@ -1,7 +1,7 @@
 /* Pikazoo Premium - Service Worker
    IMPORTANT: Jab bhi index.html ya koi file update karo, neeche VERSION ka number badal do.
    Phir sab members ko "Update available" notification aa jayegi aur app khud refresh hogi. */
-const VERSION = 'v1.0.0';
+const VERSION = 'v1.0.1';
 
 const SHELL_CACHE = 'pz-shell-' + VERSION;
 const IMG_CACHE = 'pz-img-v1';      // images har update ke baad bhi save rehti hain
@@ -15,7 +15,7 @@ self.addEventListener('install', (e) => {
 
 self.addEventListener('activate', (e) => {
   e.waitUntil((async () => {
-    const keep = [SHELL_CACHE, IMG_CACHE, LIB_CACHE];
+    const keep = [SHELL_CACHE, IMG_CACHE, LIB_CACHE, 'pz-media-v1'];
     const keys = await caches.keys();
     await Promise.all(keys.filter((k) => keep.indexOf(k) === -1).map((k) => caches.delete(k)));
     await self.clients.claim();
@@ -80,6 +80,9 @@ self.addEventListener('fetch', (e) => {
 
   // Admin panel kabhi cache nahi hota
   if (url.origin === self.location.origin && url.pathname.endsWith('/keys.html')) return;
+
+  // Video: SW touch nahi karta, page khud cache karta hai
+  if (req.destination === 'video' || url.pathname.endsWith('.mp4') || req.headers.has('range')) return;
 
   // Page open
   if (req.mode === 'navigate' && url.origin === self.location.origin) {
