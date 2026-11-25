@@ -1125,11 +1125,12 @@
       z-index: 3;
       left: 12px;
       top: 12px;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
-      letter-spacing: 0.09em;
-      padding: 6px 12px;
+      letter-spacing: 0.03em;
+      padding: 5px 10px;
       border-radius: 999px;
+      white-space: nowrap;
       color: #2A3B47;
       background: linear-gradient(135deg, var(--a), var(--b));
       box-shadow: 0 4px 12px rgba(132, 160, 172, 0.25);
@@ -1645,6 +1646,33 @@
       white-space: pre-wrap;
       max-height: 120px;
       overflow-y: auto;
+    }
+
+    /* DRAG-TO-REORDER */
+    body.is-reordering,
+    body.is-reordering .home-scroll,
+    body.is-reordering .card {
+      touch-action: none !important;
+      user-select: none !important;
+      -webkit-user-select: none !important;
+    }
+    .card.is-drag-slot {
+      background: rgba(255, 255, 255, 0.28) !important;
+      border: 2px dashed rgba(42, 59, 71, 0.28) !important;
+      box-shadow: none !important;
+    }
+    .card.is-drag-slot > * {
+      visibility: hidden;
+    }
+    .card-drag-clone {
+      position: fixed;
+      z-index: 260;
+      margin: 0;
+      pointer-events: none;
+      will-change: transform;
+      box-shadow: 0 22px 46px rgba(18, 28, 36, 0.28);
+      opacity: 1;
+      transition: none !important;
     }
 
     /* MODALS */
@@ -2617,6 +2645,32 @@
         return /^https?:\/\//i.test(s) ? s : '#';
       }
 
+      function formatCardDateTime(ts, fallbackTs) {
+        let d = null;
+        const src = ts || fallbackTs;
+        if (src && typeof src.toDate === 'function') {
+          d = src.toDate();
+        } else if (src && typeof src.seconds === 'number') {
+          d = new Date(src.seconds * 1000);
+        } else if (typeof src === 'number') {
+          d = new Date(src);
+        }
+        if (!d || isNaN(d.getTime())) d = new Date();
+
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = d.getFullYear();
+
+        const h24 = d.getHours();
+        const ampm = h24 >= 12 ? 'pm' : 'am';
+        let h12 = h24 % 12;
+        if (h12 === 0) h12 = 12;
+        const hh = String(h12).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+
+        return dd + '-' + mm + '-' + yyyy + ' | ' + hh + '-' + min + '-' + ampm;
+      }
+
       function buildCardElement(card, idx, isGuest) {
         const art = document.createElement('article');
         art.className = 'card' + (card.hidden ? ' is-hidden' : '');
@@ -2633,7 +2687,7 @@
 
         const badge = document.createElement('span');
         badge.className = 'badge';
-        badge.textContent = String(card.category || 'ITEM').toUpperCase();
+        badge.textContent = isGuest ? '00-00-0000 | 00-00-am' : formatCardDateTime(card.createdAt, card.updatedAt);
         thumb.appendChild(badge);
 
         if (card.hidden && !isGuest) {
@@ -2783,6 +2837,18 @@
           }
         });
         return max + 1;
+      };
+      window.pikazooReorderCards = async function (orderedIds) {
+        if (document.body.dataset.role !== 'owner') throw new Error('Owner only');
+        if (!Array.isArray(orderedIds) || !orderedIds.length) return;
+        const batch = writeBatch(db);
+        orderedIds.forEach((id, idx) => {
+          batch.update(doc(db, 'cards', id), {
+            order: idx,
+            updatedAt: serverTimestamp()
+          });
+        });
+        await batch.commit();
       };
 
       let isHookSyncing = false;
@@ -2956,7 +3022,9 @@
         unsubStoreFeed = trackUnsub(onSnapshot(q, (snap) => {
           const list = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
           window.pikazooCards = list;
-          renderAllCards(list);
+          if (!window.pikazooIsReordering) {
+            renderAllCards(list);
+          }
           if (mode === 'owner') syncPublicMetaIfNeeded(list);
         }, (err) => {
           console.warn('Cards listener error:', err);
@@ -3669,6 +3737,7 @@
       });
 
       window.addEventListener('pikazoo-force-guest', function (e) {
+        if (typeof cancelActiveReorder === 'function') cancelActiveReorder();
         if (typeof closeYtModal === 'function') closeYtModal();
         if (typeof closeConfirmDelete === 'function') closeConfirmDelete();
         if (typeof closeSettingsModal === 'function') closeSettingsModal();
@@ -4128,52 +4197,335 @@
         });
       }
 
-      /* STORE CLICK + OWNER LONG-PRESS */
+      /* STORE CLICK + OWNER LONG-PRESS + DRAG-TO-REORDER */
       var storeMainEl = $('#storeMain');
       var lpState = null;
       var lpFiredAt = 0;
+      var dragState = null;
+
+      function findTouchById(touchList, id) {
+        if (!touchList) return null;
+        for (var i = 0; i < touchList.length; i++) {
+          if (touchList[i].identifier === id) return touchList[i];
+        }
+        return null;
+      }
+
+      function cancelActiveReorder() {
+        if (lpState && lpState.timer) clearTimeout(lpState.timer);
+        lpState = null;
+        if (!dragState) return;
+        var st = dragState;
+        dragState = null;
+        window.pikazooIsReordering = false;
+        if (st.raf) cancelAnimationFrame(st.raf);
+        document.body.classList.remove('is-reordering');
+        if (st.clone && st.clone.parentNode) st.clone.parentNode.removeChild(st.clone);
+        st.card.classList.remove('is-drag-slot');
+        unlockScroll();
+      }
+
+      function updateDragSwap() {
+        if (!dragState || !dragState.clone) return;
+        var grid = dragState.grid;
+        var dragged = dragState.card;
+        var cards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+        var fromIdx = cards.indexOf(dragged);
+        if (fromIdx === -1) return;
+
+        var cloneRect = dragState.clone.getBoundingClientRect();
+        var centerX = cloneRect.left + cloneRect.width / 2;
+        var centerY = cloneRect.top + cloneRect.height / 2;
+
+        var target = null;
+        var targetIdx = -1;
+
+        for (var i = 0; i < fromIdx; i++) {
+          var upCard = cards[i];
+          var ur = upCard.getBoundingClientRect();
+          if (Math.abs(centerX - (ur.left + ur.width / 2)) < ur.width * 0.75 && centerY < ur.top + ur.height * 0.55) {
+            target = upCard;
+            targetIdx = i;
+            break;
+          }
+        }
+
+        if (!target) {
+          for (var j = cards.length - 1; j > fromIdx; j--) {
+            var dnCard = cards[j];
+            var dr = dnCard.getBoundingClientRect();
+            if (Math.abs(centerX - (dr.left + dr.width / 2)) < dr.width * 0.75 && centerY > dr.top + dr.height * 0.45) {
+              target = dnCard;
+              targetIdx = j;
+              break;
+            }
+          }
+        }
+
+        if (!target || targetIdx === -1 || targetIdx === fromIdx) return;
+
+        var prevPos = new Map();
+        cards.forEach(function (c) {
+          if (c !== dragged) {
+            var cr = c.getBoundingClientRect();
+            prevPos.set(c, { left: cr.left, top: cr.top });
+          }
+        });
+
+        if (targetIdx < fromIdx) {
+          grid.insertBefore(dragged, target);
+        } else {
+          grid.insertBefore(dragged, target.nextSibling);
+        }
+
+        cards.forEach(function (c) {
+          if (c === dragged) return;
+          var oldP = prevPos.get(c);
+          if (!oldP) return;
+          if (c._flipTimer) {
+            clearTimeout(c._flipTimer);
+            c._flipTimer = null;
+          }
+          c.style.transition = 'none';
+          c.style.transform = '';
+          var newR = c.getBoundingClientRect();
+          var dx = oldP.left - newR.left;
+          var dy = oldP.top - newR.top;
+          if (Math.abs(dx) < 1 && Math.abs(dy) < 1) return;
+          c.style.transform = 'translate3d(' + dx + 'px,' + dy + 'px,0)';
+          void c.offsetWidth;
+          c.style.transition = 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1)';
+          c.style.transform = 'translate3d(0,0,0)';
+          c._flipTimer = setTimeout(function () {
+            c.style.transition = '';
+            c.style.transform = '';
+            c._flipTimer = null;
+          }, 230);
+        });
+      }
+
+      function startAutoScrollLoop() {
+        function step() {
+          if (!dragState || !homeScroll) return;
+          var sr = homeScroll.getBoundingClientRect();
+          var cy = dragState.lastY;
+          var topZone = sr.top + 78;
+          var botZone = sr.bottom - 88;
+          var delta = 0;
+          if (cy < topZone) {
+            delta = -Math.min(14, Math.max(3, Math.round((topZone - cy) * 0.18)));
+          } else if (cy > botZone) {
+            delta = Math.min(14, Math.max(3, Math.round((cy - botZone) * 0.18)));
+          }
+          if (delta !== 0) {
+            var before = homeScroll.scrollTop;
+            homeScroll.scrollTop += delta;
+            if (homeScroll.scrollTop !== before) {
+              updateDragSwap(dragState.lastX, dragState.lastY);
+            }
+          }
+          dragState.raf = requestAnimationFrame(step);
+        }
+        dragState.raf = requestAnimationFrame(step);
+      }
+
+      function startDragReorder(state, cx, cy) {
+        var card = state.card;
+        var grid = card ? card.parentElement : null;
+        if (!card || !grid) return;
+        var allCards = Array.prototype.slice.call(grid.querySelectorAll('.card'));
+        if (allCards.length < 2) return;
+
+        window.pikazooIsReordering = true;
+        document.body.classList.add('is-reordering');
+        lockScroll();
+        closeOwnerAction();
+
+        var rect = card.getBoundingClientRect();
+        var cs = window.getComputedStyle(card);
+        var clone = card.cloneNode(true);
+        clone.className = 'card card-drag-clone';
+        clone.style.left = rect.left + 'px';
+        clone.style.top = rect.top + 'px';
+        clone.style.width = rect.width + 'px';
+        clone.style.height = rect.height + 'px';
+        clone.style.color = cs.color;
+        clone.style.backgroundColor = cs.backgroundColor;
+        clone.style.backgroundImage = cs.backgroundImage;
+        clone.style.transform = 'translate3d(' + (cx - state.x) + 'px,' + (cy - state.y) + 'px,0) scale(1.03)';
+        document.body.appendChild(clone);
+
+        card.classList.add('is-drag-slot');
+
+        dragState = {
+          mode: state.mode,
+          id: state.id,
+          card: card,
+          grid: grid,
+          clone: clone,
+          startX: state.x,
+          startY: state.y,
+          lastX: cx,
+          lastY: cy,
+          initialIds: allCards.map(function (el) { return el.dataset.id; }),
+          raf: null
+        };
+        startAutoScrollLoop();
+        updateDragSwap(cx, cy);
+      }
+
+      async function finishDragReorder() {
+        if (!dragState) return;
+        var st = dragState;
+        dragState = null;
+        window.pikazooIsReordering = false;
+        if (st.raf) cancelAnimationFrame(st.raf);
+        document.body.classList.remove('is-reordering');
+        if (st.clone && st.clone.parentNode) st.clone.parentNode.removeChild(st.clone);
+        st.card.classList.remove('is-drag-slot');
+        unlockScroll();
+
+        var newOrderIds = Array.prototype.slice.call(st.grid.querySelectorAll('.card')).map(function (el) {
+          return el.dataset.id;
+        }).filter(Boolean);
+
+        var changed = newOrderIds.length === st.initialIds.length && newOrderIds.some(function (id, idx) {
+          return id !== st.initialIds[idx];
+        });
+
+        if (!changed) return;
+
+        try {
+          await window.pikazooReorderCards(newOrderIds);
+          showToast('Order updated');
+        } catch (err) {
+          showToast('Order save failed');
+        }
+      }
+
+      function handleMoveInput(mode, id, cx, cy, rawEvent) {
+        if (dragState && dragState.mode === mode && dragState.id === id) {
+          if (rawEvent && rawEvent.cancelable) rawEvent.preventDefault();
+          dragState.lastX = cx;
+          dragState.lastY = cy;
+          dragState.clone.style.transform = 'translate3d(' + (cx - dragState.startX) + 'px,' + (cy - dragState.startY) + 'px,0) scale(1.03)';
+          updateDragSwap(cx, cy);
+          return;
+        }
+        if (!lpState || lpState.mode !== mode || lpState.id !== id) return;
+        var dist = Math.hypot(cx - lpState.x, cy - lpState.y);
+        if (!lpState.longPressed) {
+          if (dist > 10) {
+            clearTimeout(lpState.timer);
+            lpState = null;
+          }
+        } else {
+          if (rawEvent && rawEvent.cancelable) rawEvent.preventDefault();
+          if (dist > 8) {
+            var st = lpState;
+            lpState = null;
+            startDragReorder(st, cx, cy);
+          }
+        }
+      }
+
+      function handleEndInput(mode, id) {
+        if (dragState && dragState.mode === mode && dragState.id === id) {
+          finishDragReorder();
+          return;
+        }
+        if (lpState && lpState.mode === mode && lpState.id === id) {
+          clearTimeout(lpState.timer);
+          lpState = null;
+        }
+      }
+
+      window.addEventListener('touchmove', function (e) {
+        if (dragState && dragState.mode === 'touch') {
+          var dt = findTouchById(e.touches, dragState.id);
+          if (dt) handleMoveInput('touch', dragState.id, dt.clientX, dt.clientY, e);
+          return;
+        }
+        if (lpState && lpState.mode === 'touch') {
+          var lt = findTouchById(e.touches, lpState.id);
+          if (lt) handleMoveInput('touch', lpState.id, lt.clientX, lt.clientY, e);
+        }
+      }, { passive: false });
+
+      window.addEventListener('touchend', function (e) {
+        if (dragState && dragState.mode === 'touch' && findTouchById(e.changedTouches, dragState.id)) {
+          handleEndInput('touch', dragState.id);
+          return;
+        }
+        if (lpState && lpState.mode === 'touch' && findTouchById(e.changedTouches, lpState.id)) {
+          handleEndInput('touch', lpState.id);
+        }
+      }, { passive: true });
+
+      window.addEventListener('touchcancel', function (e) {
+        if (dragState && dragState.mode === 'touch' && findTouchById(e.changedTouches, dragState.id)) {
+          handleEndInput('touch', dragState.id);
+          return;
+        }
+        if (lpState && lpState.mode === 'touch' && findTouchById(e.changedTouches, lpState.id)) {
+          handleEndInput('touch', lpState.id);
+        }
+      }, { passive: true });
+
+      window.addEventListener('pointermove', function (e) {
+        if (e.pointerType !== 'mouse') return;
+        handleMoveInput('mouse', e.pointerId, e.clientX, e.clientY, e);
+      }, { passive: true });
+
+      function onGlobalMouseEnd(e) {
+        if (e.pointerType !== 'mouse') return;
+        handleEndInput('mouse', e.pointerId);
+      }
+      window.addEventListener('pointerup', onGlobalMouseEnd);
+      window.addEventListener('pointercancel', onGlobalMouseEnd);
+
+      function armLongPress(mode, id, card, x, y) {
+        if (lpState && lpState.timer) clearTimeout(lpState.timer);
+        var state = {
+          mode: mode,
+          id: id,
+          card: card,
+          cardId: card.dataset.id,
+          x: x,
+          y: y,
+          longPressed: false,
+          timer: null
+        };
+        state.timer = setTimeout(function () {
+          if (lpState !== state) return;
+          state.longPressed = true;
+          lpFiredAt = Date.now();
+          if (navigator.vibrate) { try { navigator.vibrate(18); } catch (err) {} }
+          openOwnerActionMenu(state.cardId);
+        }, 460);
+        lpState = state;
+      }
 
       if (storeMainEl) {
+        storeMainEl.addEventListener('touchstart', function (e) {
+          if (document.body.dataset.role !== 'owner') return;
+          if (!e.touches || e.touches.length !== 1) return;
+          if (e.target.closest('.dl')) return;
+          var card = e.target.closest('.card');
+          if (!card || !card.dataset.id) return;
+          var t = e.touches[0];
+          armLongPress('touch', t.identifier, card, t.clientX, t.clientY);
+        }, { passive: true });
+
         storeMainEl.addEventListener('pointerdown', function (e) {
+          if (e.pointerType !== 'mouse') return;
           if (document.body.dataset.role !== 'owner') return;
           if (e.button && e.button !== 0) return;
           if (e.target.closest('.dl')) return;
           var card = e.target.closest('.card');
           if (!card || !card.dataset.id) return;
-
-          if (lpState && lpState.timer) clearTimeout(lpState.timer);
-          var state = {
-            id: e.pointerId,
-            cardId: card.dataset.id,
-            x: e.clientX,
-            y: e.clientY,
-            timer: null
-          };
-          state.timer = setTimeout(function () {
-            if (lpState !== state) return;
-            lpState = null;
-            lpFiredAt = Date.now();
-            if (navigator.vibrate) { try { navigator.vibrate(18); } catch (err) {} }
-            openOwnerActionMenu(state.cardId);
-          }, 460);
-          lpState = state;
+          armLongPress('mouse', e.pointerId, card, e.clientX, e.clientY);
         }, { passive: true });
-
-        storeMainEl.addEventListener('pointermove', function (e) {
-          if (!lpState || e.pointerId !== lpState.id) return;
-          if (Math.hypot(e.clientX - lpState.x, e.clientY - lpState.y) > 10) {
-            clearTimeout(lpState.timer);
-            lpState = null;
-          }
-        }, { passive: true });
-
-        function cancelLongPress(e) {
-          if (!lpState || e.pointerId !== lpState.id) return;
-          clearTimeout(lpState.timer);
-          lpState = null;
-        }
-        storeMainEl.addEventListener('pointerup', cancelLongPress);
-        storeMainEl.addEventListener('pointercancel', cancelLongPress);
 
         storeMainEl.addEventListener('contextmenu', function (e) {
           if (document.body.dataset.role === 'owner' && e.target.closest('.card')) {
