@@ -1,7 +1,7 @@
 /* Pikazoo Premium - Service Worker
    IMPORTANT: Jab bhi index.html ya koi file update karo, neeche VERSION ka number badal do.
    Phir sab members ko "Update available" notification aa jayegi aur app khud refresh hogi. */
-const VERSION = 'v1.0.1';
+const VERSION = 'v1.0.3';
 
 const SHELL_CACHE = 'pz-shell-' + VERSION;
 const IMG_CACHE = 'pz-img-v1';      // images har update ke baad bhi save rehti hain
@@ -61,7 +61,7 @@ async function navigate(req) {
   const c = await caches.open(SHELL_CACHE);
   try {
     const res = await Promise.race([
-      fetch(req),
+      fetch(req.url, { cache: 'no-cache' }),
       new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), 4000))
     ]);
     if (res && res.ok) c.put('./index.html', res.clone()).catch(() => {});

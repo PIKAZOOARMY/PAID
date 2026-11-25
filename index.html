@@ -7114,6 +7114,30 @@
       }, 650);
     }
 
+    /* ---------- Auto update check ---------- */
+    var pageSig = '', pendingSig = '';
+    function pageSignature() {
+      return fetch('./index.html', { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+        if (!r.ok) throw new Error('x');
+        return r.headers.get('etag') || r.headers.get('last-modified') || '';
+      });
+    }
+    function checkPage() {
+      if (updating || applying) return;
+      pageSignature().then(function (s) {
+        if (!s) return;
+        if (!pageSig) { pageSig = s; return; }
+        if (s === pageSig) { pendingSig = ''; return; }
+        if (s === pendingSig) promptUpdate({ postMessage: function () {} });
+        else pendingSig = s;
+      }).catch(function () {});
+    }
+    window.addEventListener('load', function () { setTimeout(checkPage, 3000); });
+    setInterval(checkPage, 60000);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible') checkPage();
+    });
+
     /* ---------- Service Worker ---------- */
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.addEventListener('controllerchange', function () {
@@ -7184,13 +7208,22 @@
     }
   }
   function useSrc(u) { state = 2; v.src = u; v.load(); sync(); }
+  function refreshIfChanged(c, hit) {
+    var old = hit.headers.get('etag');
+    if (!old || !window.fetch) return;
+    fetch(VIDEO, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) { c.delete(VIDEO); return; }
+      var now = r.headers.get('etag');
+      if (r.ok && now && now !== old) c.delete(VIDEO);
+    }).catch(function () {});
+  }
   function start() {
     if (state) return;
     state = 1;
     if (!window.caches || !window.fetch) { useSrc(VIDEO); return; }
     caches.open(CACHE).then(function (c) {
       return c.match(VIDEO).then(function (hit) {
-        if (hit) return hit;
+        if (hit) { refreshIfChanged(c, hit); return hit; }
         return fetch(VIDEO).then(function (res) {
           if (!res.ok) throw new Error('video');
           c.put(VIDEO, res.clone()).catch(function () {});
