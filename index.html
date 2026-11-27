@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#FEB80D" />
+  <meta id="meta-theme-color" name="theme-color" content="#F7F7F9" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Pikazoo Premium" />
   <link rel="manifest" href="./manifest.json" />
@@ -416,16 +417,13 @@
        SCREEN 2: SIGN IN
     ============================ */
     .screen-signin {
-      background: var(--off-white);
+      background: var(--amber);
       display: flex;
       flex-direction: column;
     }
     .signin-video-wrap {
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: -80px;
+      inset: 0;
       z-index: 0;
       overflow: hidden;
       background: var(--amber);
@@ -440,7 +438,7 @@
       transition: opacity 0.9s ease;
     }
     .signin-video.is-on { opacity: 1; }
-    .signin-amber-top > div:not(.signin-video-wrap) {
+    .signin-amber-top {
       position: relative;
       z-index: 1;
     }
@@ -485,10 +483,17 @@
     }
     .signin-header {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
       margin-top: 8px;
+      padding: 14px 18px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.58);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      box-shadow: 0 8px 24px rgba(11, 11, 13, 0.12);
     }
     .signin-title {
       margin: 0;
@@ -508,15 +513,19 @@
 
     .signin-doodle-wrap {
       flex-shrink: 0;
-      width: 92px;
-      height: 80px;
-      margin-top: -12px;
-      margin-right: -4px;
+      width: 82px;
+      height: 70px;
+      margin-top: 0;
+      margin-right: 0;
       transform: scale(0.86);
       opacity: 0;
       transition:
         transform 0.5s var(--ease-pop) 0.14s,
         opacity 0.4s ease 0.14s;
+    }
+    .signin-doodle-wrap svg {
+      width: 100%;
+      height: 100%;
     }
     .screen.is-animated .signin-doodle-wrap {
       transform: scale(1);
@@ -542,10 +551,13 @@
       align-items: center;
       width: 100%;
       height: 54px;
-      background: var(--white);
+      background: rgba(255, 255, 255, 0.56);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: 999px;
       padding: 0 20px;
-      box-shadow: 0 6px 18px rgba(11, 11, 13, 0.06);
+      box-shadow: 0 8px 22px rgba(11, 11, 13, 0.1);
       transform: translate3d(0, 14px, 0);
       opacity: 0;
       transition:
@@ -589,7 +601,7 @@
       outline: none;
     }
     .pill-input::placeholder {
-      color: var(--muted);
+      color: rgba(11, 11, 13, 0.62);
       font-weight: 500;
       font-size: 15px;
     }
@@ -598,7 +610,7 @@
       background: none;
       padding: 8px;
       margin-right: -8px;
-      color: var(--muted);
+      color: rgba(11, 11, 13, 0.72);
       cursor: pointer;
       display: flex;
       flex: none;
@@ -646,8 +658,11 @@
       letter-spacing: 0.02em;
       color: #fff;
       cursor: pointer;
-      background: linear-gradient(110deg, #0B0B0D 0%, #2C2C34 50%, #0B0B0D 100%);
-      box-shadow: 0 8px 20px rgba(11, 11, 13, 0.2);
+      background: rgba(11, 11, 13, 0.56);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 8px 22px rgba(11, 11, 13, 0.22);
       opacity: 0;
       transform: translate3d(0, 14px, 0);
       transition: transform 0.46s var(--ease-slow) 0.24s, opacity 0.4s ease 0.24s;
@@ -669,14 +684,16 @@
       width: 58px;
       height: 58px;
       border-radius: 50%;
-      border: none;
-      background: var(--black);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(11, 11, 13, 0.6);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
       color: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 22px rgba(11, 11, 13, 0.18);
+      box-shadow: 0 10px 24px rgba(11, 11, 13, 0.22);
       transform: scale(0.86);
       opacity: 0;
       transition:
@@ -691,12 +708,7 @@
     .circle-submit-btn:disabled { cursor: wait; opacity: 0.88; }
 
     .brush-divider-wrap {
-      position: relative;
-      width: 100%;
-      height: 84px;
-      margin-top: -1px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 84' preserveAspectRatio='none'%3E%3Cpath d='M0 84H400V12C392 14 384 18 377 16C372 23 360 22 352 27C347 21 339 29 331 28C323 33 314 27 308 34C299 30 291 38 282 35C274 42 263 36 256 42C247 38 238 45 229 43C221 49 211 43 204 50C193 45 186 54 176 51C168 57 157 52 149 58C139 54 132 62 121 59C113 66 101 60 94 67C83 62 75 70 64 67C56 73 44 68 37 74C26 70 17 77 7 75L0 77V84Z' fill='%23F7F7F9'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
-      flex-shrink: 0;
+      display: none;
     }
     .brush-divider-svg {
       display: none;
@@ -705,17 +717,24 @@
     }
 
     .signin-bottom {
-      background: var(--off-white);
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.44);
+      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(255, 255, 255, 0.65);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -8px 26px rgba(11, 11, 13, 0.12);
       padding:
-        12px
+        16px
         calc(var(--safe-right) + 24px)
-        calc(var(--safe-bottom) + 32px)
+        calc(var(--safe-bottom) + 28px)
         calc(var(--safe-left) + 24px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 112px;
+      min-height: 98px;
       gap: 8px;
     }
 
@@ -2385,11 +2404,11 @@
 
       <!-- SCREEN 2: SIGN IN -->
       <section id="screen-signin" class="screen screen-signin" aria-label="Sign in">
+        <div class="signin-video-wrap" aria-hidden="true">
+          <video id="signin-video" class="signin-video" loop playsinline preload="auto" disablepictureinpicture></video>
+        </div>
+        <button id="signin-sound" class="signin-sound" type="button"></button>
         <div class="signin-amber-top">
-          <div class="signin-video-wrap" aria-hidden="true">
-            <video id="signin-video" class="signin-video" loop playsinline preload="auto" disablepictureinpicture></video>
-          </div>
-          <button id="signin-sound" class="signin-sound" type="button"></button>
           <div>
             <div class="signin-header">
               <div>
@@ -7192,110 +7211,329 @@
   var v = document.getElementById('signin-video');
   var btn = document.getElementById('signin-sound');
   if (!scr || !v || !btn) return;
+
   var VIDEO = './source/login-bg.mp4';
+  var VIDEO_URL = (function () {
+    try { return new URL(VIDEO, location.href).href; } catch (e) { return VIDEO; }
+  })();
   var CACHE = 'pz-media-v1';
-  var state = 0;
+  var state = 0; // 0 = idle, 1 = loading, 2 = ready
+  var blobUrl = '';
+  var retryTimer = null;
+  var winFocused = true;
+  var userMuted = false;
+  var autoMuted = false;
+
   var ICON_OFF = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>';
   var ICON_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
 
+  function isAppActive() {
+    return scr.classList.contains('is-active') &&
+      !document.hidden &&
+      document.visibilityState === 'visible' &&
+      winFocused;
+  }
+
+  function paint() {
+    var showMuted = userMuted || autoMuted || v.muted;
+    btn.innerHTML = showMuted ? ICON_OFF : ICON_ON;
+    btn.setAttribute('aria-label', showMuted ? 'Sound on karo' : 'Sound band karo');
+  }
+
+  function hardStopVideo() {
+    try { v.pause(); } catch (e) {}
+    v.muted = true;
+  }
+
   function sync() {
+    if (!isAppActive()) {
+      hardStopVideo();
+      return;
+    }
     if (state !== 2) return;
-    if (scr.classList.contains('is-active') && !document.hidden) {
-      var p = v.play();
-      if (p && p.catch) p.catch(function () {
+    v.muted = userMuted || autoMuted;
+    v.volume = 1;
+    var p = v.play();
+    if (p && typeof p.then === 'function') {
+      p.then(function () {
+        if (!isAppActive()) hardStopVideo();
+        else paint();
+      }).catch(function () {
+        if (!isAppActive()) { hardStopVideo(); return; }
         if (!v.muted) {
           v.muted = true;
           autoMuted = true;
           paint();
           var p2 = v.play();
-          if (p2 && p2.catch) p2.catch(function () {});
+          if (p2 && typeof p2.then === 'function') {
+            p2.then(function () { if (!isAppActive()) hardStopVideo(); }).catch(function () {});
+          }
         }
       });
-    } else {
-      v.pause();
     }
   }
-  function useSrc(u) { state = 2; v.src = u; v.load(); sync(); }
+
+  function useSrc(u) {
+    if (blobUrl && blobUrl !== u) {
+      try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+    }
+    blobUrl = /^blob:/.test(u) ? u : '';
+    state = 2;
+    v.src = u;
+    v.load();
+    sync();
+  }
+
+  function scheduleRetry() {
+    clearTimeout(retryTimer);
+    if (state === 2) return;
+    retryTimer = setTimeout(function () {
+      if (state === 0 && navigator.onLine !== false) start();
+    }, 3000);
+  }
+
   function refreshIfChanged(c, hit) {
     var old = hit.headers.get('etag');
     if (!old || !window.fetch) return;
-    fetch(VIDEO, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
-      if (r.status === 404) { c.delete(VIDEO); return; }
+    fetch(VIDEO_URL, { method: 'HEAD', cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) { c.delete(VIDEO_URL); c.delete(VIDEO); return; }
       var now = r.headers.get('etag');
-      if (r.ok && now && now !== old) c.delete(VIDEO);
+      if (r.ok && now && now !== old) {
+        c.delete(VIDEO_URL);
+        c.delete(VIDEO);
+      }
     }).catch(function () {});
   }
-  function start() {
-    if (state) return;
-    state = 1;
-    if (!window.caches || !window.fetch) { useSrc(VIDEO); return; }
-    caches.open(CACHE).then(function (c) {
-      return c.match(VIDEO).then(function (hit) {
-        if (hit) { refreshIfChanged(c, hit); return hit; }
-        return fetch(VIDEO).then(function (res) {
-          if (!res.ok) throw new Error('video');
-          c.put(VIDEO, res.clone()).catch(function () {});
-          return res;
-        });
-      });
-    }).then(function (res) { return res.blob(); })
-      .then(function (b) { useSrc(URL.createObjectURL(b)); })
-      .catch(function () { useSrc(VIDEO); });
+
+  function matchCachedVideo(c) {
+    return c.match(VIDEO_URL).then(function (hit) {
+      return hit || c.match(VIDEO);
+    });
   }
 
-  var triedDirect = false;
+  function start() {
+    if (state === 1 || state === 2) return;
+    state = 1;
+    clearTimeout(retryTimer);
+
+    if (!window.caches || !window.fetch) {
+      useSrc(VIDEO);
+      return;
+    }
+
+    caches.open(CACHE).then(function (c) {
+      return matchCachedVideo(c).then(function (hit) {
+        if (hit && hit.ok && hit.status === 200) {
+          return hit.blob().then(function (b) {
+            if (b && b.size > 1024) {
+              refreshIfChanged(c, hit);
+              return b;
+            }
+            return Promise.all([c.delete(VIDEO_URL), c.delete(VIDEO)]).then(function () {
+              return null;
+            });
+          });
+        }
+        return null;
+      }).then(function (cachedBlob) {
+        if (cachedBlob) return cachedBlob;
+        return fetch(VIDEO_URL, { cache: 'reload' }).then(function (res) {
+          if (!res.ok || res.status === 206) throw new Error('video_fetch_bad');
+          var ct = res.headers.get('content-type') || 'video/mp4';
+          var et = res.headers.get('etag');
+          return res.blob().then(function (b) {
+            if (!b || b.size < 1024) throw new Error('video_empty');
+            var hdrs = { 'Content-Type': ct };
+            if (et) hdrs['ETag'] = et;
+            return c.put(VIDEO_URL, new Response(b, { status: 200, headers: hdrs }))
+              .catch(function () {})
+              .then(function () { return b; });
+          });
+        });
+      });
+    }).then(function (b) {
+      useSrc(URL.createObjectURL(b));
+    }).catch(function () {
+      state = 0;
+      if (scr.classList.contains('is-active')) {
+        v.src = VIDEO;
+        v.load();
+        v.play().catch(function () {});
+        scheduleRetry();
+      }
+    });
+  }
+
+  v.addEventListener('play', function () {
+    if (!isAppActive()) hardStopVideo();
+  });
   v.addEventListener('playing', function () {
+    if (!isAppActive()) { hardStopVideo(); return; }
     v.classList.add('is-on');
     btn.classList.add('is-on');
+    syncThemeColor();
   });
   v.addEventListener('error', function () {
     v.classList.remove('is-on');
     btn.classList.remove('is-on');
-    if (!triedDirect && /^blob:/.test(v.src)) {
-      triedDirect = true;
+    if (/^blob:/.test(v.src) && window.caches) {
+      caches.open(CACHE).then(function (c) {
+        c.delete(VIDEO_URL);
+        c.delete(VIDEO);
+      }).catch(function () {});
+      state = 0;
       v.src = VIDEO;
       v.load();
-      sync();
+      scheduleRetry();
     }
+    syncThemeColor();
   });
 
-  v.muted = false;
-  function paint() {
-    btn.innerHTML = v.muted ? ICON_OFF : ICON_ON;
-    btn.setAttribute('aria-label', v.muted ? 'Sound on karo' : 'Sound band karo');
-  }
   btn.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();
     autoMuted = false;
-    v.muted = !v.muted;
-    if (!v.muted) {
+    userMuted = !userMuted;
+    v.muted = userMuted;
+    if (!userMuted && isAppActive()) {
       v.volume = 1;
-      var p = v.play();
-      if (p && p.catch) p.catch(function () {});
+      v.play().catch(function () {});
     }
     paint();
   });
   paint();
 
-  var autoMuted = false;
   scr.addEventListener('pointerdown', function (e) {
     if (!autoMuted || btn.contains(e.target)) return;
     autoMuted = false;
+    userMuted = false;
     v.muted = false;
     paint();
-    var p3 = v.play();
-    if (p3 && p3.catch) p3.catch(function () {});
+    if (isAppActive()) v.play().catch(function () {});
+  });
+
+  /* ---------- Dynamic Status Bar & Gesture Bar Color Sync ---------- */
+  var metaTheme = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
+  var curtainEl = document.getElementById('curtain');
+  var scrWelcome = document.getElementById('screen-welcome');
+  var scrHome = document.getElementById('screen-home');
+  var sheetEl = document.getElementById('sheet');
+  var drawerEl = document.getElementById('drawer');
+  var sampleCanvas = document.createElement('canvas');
+  sampleCanvas.width = 4;
+  sampleCanvas.height = 4;
+  var sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+  var lastThemeColor = '';
+
+  function setThemeColor(hex) {
+    if (!metaTheme || !hex || hex === lastThemeColor) return;
+    lastThemeColor = hex;
+    metaTheme.setAttribute('content', hex);
+  }
+
+  function toHex(n) {
+    var h = Math.max(0, Math.min(255, Math.round(n))).toString(16);
+    return h.length === 1 ? '0' + h : h;
+  }
+
+  function sampleVideoColor() {
+    if (!sampleCtx || v.readyState < 2 || !v.videoWidth || !v.videoHeight) return '';
+    try {
+      sampleCtx.drawImage(v, 0, 0, 4, 4);
+      var d = sampleCtx.getImageData(0, 0, 4, 4).data;
+      var r = 0, g = 0, b = 0, c = d.length / 4;
+      for (var i = 0; i < d.length; i += 4) {
+        r += d[i]; g += d[i + 1]; b += d[i + 2];
+      }
+      r /= c; g /= c; b /= c;
+      // Blend 20% soft light glass tint
+      r = r * 0.8 + 255 * 0.2;
+      g = g * 0.8 + 255 * 0.2;
+      b = b * 0.8 + 255 * 0.2;
+      return '#' + toHex(r) + toHex(g) + toHex(b);
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function syncThemeColor() {
+    if (curtainEl && !curtainEl.classList.contains('is-wiped-up')) {
+      setThemeColor('#FEB80D');
+      return;
+    }
+    if (scr.classList.contains('is-active')) {
+      if (sheetEl && sheetEl.classList.contains('is-open')) {
+        setThemeColor('#8E8E93');
+        return;
+      }
+      if (v.classList.contains('is-on')) {
+        var vc = sampleVideoColor();
+        setThemeColor(vc || '#1C1C22');
+      } else {
+        setThemeColor('#FEB80D');
+      }
+      return;
+    }
+    if (scrHome && scrHome.classList.contains('is-active')) {
+      var hasOverlay = (drawerEl && drawerEl.classList.contains('open')) || document.querySelector('.modal.show');
+      setThemeColor(hasOverlay ? '#8A99A1' : '#DCEEF0');
+      return;
+    }
+    if (scrWelcome && scrWelcome.classList.contains('is-active')) {
+      setThemeColor('#F7F7F9');
+    }
+  }
+
+  setInterval(function () {
+    if (scr.classList.contains('is-active') && v.classList.contains('is-on') && !document.hidden) {
+      syncThemeColor();
+    }
+  }, 600);
+
+  var classObs = new MutationObserver(function () {
+    if (scr.classList.contains('is-active')) start();
+    sync();
+    syncThemeColor();
+  });
+  [curtainEl, scrWelcome, scr, scrHome, sheetEl, drawerEl].forEach(function (el) {
+    if (el) classObs.observe(el, { attributes: true, attributeFilter: ['class'] });
+  });
+  document.querySelectorAll('.modal').forEach(function (m) {
+    classObs.observe(m, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || document.visibilityState !== 'visible') hardStopVideo();
+    else {
+      if (scr.classList.contains('is-active')) start();
+      sync();
+    }
+  });
+  window.addEventListener('pagehide', hardStopVideo);
+  window.addEventListener('freeze', hardStopVideo);
+  window.addEventListener('blur', function () {
+    winFocused = false;
+    hardStopVideo();
+  });
+  window.addEventListener('focus', function () {
+    winFocused = true;
+    if (scr.classList.contains('is-active')) start();
+    sync();
+  });
+  window.addEventListener('pageshow', function () {
+    winFocused = true;
+    if (scr.classList.contains('is-active')) start();
+    sync();
+    syncThemeColor();
+  });
+  window.addEventListener('online', function () {
+    if (state !== 2) start();
   });
 
   var saved = null;
   try { saved = window.localStorage.getItem('pikazoo_premium_user_v1'); } catch (e) {}
   if (!saved) setTimeout(start, 600);
-  new MutationObserver(function () {
-    if (scr.classList.contains('is-active')) start();
-    sync();
-  }).observe(scr, { attributes: true, attributeFilter: ['class'] });
-  document.addEventListener('visibilitychange', sync);
+  syncThemeColor();
 })();
 </script>
 </body>
