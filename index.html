@@ -82,15 +82,34 @@
       touch-action: manipulation;
     }
 
+    * { scrollbar-width: none; -ms-overflow-style: none; }
+    *::-webkit-scrollbar { display: none; }
+
+    html, body, .phone-stage {
+      overscroll-behavior: none;
+    }
+
     input, textarea, .keybox, .key-val {
       user-select: text;
       -webkit-user-select: text;
       -webkit-touch-callout: default;
     }
 
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus {
+      -webkit-text-fill-color: var(--black);
+      transition: background-color 99999s ease-in-out 0s;
+    }
+
     button, a {
       font-family: inherit;
       touch-action: manipulation;
+      -webkit-user-drag: none;
+    }
+
+    button:focus, a:focus, [tabindex]:focus {
+      outline: none;
     }
 
     img {
@@ -148,8 +167,8 @@
       pointer-events: none;
       backface-visibility: hidden;
       transition:
-        transform 0.44s var(--ease-slow),
-        opacity 0.36s ease;
+        transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1),
+        opacity 0.2s ease;
     }
     .screen::-webkit-scrollbar { display: none; }
 
@@ -187,8 +206,7 @@
       justify-content: center;
       pointer-events: all;
       transform: translate3d(0, 0, 0);
-      will-change: transform;
-      transition: transform 0.52s var(--ease-slow);
+      transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
     .curtain.is-wiped-up {
       transform: translate3d(0, -104%, 0);
@@ -202,6 +220,7 @@
     .curtain.is-covering {
       transform: translate3d(0, 0, 0);
       pointer-events: all;
+      will-change: transform;
     }
 
     .curtain-mark {
@@ -223,34 +242,34 @@
       transform: translate3d(0, 108%, 0);
       opacity: 0;
       transition:
-        transform 0.55s var(--ease-slow),
-        opacity 0.45s ease;
+        transform 0.28s cubic-bezier(0.2, 0.9, 0.3, 1),
+        opacity 0.22s ease;
     }
     .screen.is-animated .mask-inner {
       transform: translate3d(0, 0, 0);
       opacity: 1;
     }
 
-    .delay-1 { transition-delay: 0.06s; }
-    .delay-2 { transition-delay: 0.12s; }
-    .delay-3 { transition-delay: 0.2s; }
-    .delay-4 { transition-delay: 0.26s; }
+    .delay-1 { transition-delay: 0.02s; }
+    .delay-2 { transition-delay: 0.05s; }
+    .delay-3 { transition-delay: 0.08s; }
+    .delay-4 { transition-delay: 0.11s; }
 
     /* Brush Wipe Left-to-Right */
     .brush-reveal-outer {
       overflow: hidden;
       transform: translate3d(-102%, 0, 0);
-      transition: transform 0.65s var(--ease-slow);
+      transition: transform 0.34s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
     .brush-reveal-inner {
       transform: translate3d(102%, 0, 0);
-      transition: transform 0.65s var(--ease-slow);
+      transition: transform 0.34s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
     .screen.is-animated .brush-reveal-outer,
     .screen.is-animated .brush-reveal-inner {
       transform: translate3d(0, 0, 0);
     }
-    .screen.is-animated .brush-delay { transition-delay: 0.1s; }
+    .screen.is-animated .brush-delay { transition-delay: 0.04s; }
 
     /* ============================
        SCREEN 1: WELCOME
@@ -317,8 +336,8 @@
       transform: scale(0.8) translate3d(0, 10px, 0);
       opacity: 0;
       transition:
-        transform 0.55s var(--ease-pop) 0.18s,
-        opacity 0.4s ease 0.18s;
+        transform 0.32s var(--ease-pop) 0.06s,
+        opacity 0.24s ease 0.06s;
     }
     .screen.is-animated .plate-wrap {
       transform: scale(1) translate3d(0, 0, 0);
@@ -414,141 +433,6 @@
     }
 
     /* ============================
-       LIQUID GLASS CORE LAYERS
-    ============================ */
-    :where(.lg-host, .lg-cover) {
-      --lg-r: 30px;
-      --lg-dark: 0;
-      --lg-spec: calc(0.13 + 0.25 * var(--lg-dark));
-      --lg-glint-exp: calc(1.35 + 0.1 * var(--lg-dark));
-      --lg-glint-sat: calc(3.1 - 1.1 * var(--lg-dark));
-      --lg-rim-exp: calc(0.84 + 0.41 * var(--lg-dark));
-      --lg-rim-sat: calc(2.2 - 0.9 * var(--lg-dark));
-      --lg-underlay: calc(0.14 - 0.11 * var(--lg-dark));
-      --lg-shadow-o: calc(0.35 * (1 - var(--lg-dark)));
-      --lg-caustic-o: calc(0.7 * (1 - var(--lg-dark)));
-    }
-    :where(.lg-host) { position: relative; }
-    .lg-cover { pointer-events: none; }
-    .lg-host[data-lg-dark] { --lg-dark: 1; }
-    .lg-host[data-lg-dark] + .lg-cover { --lg-dark: 1; }
-    .lg-host::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      box-sizing: border-box;
-      pointer-events: none;
-      border: calc(7px * var(--lg-s, 1)) solid var(--lg-shadow, oklch(0.24 0.05 236.8));
-      transform: translateY(calc(26px * var(--lg-s, 1))) scaleX(0.93);
-      filter: blur(calc(17px * var(--lg-s, 1)));
-      opacity: var(--lg-shadow-o, 0.35);
-    }
-    .lg-host > :where(:not(.lg-layer, .lg-defs)) {
-      position: relative;
-      z-index: 2;
-    }
-    .lg-layer {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-    }
-    .lg-tick {
-      pointer-events: none;
-      background: rgb(128 128 128 / 0.004);
-    }
-    .lg-tick[data-tick] {
-      background: rgb(128 128 128 / 0.008);
-    }
-    .lg-defs {
-      position: absolute;
-      width: 0;
-      height: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .lg-reflect {
-      z-index: 1;
-      border-radius: 0;
-    }
-    .lg-caustic {
-      transform: translateY(calc(12px * var(--lg-s, 1))) scale(0.86);
-      filter: blur(calc(10px * var(--lg-s, 1)));
-    }
-    .lg-caustic-ring {
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      box-sizing: border-box;
-      border: calc(9px * var(--lg-s, 1)) solid var(--lg-caustic, #fff);
-      opacity: var(--lg-caustic-o, 0.7);
-      mask-image:
-        radial-gradient(70% 120% at 78% 0%, rgb(0 0 0 / 0.58) 0%, rgb(0 0 0 / 0.42) 35%, rgb(0 0 0 / 0.18) 62%, transparent 85%),
-        radial-gradient(70% 120% at 22% 100%, rgb(0 0 0 / 0.58) 0%, rgb(0 0 0 / 0.42) 35%, rgb(0 0 0 / 0.18) 62%, transparent 85%),
-        linear-gradient(rgb(0 0 0 / 0.4) 0 0);
-      mask-composite: add, add;
-    }
-    .lg-pane {
-      transform: translateZ(0);
-      background-image: linear-gradient(var(--lg-tint, transparent), var(--lg-tint, transparent));
-    }
-    .lg-edge {
-      z-index: 1;
-      transform: translateZ(0);
-      --w: calc(var(--lg-rim-w, 0.7px) * var(--lg-s, 1));
-      --d: calc(var(--lg-rim-fade, 2px) * var(--lg-s, 1));
-      --r: var(--lg-r);
-      mask-image:
-        var(--lg-arc),
-        linear-gradient(to bottom, #000 var(--w), transparent var(--d)),
-        linear-gradient(to top, #000 var(--w), transparent var(--d)),
-        linear-gradient(to right, #000 var(--w), transparent var(--d)),
-        linear-gradient(to left, #000 var(--w), transparent var(--d)),
-        radial-gradient(circle var(--r) at 100% 100%, transparent calc(var(--r) - var(--d)), #000 calc(var(--r) - var(--w))),
-        radial-gradient(circle var(--r) at 0 100%, transparent calc(var(--r) - var(--d)), #000 calc(var(--r) - var(--w))),
-        radial-gradient(circle var(--r) at 100% 0, transparent calc(var(--r) - var(--d)), #000 calc(var(--r) - var(--w))),
-        radial-gradient(circle var(--r) at 0 0, transparent calc(var(--r) - var(--d)), #000 calc(var(--r) - var(--w)));
-      mask-size:
-        auto,
-        calc(100% - 2 * var(--r)) 100%,
-        calc(100% - 2 * var(--r)) 100%,
-        100% calc(100% - 2 * var(--r)),
-        100% calc(100% - 2 * var(--r)),
-        var(--r) var(--r), var(--r) var(--r), var(--r) var(--r), var(--r) var(--r);
-      mask-position:
-        0 0,
-        var(--r) 0,
-        var(--r) 100%,
-        0 var(--r),
-        100% var(--r),
-        0 0, 100% 0, 0 100%, 100% 100%;
-      mask-repeat: no-repeat;
-      mask-composite: intersect, add, add, add, add, add, add, add, add;
-    }
-    .lg-edge[data-ring] {
-      mask-image: var(--lg-arc), var(--lg-ring);
-      mask-size: auto, 100% 100%;
-      mask-position: 0 0, 0 0;
-      mask-composite: intersect, add;
-    }
-    .lg-fold {
-      --lg-arc: linear-gradient(#000 0 0);
-      --w: 0px;
-      --d: calc(var(--lg-r) * var(--lg-fold-k, 0.39));
-    }
-    .lg-glint { --lg-arc: var(--lg-arc-glint); }
-    .lg-rim { --lg-arc: var(--lg-arc-rim); }
-    .lg-spec {
-      background: rgb(255 255 255 / var(--lg-spec, 0.13));
-      --lg-arc: var(--lg-arc-glint);
-    }
-    .lg-underlay {
-      z-index: 1;
-      background-color: rgb(255 255 255 / var(--lg-underlay, 0.14));
-    }
-
-    /* ============================
        SCREEN 2: SIGN IN
     ============================ */
     .screen-signin {
@@ -570,10 +454,9 @@
       display: block;
       opacity: 0;
       pointer-events: none;
-      transform: translateZ(0);
-      will-change: opacity;
       transition: opacity 0.25s ease;
     }
+    .screen-signin.is-active .signin-video { transform: translateZ(0); }
     .signin-video.is-on { opacity: 1; }
     .signin-amber-top {
       position: relative;
@@ -589,30 +472,23 @@
       padding: 0;
       border: 0;
       border-radius: 50%;
-      background: transparent;
+      background: rgba(255, 255, 255, 0.82);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       opacity: 0;
       pointer-events: none;
-      --lg-s: 0.65;
-      --lg-tint: rgba(255, 255, 255, 0.22);
-      --lg-underlay: 0.22;
-      --lg-caustic-o: 0.35;
       transition: opacity 0.9s ease;
     }
-    .signin-sound > #signin-sound-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .signin-sound + .lg-cover { transition: opacity 0.9s ease; }
-    .signin-sound:not(.is-on) + .lg-cover { opacity: 0; pointer-events: none; }
     .signin-sound.is-on {
       opacity: 1;
       pointer-events: auto;
     }
+    .signin-sound:active { transform: scale(0.9); }
     .signin-amber-top {
       position: relative;
       background: transparent;
@@ -692,34 +568,31 @@
       align-items: center;
       width: 100%;
       height: 54px;
-      background: transparent;
-      border: 0;
+      background: rgba(255, 255, 255, 0.62);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.76);
       border-radius: 999px;
       padding: 0 20px;
-      top: 14px;
+      box-shadow: 0 6px 16px rgba(11, 11, 13, 0.09);
+      transform: translate3d(0, 14px, 0);
       opacity: 0;
-      --lg-s: 0.9;
-      --lg-tint: rgba(255, 255, 255, 0.16);
-      --lg-underlay: 0.14;
       transition:
-        top 0.46s var(--ease-slow),
-        opacity 0.4s ease,
-        outline-color 0.2s ease;
+        transform 0.24s cubic-bezier(0.2, 0.9, 0.3, 1),
+        opacity 0.2s ease,
+        box-shadow 0.15s ease;
     }
-    .screen:not(.is-animated) .pill-input-wrap + .lg-cover { opacity: 0; }
-    .pill-input-wrap + .lg-cover { transition: opacity 0.4s ease; }
     .screen.is-animated .pill-input-wrap {
-      top: 0;
+      transform: translate3d(0, 0, 0);
       opacity: 1;
     }
-    .screen.is-animated .field-group:nth-child(1) .pill-input-wrap,
-    .screen.is-animated .field-group:nth-child(1) .pill-input-wrap + .lg-cover { transition-delay: 0.14s; }
-    .screen.is-animated .field-group:nth-child(2) .pill-input-wrap,
-    .screen.is-animated .field-group:nth-child(2) .pill-input-wrap + .lg-cover { transition-delay: 0.2s; }
+    .screen.is-animated .field-group:nth-child(1) .pill-input-wrap { transition-delay: 0.04s; }
+    .screen.is-animated .field-group:nth-child(2) .pill-input-wrap { transition-delay: 0.08s; }
 
     .pill-input-wrap:focus-within {
-      outline: 2.5px solid rgba(11, 11, 13, 0.85);
-      outline-offset: 0;
+      box-shadow:
+        0 0 0 3px var(--black),
+        0 8px 20px rgba(11, 11, 13, 0.12);
     }
 
     .pill-icon {
@@ -786,6 +659,7 @@
 
     .get-pass-btn {
       position: relative;
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -801,20 +675,20 @@
       letter-spacing: 0.02em;
       color: #fff;
       cursor: pointer;
-      background: transparent;
-      top: 14px;
+      background: rgba(11, 11, 13, 0.62);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      box-shadow: 0 6px 16px rgba(11, 11, 13, 0.2);
       opacity: 0;
-      --lg-s: 0.82;
-      --lg-tint: rgba(11, 11, 13, 0.38);
-      transition: top 0.46s var(--ease-slow) 0.24s, opacity 0.4s ease 0.24s;
+      transform: translate3d(0, 14px, 0);
+      transition: transform 0.24s cubic-bezier(0.2, 0.9, 0.3, 1) 0.1s, opacity 0.2s ease 0.1s;
     }
-    .screen:not(.is-animated) .get-pass-btn + .lg-cover { opacity: 0; }
-    .get-pass-btn + .lg-cover { transition: opacity 0.4s ease 0.24s; }
     .screen.is-animated .get-pass-btn {
       opacity: 1;
-      top: 0;
+      transform: translate3d(0, 0, 0);
     }
-    .get-pass-btn:active { opacity: 0.84; }
+    .get-pass-btn:active { transform: scale(0.97); }
 
     .submit-row {
       display: flex;
@@ -827,28 +701,27 @@
       width: 58px;
       height: 58px;
       border-radius: 50%;
-      border: 0;
-      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: rgba(11, 11, 13, 0.65);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
       color: var(--white);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      top: 12px;
+      box-shadow: 0 6px 18px rgba(11, 11, 13, 0.2);
+      transform: scale(0.88);
       opacity: 0;
-      --lg-s: 0.96;
-      --lg-tint: rgba(11, 11, 13, 0.42);
       transition:
-        top 0.44s var(--ease-pop) 0.26s,
-        opacity 0.35s ease 0.26s;
+        transform 0.24s var(--ease-pop) 0.12s,
+        opacity 0.2s ease 0.12s;
     }
-    .screen:not(.is-animated) .circle-submit-btn + .lg-cover { opacity: 0; }
-    .circle-submit-btn + .lg-cover { transition: opacity 0.35s ease 0.26s; }
     .screen.is-animated .circle-submit-btn {
-      top: 0;
+      transform: scale(1);
       opacity: 1;
     }
-    .circle-submit-btn:active:not(:disabled) { opacity: 0.82; }
+    .circle-submit-btn:active:not(:disabled) { transform: scale(0.92); }
     .circle-submit-btn:disabled { cursor: wait; opacity: 0.88; }
 
     .brush-divider-wrap {
@@ -863,13 +736,12 @@
     .signin-bottom {
       position: relative;
       z-index: 1;
-      background: transparent;
-      border-radius: 28px 28px 0 0 !important;
-      --lg-s: 1;
-      --lg-tint: rgba(255, 255, 255, 0.18);
-      --lg-underlay: 0.22;
-      --lg-shadow-o: 0;
-      --lg-caustic-o: 0;
+      background: rgba(255, 255, 255, 0.52);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.68);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -6px 18px rgba(11, 11, 13, 0.1);
       padding:
         16px
         calc(var(--safe-right) + 24px)
@@ -938,6 +810,9 @@
       color: inherit;
       cursor: pointer;
     }
+    .terms-label:active, .pill-toggle:active, .pill-eye:active, .sheet-close:active {
+      transform: scale(0.94);
+    }
 
     /* ============================
        TERMS SHEET (100% GPU TRANSFORM)
@@ -957,28 +832,24 @@
       position: absolute;
       left: 0;
       right: 0;
-      top: 100%;
+      top: 0;
+      bottom: 0;
       height: 100%;
       z-index: 61;
       display: flex;
       flex-direction: column;
-      background: transparent;
-      border-radius: 28px 28px 0 0 !important;
+      background: rgba(255, 255, 255, 0.64);
+      -webkit-backdrop-filter: blur(9px);
+      backdrop-filter: blur(9px);
+      border-top: 1px solid rgba(255, 255, 255, 0.76);
+      border-radius: 28px 28px 0 0;
+      box-shadow: 0 -10px 28px rgba(11, 11, 13, 0.16);
+      transform: translate3d(0, 100%, 0);
       visibility: hidden;
-      --lg-s: 1.15;
-      --lg-tint: rgba(255, 255, 255, 0.22);
-      --lg-underlay: 0.24;
-      --lg-shadow-o: 0;
-      --lg-caustic-o: 0;
-      transition: top 0.36s var(--ease-slow), border-radius 0.25s ease;
+      transition: transform 0.26s cubic-bezier(0.2, 0.9, 0.3, 1), border-radius 0.2s ease;
     }
-    .sheet.is-open { visibility: visible; }
-    .sheet.is-full { border-radius: 0 !important; }
-    .sheet:not(.is-open) + .lg-cover {
-      visibility: hidden;
-      opacity: 0;
-      pointer-events: none;
-    }
+    .sheet.is-open { visibility: visible; will-change: transform; }
+    .sheet.is-full { border-radius: 0; }
 
     .sheet-head {
       position: relative;
@@ -1020,18 +891,13 @@
       right: 16px;
       width: 38px;
       height: 38px;
-      border: 0;
+      border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: 50%;
-      background: transparent;
+      background: rgba(255, 255, 255, 0.56);
       color: var(--black);
       display: grid;
       place-items: center;
       cursor: pointer;
-      --lg-s: 0.65;
-      --lg-tint: rgba(255, 255, 255, 0.24);
-      --lg-underlay: 0.24;
-      --lg-shadow-o: 0;
-      --lg-caustic-o: 0;
     }
     .sheet-body {
       flex: 1;
@@ -1088,26 +954,27 @@
       left: 0;
       right: 0;
       bottom: 0;
-      z-index: 3;
       padding: 12px 22px calc(var(--safe-bottom) + 16px);
       background: transparent;
       box-shadow: none;
-      transition: bottom 0.36s var(--ease-slow);
+      transition: transform 0.26s cubic-bezier(0.2, 0.9, 0.3, 1);
     }
+    .sheet.is-open .sheet-foot { will-change: transform; }
     .sheet-agree {
       width: 100%;
       height: 52px;
-      border: 0;
+      border: 1px solid rgba(255, 255, 255, 0.28);
       border-radius: 999px;
-      background: transparent;
+      background: rgba(11, 11, 13, 0.74);
+      -webkit-backdrop-filter: blur(6px);
+      backdrop-filter: blur(6px);
       color: #fff;
       font: 700 16px inherit;
       cursor: pointer;
-      --lg-s: 0.87;
-      --lg-tint: rgba(11, 11, 13, 0.42);
-      transition: opacity 0.15s ease;
+      box-shadow: 0 6px 16px rgba(11, 11, 13, 0.2);
+      transition: transform 0.15s ease;
     }
-    .sheet-agree:active { opacity: 0.84; }
+    .sheet-agree:active { transform: scale(0.97); }
 
     /* ============================
        SCREEN 3: STORE (120FPS OPTIMIZED)
@@ -1264,7 +1131,7 @@
       z-index: 1;
       background: linear-gradient(135deg, var(--st-orange) 0%, var(--st-pink) 100%);
       box-shadow: 0 6px 16px -4px rgba(255, 192, 154, 0.45);
-      transition: transform 0.32s var(--ease-pop), width 0.32s var(--ease-pop);
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1), width 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
       will-change: transform, width;
     }
     .tab {
@@ -1308,9 +1175,8 @@
       border: 1px solid rgba(255, 224, 237, 0.72);
       background-color: #E6F4F5;
       background-image: linear-gradient(158deg, var(--t1), var(--t2));
-      box-shadow: var(--st-clay);
+      box-shadow: 0 8px 18px rgba(132, 160, 172, 0.2), inset 1px 1px 0 rgba(255, 224, 237, 0.75);
       contain: layout style paint;
-      transform: translate3d(0, 0, 0);
       transition: transform 0.22s var(--ease-pop);
     }
     .card:active { transform: scale(0.975); }
@@ -1329,11 +1195,11 @@
     .card:nth-child(3n+3) { --a: var(--st-pink); --b: var(--st-cyan); --t1: rgba(255, 214, 228, 0.34); --t2: rgba(209, 240, 240, 0.2); }
 
     .panel.active .card {
-      animation: cardIn 0.32s var(--ease-slow) backwards;
+      animation: cardIn 0.18s cubic-bezier(0.2, 0.9, 0.3, 1) backwards;
     }
     .panel.active .card:nth-child(1) { animation-delay: 0ms; }
-    .panel.active .card:nth-child(2) { animation-delay: 40ms; }
-    .panel.active .card:nth-child(3) { animation-delay: 80ms; }
+    .panel.active .card:nth-child(2) { animation-delay: 20ms; }
+    .panel.active .card:nth-child(3) { animation-delay: 40ms; }
     @keyframes cardIn {
       from { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.98); }
       to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
@@ -1662,20 +1528,15 @@
     /* GUEST BLUR (GPU cached layer) */
     .guest-mode .card { cursor: pointer; }
     .guest-mode .card .thumb {
-      filter: blur(4px);
-      opacity: 0.72;
-      transform: translate3d(0, 0, 0);
-      backface-visibility: hidden;
+      opacity: 0.76;
     }
     .guest-mode .card .thumb img {
-      filter: blur(7px);
-      transform: scale(1.1);
+      filter: blur(8px);
+      transform: scale(1.08);
     }
     .guest-mode .card .card-body {
-      filter: blur(5.5px);
-      opacity: 0.56;
-      transform: translate3d(0, 0, 0);
-      backface-visibility: hidden;
+      filter: blur(5px);
+      opacity: 0.58;
     }
     .guest-mode #cardModalCard .card-modal-thumb img {
       filter: blur(9px);
@@ -1718,13 +1579,12 @@
       background: linear-gradient(162deg, #E6F4F5 0%, #DDEFF1 62%, #F3DDE8 100%);
       box-shadow: 20px 0 50px rgba(18, 28, 36, 0.2);
       transform: translate3d(-104%, 0, 0);
-      transition: transform 0.36s var(--ease-slow);
+      transition: transform 0.26s cubic-bezier(0.2, 0.9, 0.3, 1);
       overflow-y: auto;
       overscroll-behavior: contain;
-      will-change: transform;
       touch-action: pan-y;
     }
-    .drawer.open { transform: translate3d(0, 0, 0); }
+    .drawer.open { transform: translate3d(0, 0, 0); will-change: transform; }
 
     .drawer-head {
       display: flex;
@@ -2061,7 +1921,7 @@
       background: rgba(18, 28, 36, 0.42);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.24s ease;
+      transition: opacity 0.16s ease;
     }
     .modal.show { opacity: 1; pointer-events: auto; }
 
@@ -2077,8 +1937,8 @@
       border: 1px solid rgba(255, 224, 237, 0.8);
       background: linear-gradient(160deg, #E6F4F5 0%, #DDEFF1 58%, #F3DDE8 100%);
       box-shadow: 0 24px 60px rgba(18, 28, 36, 0.28);
-      transform: scale(0.92) translate3d(0, 14px, 0);
-      transition: transform 0.28s var(--ease-pop);
+      transform: scale(0.94) translate3d(0, 10px, 0);
+      transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
       position: relative;
     }
     .modal-card::-webkit-scrollbar { display: none; }
@@ -2422,7 +2282,7 @@
       box-shadow: 0 14px 30px rgba(96, 124, 138, 0.34);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.24s ease, transform 0.3s var(--ease-pop);
+      transition: opacity 0.16s ease, transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1);
       white-space: nowrap;
       max-width: 88%;
       overflow: hidden;
@@ -2489,7 +2349,7 @@
             <li class="cat"><span class="cat-num">3</span><div><p class="cat-text">I’m Always Straight Forward Person</p><p class="cat-sub">I Only Speak Truth I always speak what is true and factual.</p></div></li>
           </ol>
         </div>
-        <div id="sheetFoot" class="sheet-foot"><button id="sheetAgree" class="sheet-agree" type="button" data-lg-dark><span>Agree</span></button></div>
+        <div id="sheetFoot" class="sheet-foot"><button id="sheetAgree" class="sheet-agree" type="button">Agree</button></div>
       </div>
 
       <!-- SCREEN 1: WELCOME -->
@@ -2567,7 +2427,7 @@
         <div class="signin-video-wrap" aria-hidden="true">
           <video id="signin-video" class="signin-video" loop playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>
         </div>
-        <button id="signin-sound" class="signin-sound" type="button"><span id="signin-sound-icon" aria-hidden="true"></span></button>
+        <button id="signin-sound" class="signin-sound" type="button"></button>
         <div class="signin-amber-top">
           <div>
             <div class="signin-header">
@@ -2624,13 +2484,13 @@
                 <span id="error-pass" class="error-msg" role="alert"></span>
               </div>
 
-              <button id="btn-get-pass" class="get-pass-btn" type="button" data-lg-dark>
+              <button id="btn-get-pass" class="get-pass-btn" type="button">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 21.8a9.87 9.87 0 0 1-5.03-1.38l-3.74.98 1-3.65a9.86 9.86 0 1 1 7.77 4.05zm4.2-6.6c-.23-.12-1.37-.68-1.58-.75-.21-.08-.37-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.17-.5.06-.23-.12-.98-.36-1.87-1.15-.69-.62-1.16-1.38-1.3-1.61-.13-.23-.01-.36.1-.47.1-.1.23-.27.35-.4.12-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.52-1.26-.72-1.72-.19-.45-.38-.39-.52-.4h-.45c-.15 0-.4.06-.61.29-.21.23-.8.78-.8 1.9s.82 2.2.93 2.36c.12.15 1.6 2.45 3.9 3.43.55.24.98.38 1.3.49.55.17 1.05.15 1.44.09.44-.07 1.37-.56 1.56-1.1.19-.54.19-1 .13-1.1-.06-.09-.21-.15-.44-.27z"/></svg>
-                <span>Get Password</span>
+                Get Password
               </button>
 
               <div class="submit-row">
-                <button id="btn-signin" class="circle-submit-btn" type="submit" aria-label="Sign in" data-lg-dark>
+                <button id="btn-signin" class="circle-submit-btn" type="submit" aria-label="Sign in">
                   <span id="signin-btn-icon">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                       <line x1="4" y1="12" x2="20" y2="12"/>
@@ -3316,7 +3176,7 @@
       };
 
       setInterval(() => {
-        if (document.hidden || window.pikazooIsReordering) return;
+        if (document.hidden || window.pikazooIsReordering || !screenHome.classList.contains('is-active')) return;
         thumbSlideTick++;
 
         const activePanel = document.querySelector('.panel.active');
@@ -3373,6 +3233,7 @@
         img.src = thumbs.length ? thumbs[curIdx] : FALLBACK_THUMBS[idx % FALLBACK_THUMBS.length];
         img.alt = isGuest ? 'Locked item' : (card.title || 'Item');
         img.loading = 'lazy';
+        img.decoding = 'async';
         thumb.appendChild(img);
 
         const body = document.createElement('div');
@@ -4005,15 +3866,15 @@
           fromScreen.classList.add(exitClass);
           toScreen.classList.remove(enterFromClass);
           toScreen.classList.add('is-active');
-          setTimeout(() => animateScreenContent(toScreen), prefersReducedMotion ? 0 : 90);
+          setTimeout(() => animateScreenContent(toScreen), prefersReducedMotion ? 0 : 24);
         });
       }
 
       async function wipeOpenCurtain(targetScreen) {
-        await delay(prefersReducedMotion ? 10 : 120);
+        await delay(prefersReducedMotion ? 0 : 20);
         curtainEl.classList.add('is-wiped-up');
         animateScreenContent(targetScreen);
-        await delay(prefersReducedMotion ? 10 : 520);
+        await delay(prefersReducedMotion ? 0 : 280);
       }
 
       async function coverWithCurtainThen(callback) {
@@ -4023,7 +3884,7 @@
         curtainEl.classList.remove('is-ready-bottom');
         curtainEl.classList.add('is-covering');
 
-        await delay(prefersReducedMotion ? 10 : 480);
+        await delay(prefersReducedMotion ? 0 : 260);
         await callback();
 
         curtainEl.classList.remove('is-covering');
@@ -4081,7 +3942,7 @@
           target = 'guest';
         }
 
-        await delay(prefersReducedMotion ? 20 : 200);
+        await delay(prefersReducedMotion ? 0 : 16);
 
         if (target === 'retry') {
           window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'Internet check karo, phir try karo' } }));
@@ -4103,7 +3964,7 @@
           slideTransition(screenWelcome, screenHome, 'left');
         }
 
-        await delay(prefersReducedMotion ? 20 : 450);
+        await delay(prefersReducedMotion ? 0 : 280);
         welcomeBtnIcon.innerHTML = ARROW_BLACK_SVG;
         welcomeBtnIcon.classList.add('arrow-nudge');
         btnToSignin.disabled = false;
@@ -4366,6 +4227,13 @@
 
       window.pikazooGoToSignin = function () {
         slideTransition(screenHome, screenSignin, 'right');
+      };
+      window.pikazooBackToHome = function () {
+        if (btnSignin.disabled) return;
+        if (!unsubStoreFeed && !document.body.dataset.role) {
+          startStoreFeed('guest');
+        }
+        slideTransition(screenSignin, screenHome, 'left');
       };
 
       onAuthStateChanged(auth, async (user) => {
@@ -6945,16 +6813,14 @@
       function H() { return stage.clientHeight; }
       function Tp() { return H() * (1 - PEEK); }
 
+      /* 100% GPU transform-only positioning (no height layout thrashing) */
       function setT(t, anim) {
         var p = Tp();
         var trans = anim ? '' : 'none';
         sheet.style.transition = trans;
         foot.style.transition = trans;
-        sheet.style.top = t + 'px';
-        foot.style.bottom = Math.min(t, p) + 'px';
-        if (typeof window.pikazooUpdateSheetGlass === 'function') {
-          window.pikazooUpdateSheetGlass();
-        }
+        sheet.style.transform = 'translate3d(0,' + t + 'px,0)';
+        foot.style.transform = 'translate3d(0,' + (-Math.min(t, p)) + 'px,0)';
       }
 
       function go(s, anim) {
@@ -6965,12 +6831,9 @@
         scrim.classList.toggle('show', s !== 'closed');
         if (s === 'closed') {
           sheet.setAttribute('aria-hidden', 'true');
-          setTimeout(function () { if (state === 'closed') sheet.classList.remove('is-open'); }, 380);
-        } else {
-          if (s === 'peek') bodyEl.scrollTop = 0;
-          setTimeout(function () {
-            if (typeof window.pikazooUpdateSheetGlass === 'function') window.pikazooUpdateSheetGlass();
-          }, 380);
+          setTimeout(function () { if (state === 'closed') sheet.classList.remove('is-open'); }, 270);
+        } else if (s === 'peek') {
+          bodyEl.scrollTop = 0;
         }
       }
 
@@ -7511,7 +7374,6 @@
   var scr = document.getElementById('screen-signin');
   var v = document.getElementById('signin-video');
   var btn = document.getElementById('signin-sound');
-  var btnIcon = document.getElementById('signin-sound-icon') || btn;
   if (!scr || !v || !btn) return;
 
   var VIDEO = './source/login-bg.mp4';
@@ -7538,7 +7400,7 @@
 
   function paint() {
     var showMuted = userMuted || autoMuted || v.muted;
-    btnIcon.innerHTML = showMuted ? ICON_OFF : ICON_ON;
+    btn.innerHTML = showMuted ? ICON_OFF : ICON_ON;
     btn.setAttribute('aria-label', showMuted ? 'Sound on karo' : 'Sound band karo');
   }
 
@@ -7848,11 +7710,15 @@
     if (!isOfflineLocked && scr.classList.contains('is-active') && v.classList.contains('is-on') && !document.hidden) {
       syncThemeColor();
     }
-  }, 1400);
+  }, 3500);
 
   var classObs = new MutationObserver(function () {
-    if (scr.classList.contains('is-active')) start();
-    sync();
+    if (scr.classList.contains('is-active')) {
+      start();
+      sync();
+    } else if (!v.paused) {
+      hardStopVideo();
+    }
     syncThemeColor();
   });
   [curtainEl, scrWelcome, scr, scrHome, sheetEl, drawerEl].forEach(function (el) {
@@ -7951,7 +7817,7 @@
 
   setInterval(function () {
     if (document.visibilityState === 'visible') verifyConnectivity(false);
-  }, 15000);
+  }, 30000);
 
   document.addEventListener('visibilitychange', function () {
     if (document.hidden || document.visibilityState !== 'visible') {
@@ -7997,1227 +7863,70 @@
 (function () {
   'use strict';
 
-  var SLOTS = ['tl', 'tr', 'br', 'bl', 'top', 'right', 'bottom', 'left'];
-  var CORNERS = ['tl', 'tr', 'br', 'bl'];
-  var EDGES = ['top', 'right', 'bottom', 'left'];
-  var CORNER_TEX = 32;
-  var LINE_TEX = 128;
+  /* 1. Disable browser long-press context menu & drag ghosts (keep inputs/keys copyable) */
+  document.addEventListener('contextmenu', function (e) {
+    if (e.target && e.target.closest && e.target.closest('input, textarea, .key-val, .keybox')) return;
+    e.preventDefault();
+  }, { capture: true });
 
-  function clamp255(v) { return Math.max(0, Math.min(255, Math.round(v))); }
+  document.addEventListener('dragstart', function (e) {
+    if (e.target && e.target.closest && e.target.closest('input, textarea')) return;
+    e.preventDefault();
+  }, { capture: true });
 
-  var CRC_TABLE = (function () {
-    var t = new Uint32Array(256);
-    for (var n = 0; n < 256; n++) {
-      var c = n;
-      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
-      t[n] = c >>> 0;
+  /* 2. Native Android System Back Button / Edge-Swipe Back Support */
+  var ignorePop = false;
+  var targets = [
+    { id: 'ytModal',            cls: 'show',      close: function () { var b = document.getElementById('ytCloseBtn'); if (b) b.click(); } },
+    { id: 'confirmDeleteModal', cls: 'show',      close: function () { var b = document.getElementById('delCancelBtn'); if (b) b.click(); } },
+    { id: 'settingsModal',      cls: 'show',      close: function () { var b = document.getElementById('settingsCancelBtn'); if (b) b.click(); } },
+    { id: 'uploadModal',        cls: 'show',      close: function () { var b = document.getElementById('uploadModalClose'); if (b) b.click(); } },
+    { id: 'ownerEditModal',     cls: 'show',      close: function () { var b = document.getElementById('ownerEditCancel'); if (b) b.click(); } },
+    { id: 'ownerActionModal',   cls: 'show',      close: function () { var b = document.getElementById('ownerActionClose'); if (b) b.click(); } },
+    { id: 'cardModal',          cls: 'show',      close: function () { var b = document.getElementById('cardModalClose'); if (b) b.click(); } },
+    { id: 'logoutModal',        cls: 'show',      close: function () { var b = document.getElementById('btnCancel'); if (b) b.click(); } },
+    { id: 'sheet',              cls: 'is-open',   close: function () { var b = document.getElementById('sheetClose'); if (b) b.click(); } },
+    { id: 'drawer',             cls: 'open',      close: function () { var b = document.getElementById('closeDrawer'); if (b) b.click(); } },
+    { id: 'screen-signin',      cls: 'is-active', close: function () { if (typeof window.pikazooBackToHome === 'function') window.pikazooBackToHome(); } }
+  ];
+
+  function topOpen() {
+    for (var i = 0; i < targets.length; i++) {
+      var el = document.getElementById(targets[i].id);
+      if (el && el.classList.contains(targets[i].cls)) return targets[i];
     }
-    return t;
-  })();
-
-  function crc32(bytes) {
-    var c = ~0;
-    for (var i = 0; i < bytes.length; i++) c = CRC_TABLE[(c ^ bytes[i]) & 255] ^ (c >>> 8);
-    return ~c >>> 0;
+    return null;
   }
 
-  function chunk(type, data) {
-    var out = new Uint8Array(12 + data.length);
-    var view = new DataView(out.buffer);
-    view.setUint32(0, data.length);
-    for (var i = 0; i < 4; i++) out[4 + i] = type.charCodeAt(i);
-    out.set(data, 8);
-    view.setUint32(8 + data.length, crc32(out.subarray(4, 8 + data.length)));
-    return out;
+  function syncBackTrap() {
+    var openNow = !!topOpen();
+    var hasTrap = !!(history.state && history.state.pzBack);
+    if (openNow && !hasTrap) {
+      try { history.pushState({ pzBack: 1 }, ''); } catch (e) {}
+    } else if (!openNow && hasTrap) {
+      ignorePop = true;
+      try { history.back(); } catch (e) { ignorePop = false; }
+    }
   }
 
-  function encodePng(w, h, channels, pixels) {
-    var row = w * channels;
-    var raw = new Uint8Array((row + 1) * h);
-    for (var y = 0; y < h; y++) raw.set(pixels.subarray(y * row, (y + 1) * row), y * (row + 1) + 1);
-    var len = raw.length;
-    var blocks = Math.max(1, Math.ceil(len / 65535));
-    var z = new Uint8Array(2 + blocks * 5 + len + 4);
-    z.set([0x78, 0x01]);
-    var at = 2;
-    for (var k = 0; k < blocks; k++) {
-      var part = raw.subarray(k * 65535, Math.min(len, (k + 1) * 65535));
-      var n = part.length;
-      z.set([k === blocks - 1 ? 1 : 0, n & 255, n >>> 8, ~n & 255, (~n >>> 8) & 255], at);
-      z.set(part, at + 5);
-      at += 5 + n;
+  var obs = new MutationObserver(syncBackTrap);
+  targets.forEach(function (t) {
+    var el = document.getElementById(t.id);
+    if (el) obs.observe(el, { attributes: true, attributeFilter: ['class'] });
+  });
+
+  window.addEventListener('popstate', function () {
+    if (ignorePop) { ignorePop = false; return; }
+    var off = document.getElementById('offlineGate');
+    if (off && off.classList.contains('is-open')) {
+      try { history.pushState({ pzBack: 1 }, ''); } catch (e) {}
+      return;
     }
-    var a = 1, b = 0;
-    for (var i = 0; i < len; i++) {
-      a = (a + raw[i]) % 65521;
-      b = (b + a) % 65521;
-    }
-    new DataView(z.buffer).setUint32(at, ((b << 16) | a) >>> 0);
-    var ihdr = new Uint8Array(13);
-    var hv = new DataView(ihdr.buffer);
-    hv.setUint32(0, w);
-    hv.setUint32(4, h);
-    ihdr[8] = 8;
-    ihdr[9] = channels === 1 ? 0 : 4;
-    var bin = '';
-    var parts = [new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]), chunk('IHDR', ihdr), chunk('IDAT', z), chunk('IEND', new Uint8Array(0))];
-    for (var p = 0; p < parts.length; p++) {
-      var arr = parts[p];
-      for (var j = 0; j < arr.length; j++) bin += String.fromCharCode(arr[j]);
-    }
-    return 'data:image/png;base64,' + btoa(bin);
-  }
-
-  function grayPng(w, h, value) {
-    var px = new Uint8Array(w * h);
-    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) px[y * w + x] = clamp255(value(x, y));
-    return encodePng(w, h, 1, px);
-  }
-
-  function maskPng(w, h, alpha) {
-    var px = new Uint8Array(w * h * 2);
-    for (var y = 0; y < h; y++) {
-      for (var x = 0; x < w; x++) {
-        px[(y * w + x) * 2] = 255;
-        px[(y * w + x) * 2 + 1] = clamp255(alpha(x, y) * 255);
-      }
-    }
-    return encodePng(w, h, 2, px);
-  }
-
-  function lineTile(vertical, value) {
-    return vertical
-      ? grayPng(1, LINE_TEX, function (_, y) { return value((y + 0.5) / LINE_TEX); })
-      : grayPng(LINE_TEX, 1, function (x) { return value((x + 0.5) / LINE_TEX); });
-  }
-
-  function tileReach(R, short) { return Math.max(2, Math.min(Math.floor(short / 2), Math.ceil(R))); }
-  function cornerCenters(R) { return { tl: [R, R], tr: [0, R], br: [0, 0], bl: [R, 0] }; }
-
-  function edgeTile(dir, reach, R, value) {
-    var edgeAtZero = dir === 'top' || dir === 'left';
-    return lineTile(dir === 'top' || dir === 'bottom', function (f) {
-      return value(1 - ((edgeAtZero ? f : 1 - f) * reach) / R);
-    });
-  }
-
-  function cornerTile(key, value) {
-    var c = cornerCenters(1)[key];
-    return grayPng(CORNER_TEX, CORNER_TEX, function (x, y) {
-      return value(Math.min(1, Math.hypot((x + 0.5) / CORNER_TEX - c[0], (y + 0.5) / CORNER_TEX - c[1])));
-    });
-  }
-
-  function productTile(key, magnitude, axis, direction, R) {
-    var c = cornerCenters(1)[key];
-    var v0 = direction(0);
-    var v1 = direction(R);
-    return grayPng(CORNER_TEX, CORNER_TEX, function (x, y) {
-      var q = Math.min(1, Math.hypot((x + 0.5) / CORNER_TEX - c[0], (y + 0.5) / CORNER_TEX - c[1]));
-      var A = Math.max(0, Math.min(255, magnitude(q))) / 255;
-      var f = ((axis === 'x' ? x : y) + 0.5) / CORNER_TEX;
-      var D = Math.max(0, Math.min(255, v0 + (v1 - v0) * f)) / 255;
-      return (0.5 + A * (D - 0.5)) * 255;
-    });
-  }
-
-  function perCorner(tile) { return { tl: tile('tl'), tr: tile('tr'), br: tile('br'), bl: tile('bl') }; }
-
-  function sliceRect(slot, w, h, r, reach, ox, oy) {
-    ox = ox || 0; oy = oy || 0;
-    r = Math.max(0.01, Math.min(r, w / 2, h / 2));
-    var mid = Math.max(0.01, w - 2 * r);
-    var col = Math.max(0.01, h - 2 * r);
-    var d = Math.max(0.01, Math.min(reach, Math.min(w, h) / 2));
-    function rect(x, y, sw, sh) {
-      return { x: x + ox, y: y + oy, w: Math.max(0.01, sw), h: Math.max(0.01, sh) };
-    }
-    if (slot === 'tl') return rect(0, 0, r, r);
-    if (slot === 'tr') return rect(w - r, 0, r, r);
-    if (slot === 'br') return rect(w - r, h - r, r, r);
-    if (slot === 'bl') return rect(0, h - r, r, r);
-    if (slot === 'top') return rect(r, 0, mid, d);
-    if (slot === 'bottom') return rect(r, h - d, mid, d);
-    if (slot === 'left') return rect(0, r, d, col);
-    return rect(w - d, r, d, col);
-  }
-
-  var REFR_BAND = 0.39, REFR_DEPTH = 0.5, REFR_LIP_BAND = 0.3, REFR_LIP = 5, REFR_LIP_POW = 5;
-  var REFR_WIDTH = 1.1, REFR_REACH = 1.5, REFR_TILT = 0.2, REFR_HEAD = 1 + REFR_TILT;
-  var REFR_FOLD_DEPTH = REFR_BAND * REFR_WIDTH;
-
-  function refrProfile(q) {
-    var s = 1 - (1 - q) / REFR_WIDTH;
-    var u = Math.max(0, Math.min(1, (s - (1 - REFR_BAND)) / REFR_BAND));
-    var v = Math.max(0, Math.min(1, (s - (1 - REFR_LIP_BAND)) / REFR_LIP_BAND));
-    var d = (REFR_DEPTH * u * u * (3 - 2 * u) + REFR_LIP * Math.pow(v, REFR_LIP_POW)) * REFR_WIDTH;
-    if (q <= 1e-6 || d <= 0) return 0;
-    var cap = q * REFR_REACH;
-    var x = d / cap;
-    return (cap * x) / Math.pow(1 + Math.pow(x, 4), 0.25);
-  }
-
-  var REFR_PEAK = (function () {
-    var m = 1e-6;
-    for (var i = 1; i <= 1000; i++) m = Math.max(m, refrProfile(i / 1000) / (i / 1000));
-    return m;
-  })();
-
-  var REFR_MAG_PEAK = (function () {
-    var m = 1e-6;
-    for (var i = 0; i <= 1000; i++) m = Math.max(m, refrProfile(i / 1000));
-    return m;
-  })();
-
-  var TILT_MULTIPLY = { k1: 2, k2: -1, k3: -1, k4: 1 };
-  var PACK_Y = '0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.5 0 0 0 0.5';
-  var UNPACK = '1 0 0 0 0  0 0 0 2 -1  0 0 0 0 0  0 0 0 0 1';
-
-  function packedFieldPng(w, h, x, y) {
-    var px = new Uint8Array(w * h * 2);
-    for (var k = 0; k < w * h; k++) {
-      px[2 * k] = clamp255(x[k]);
-      px[2 * k + 1] = clamp255(127.5 + y[k] / 2);
-    }
-    return encodePng(w, h, 2, px);
-  }
-
-  function tiltGain(map, w, h) {
-    var r = Math.max(0.01, Math.min(map.slice.r, w / 2, h / 2));
-    var straight = Math.max(0, Math.min(1, (w / 2 - r) / r));
-    return (REFR_TILT * straight * REFR_MAG_PEAK) / (REFR_PEAK * REFR_HEAD);
-  }
-
-  function refractionScale(map, w, h) {
-    return 2 * map.gain * Math.max(0.01, Math.min(map.slice.r, w / 2, h / 2));
-  }
-
-  var tiltRampUrl = null;
-  function buildRefraction(short, radius) {
-    var R = Math.max(0.01, Math.min(radius, short / 2));
-    var reach = tileReach(R, short);
-    function edge(dir) {
-      var n = (dir === 'left' || dir === 'top') ? -1 : 1;
-      return edgeTile(dir, reach, R, function (q) {
-        return 128 - n * (refrProfile(q) / (REFR_PEAK * REFR_HEAD)) * 127.5;
-      });
-    }
-    function magnitude(q) { return (q > 1e-4 ? refrProfile(q) / q / (REFR_PEAK * REFR_HEAD) : 0) * 255; }
-    var centers = cornerCenters(R);
-    function dir(axis) {
-      return function (key) {
-        var c = centers[key][axis === 'x' ? 0 : 1];
-        return productTile(key, magnitude, axis, function (p) { return (0.5 + (0.5 * (c - p)) / R) * 255; }, R);
-      };
-    }
-    function tilt(sign) {
-      return function (q) { return 128 + (sign * refrProfile(q) * 127.5) / REFR_MAG_PEAK; };
-    }
-    if (!tiltRampUrl) tiltRampUrl = lineTile(false, function (f) { return 255 * (1 - f); });
-    return {
-      slice: { r: R, reach: reach, img: { top: edge('top'), right: edge('right'), bottom: edge('bottom'), left: edge('left') } },
-      prod: { x: perCorner(dir('x')), y: perCorner(dir('y')) },
-      tilt: {
-        r: R,
-        reach: reach,
-        img: {
-          tl: cornerTile('tl', tilt(1)),
-          tr: cornerTile('tr', tilt(-1)),
-          br: cornerTile('br', tilt(-1)),
-          bl: cornerTile('bl', tilt(1)),
-          top: edgeTile('top', reach, R, tilt(1)),
-          bottom: edgeTile('bottom', reach, R, tilt(1)),
-          left: edgeTile('left', reach, R, tilt(1)),
-          right: edgeTile('right', reach, R, tilt(-1))
-        }
-      },
-      tiltRamp: tiltRampUrl,
-      gain: REFR_PEAK * REFR_HEAD
-    };
-  }
-
-  var TILT_GATE = [0.2, 0.6];
-  function refractionField(map, w, h, box, res, resX) {
-    resX = resX || res;
-    var R = Math.max(0.01, Math.min(map.slice.r, w / 2, h / 2));
-    var S = refractionScale(map, w, h);
-    var straight = Math.max(0, Math.min(1, (w / 2 - R) / R));
-    var run = w - 2 * R;
-    var tw = Math.max(1, Math.round(box.w * resX));
-    var th = Math.max(1, Math.round(box.h * res));
-    var xs = new Float32Array(tw * th);
-    var ys = new Float32Array(tw * th);
-    for (var j = 0; j < th; j++) {
-      var py = box.y + ((j + 0.5) / th) * box.h;
-      for (var i = 0; i < tw; i++) {
-        var px = box.x + ((i + 0.5) / tw) * box.w;
-        var vx = px - Math.max(R, Math.min(w - R, px));
-        var vy = py - Math.max(R, Math.min(h - R, py));
-        var dist = Math.hypot(vx, vy);
-        if (dist < 1e-6) continue;
-        var P = refrProfile(Math.min(1, dist / R)) * R;
-        if (P === 0) continue;
-        var side = run > 1e-6 ? Math.max(-1, Math.min(1, 1 - (2 * (px - R)) / run)) : Math.sign(w / 2 - px);
-        var g = Math.min(1, Math.max(0, (P / (R * REFR_MAG_PEAK) - TILT_GATE[0]) / (TILT_GATE[1] - TILT_GATE[0])));
-        xs[j * tw + i] = (-P * vx) / dist + REFR_TILT * straight * side * P * g * g * (3 - 2 * g);
-        ys[j * tw + i] = (-P * vy) / dist;
-      }
-    }
-    var encX = new Float32Array(tw * th);
-    var encY = new Float32Array(tw * th);
-    for (var k = 0; k < tw * th; k++) {
-      encX[k] = 255 * (xs[k] / S + 0.5);
-      encY[k] = 255 * (ys[k] / S + 0.5);
-    }
-    return { xy: packedFieldPng(tw, th, encX, encY) };
-  }
-
-  function fieldScales(w, h, r) {
-    var short = Math.max(1, Math.min(w, h));
-    var fine = Math.min(1, Math.max(0.5, 96 / short));
-    var coarse = Math.min(fine, Math.max(fine / 4, 14 / Math.max(1, r)));
-    var refl = Math.min(0.5, Math.max(0.25, 32 / short));
-    return w >= h ? { x: coarse, y: fine, refl: refl } : { x: fine, y: coarse, refl: refl };
-  }
-
-  var IOR = 1.5;
-  var R0 = Math.pow((1 - IOR) / (1 + IOR), 2);
-  var SIN_CRIT = 1 / IOR;
-  var EYE_DIST = 2.6, REFL_REACH = 2.6, REFL_REACH_MAX = 160, RIM_SPAN = 2;
-  var REFL_CURVE = 1.3, REFL_FLOOR = 0.3, REFL_INNER = 0.35, REFL_FADE = 0.22;
-  var REFL_BLUR = 1, REFL_BLUR_PER_STEP = 1.4;
-  var WEDGES = 24, CSTOPS = 28;
-
-  function dot3(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
-  function norm3(a) { var l = Math.hypot(a[0], a[1], a[2]) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
-  function refract3(i, n, eta) {
-    var cosi = -dot3(i, n);
-    var k = 1 - eta * eta * (1 - cosi * cosi);
-    if (k < 0) return null;
-    var f = eta * cosi - Math.sqrt(k);
-    return [eta * i[0] + f * n[0], eta * i[1] + f * n[1], eta * i[2] + f * n[2]];
-  }
-  function smootherstep(t) {
-    var c = Math.min(1, Math.max(0, t));
-    return c * c * c * (c * (c * 6 - 15) + 10);
-  }
-  function cornerAt(i) { return 1 - Math.pow(1 - i / CSTOPS, 1.7); }
-  function reflectionScale(map, w, h) {
-    return (map.scale / map.slice.r) * Math.max(0.01, Math.min(map.slice.r, w / 2, h / 2));
-  }
-  function reflectionPad(short, avail) {
-    var L = Math.min(REFL_REACH * short, REFL_REACH_MAX);
-    return avail.map(function (a) { return Math.max(0, Math.floor(Math.min(L, a))); });
-  }
-
-  function buildReflection(width, height, radius, rim, strength, avail) {
-    var w = Math.max(1, Math.round(width));
-    var h = Math.max(1, Math.round(height));
-    var long = Math.max(w, h);
-    var short = Math.min(w, h);
-    var R = Math.max(0.01, Math.min(radius, w / 2, h / 2));
-    var L = Math.min(REFL_REACH * short, REFL_REACH_MAX);
-    var pad = reflectionPad(short, avail);
-    if (Math.max.apply(null, pad) < 2) return null;
-    var kT = Math.max(0, Math.min(1, pad[0] / L));
-    var kR = Math.max(0, Math.min(1, pad[1] / L));
-    var kB = Math.max(0, Math.min(1, pad[2] / L));
-    var kL = Math.max(0, Math.min(1, pad[3] / L));
-    var band = Math.min(Math.max(13 * rim, short * 0.22), short * 0.45);
-    var rimW = Math.max(1, 1.8 * rim);
-    var ring = Math.min(band * RIM_SPAN, short / 2 - 1);
-    var fadeEnd = Math.min(ring, rimW + short * REFL_FADE);
-    var eyeZ = EYE_DIST * long;
-    var tanT = Math.tan(REFL_CURVE);
-    function reachAt(D) {
-      var u = Math.min(1, Math.max(0, D / ring));
-      return REFL_CURVE > 1e-4 ? Math.atan(u * tanT) / REFL_CURVE : u;
-    }
-    function reflProfile(q) { return (L / R) * reachAt(R * (1 - q)); }
-    var qMin = Math.max(0.15, 1 - fadeEnd / R - 0.05);
-    function cornerMag(q) { return reflProfile(q) / Math.max(q, qMin); }
-    var peak = 1e-6;
-    for (var i = 0; i <= 1000; i++) peak = Math.max(peak, cornerMag(i / 1000));
-
-    function weight(ex, ey, gx, gy, D) {
-      var sN = Math.min(1, D / band);
-      var c = 1 - sN;
-      var slope = sN >= 1 ? 0 : c / Math.max(0.025, Math.sqrt(1 - c * c));
-      var n = norm3([gx * slope, gy * slope, 1]);
-      var v = norm3([w / 2 - ex, h / 2 - ey, eyeZ]);
-      var cosT = Math.min(1, Math.max(0, dot3(n, v)));
-      var fres = R0 + (1 - R0) * Math.pow(1 - cosT, 5);
-      var tir = 1;
-      var into = refract3([-v[0], -v[1], -v[2]], n, 1 / IOR);
-      if (into) tir = Math.min(1, Math.max(0, (Math.hypot(into[0], into[1]) - SIN_CRIT * 0.94) / (SIN_CRIT * 0.12)));
-      var inner = D <= rimW ? 0 : (fadeEnd > rimW ? REFL_INNER * (1 - smootherstep((D - rimW) / (fadeEnd - rimW))) : 0);
-      return Math.min(1, Math.max(REFL_FLOOR, fres + (1 - fres) * tir) * strength * inner);
-    }
-
-    var maskReach = Math.max(2, Math.floor(short / 2));
-    var edgeDefs = {
-      top: { gx: 0, gy: -1, at: function (D) { return [w / 2, D]; } },
-      bottom: { gx: 0, gy: 1, at: function (D) { return [w / 2, h - D]; } },
-      left: { gx: -1, gy: 0, at: function (D) { return [D, h / 2]; } },
-      right: { gx: 1, gy: 0, at: function (D) { return [w - D, h / 2]; } }
-    };
-    function maskEdge(key) {
-      var def = edgeDefs[key];
-      var flip = key === 'bottom' || key === 'right';
-      var vertical = key === 'top' || key === 'bottom';
-      return maskPng(vertical ? 1 : LINE_TEX, vertical ? LINE_TEX : 1, function (x, y) {
-        var t = ((vertical ? y : x) + 0.5) / LINE_TEX;
-        var f = flip ? 1 - t : t;
-        var pt = def.at(f * maskReach);
-        return weight(pt[0], pt[1], def.gx, def.gy, f * maskReach);
-      });
-    }
-    var maskDefs = {
-      tl: { a0: Math.PI, cx: R, cy: R, ecx: R, ecy: R },
-      tr: { a0: -Math.PI / 2, cx: 0, cy: R, ecx: w - R, ecy: R },
-      br: { a0: 0, cx: 0, cy: 0, ecx: w - R, ecy: h - R },
-      bl: { a0: Math.PI / 2, cx: R, cy: 0, ecx: R, ecy: h - R }
-    };
-    function maskCorner(key) {
-      var def = maskDefs[key];
-      var wedgeStops = [];
-      for (var k = 0; k < WEDGES; k++) {
-        var th = def.a0 + (k / (WEDGES - 1)) * (Math.PI / 2);
-        var gx = Math.cos(th), gy = Math.sin(th);
-        var stops = [];
-        for (var s = 0; s <= CSTOPS; s++) {
-          var rho = cornerAt(s) * R;
-          stops.push(weight(def.ecx + gx * rho, def.ecy + gy * rho, gx, gy, R - rho));
-        }
-        wedgeStops.push(stops);
-      }
-      var n = Math.max(8, Math.min(128, Math.ceil(R * 2)));
-      return maskPng(n, n, function (x, y) {
-        var dx = ((x + 0.5) / n) * R - def.cx;
-        var dy = ((y + 0.5) / n) * R - def.cy;
-        var rho = Math.hypot(dx, dy);
-        if (rho >= R) return 0;
-        var t = Math.atan2(dy, dx) - def.a0;
-        t = ((t % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-        if (t > Math.PI / 2) t = t > Math.PI + Math.PI / 4 ? 0 : Math.PI / 2;
-        var stops = wedgeStops[Math.round((t / (Math.PI / 2)) * (WEDGES - 1))];
-        var f = rho / R;
-        var idx = 0;
-        while (idx < CSTOPS - 1 && cornerAt(idx + 1) < f) idx++;
-        var f0 = cornerAt(idx), f1 = cornerAt(idx + 1);
-        var u = f1 > f0 ? Math.min(1, Math.max(0, (f - f0) / (f1 - f0))) : 0;
-        return stops[idx] + (stops[idx + 1] - stops[idx]) * u;
-      });
-    }
-
-    var reach = tileReach(R, short);
-    var kEdge = { top: kT, right: kR, bottom: kB, left: kL };
-    function offEdge(key) {
-      var sign = key === 'top' || key === 'left' ? -1 : 1;
-      return edgeTile(key, reach, R, function (q) {
-        return 128 + sign * ((kEdge[key] * reflProfile(q)) / peak) * 127.5;
-      });
-    }
-    var centers = cornerCenters(R);
-    function offMag(q) { return (cornerMag(q) / peak) * 255; }
-    function offDir(axis) {
-      return function (key) {
-        var c = centers[key][axis === 'x' ? 0 : 1];
-        var k = axis === 'x' ? (key === 'tl' || key === 'bl' ? kL : kR) : (key === 'tl' || key === 'tr' ? kT : kB);
-        return productTile(key, offMag, axis, function (p) { return (0.5 + (0.5 * k * (p - c)) / R) * 255; }, R);
-      };
-    }
-
-    return {
-      slice: { r: R, reach: reach, img: { top: offEdge('top'), right: offEdge('right'), bottom: offEdge('bottom'), left: offEdge('left') } },
-      prod: { x: perCorner(offDir('x')), y: perCorner(offDir('y')) },
-      mask: {
-        r: R,
-        reach: maskReach,
-        img: {
-          tl: maskCorner('tl'), tr: maskCorner('tr'), br: maskCorner('br'), bl: maskCorner('bl'),
-          top: maskEdge('top'), right: maskEdge('right'), bottom: maskEdge('bottom'), left: maskEdge('left')
-        }
-      },
-      pad: pad,
-      scale: 2 * peak * R,
-      blur: Math.max(REFL_BLUR, ((2 * peak * R) / 255) * REFL_BLUR_PER_STEP)
-    };
-  }
-
-  var ARC_CACHE = new Map();
-  function buildBevelArcs(width, height) {
-    var w = Math.round(width), h = Math.round(height);
-    var key = w + ':' + h;
-    var hit = ARC_CACHE.get(key);
-    if (hit) return hit;
-    var ax = 1 / Math.pow(Math.max(1, w) / 2, 0.4);
-    var by = 1 / Math.pow(Math.max(1, h) / 2, 0.4);
-    function glint(deg) {
-      var r = (deg * Math.PI) / 180;
-      var n = ((Math.atan2(Math.sin(r) * ax, Math.cos(r) * by) * 180) / Math.PI + 360) % 360;
-      return (1 + Math.cos((2 * (n - 45) * Math.PI) / 180)) / 2;
-    }
-    function stop(v, deg) {
-      return (v >= 0.9995 ? '#000' : v <= 0.0005 ? 'transparent' : 'rgba(0,0,0,' + (+v.toFixed(3)) + ')') + ' ' + deg + 'deg';
-    }
-    function build(fn) {
-      var parts = ['from 0deg'];
-      for (var deg = 0; deg <= 360; deg += 3) parts.push(stop(fn(deg), deg));
-      return 'conic-gradient(' + parts.join(',') + ')';
-    }
-    var res = { glint: build(glint), rim: build(function (deg) { return 1 - glint(deg); }) };
-    if (ARC_CACHE.size >= 48) ARC_CACHE.delete(ARC_CACHE.keys().next().value);
-    ARC_CACHE.set(key, res);
-    return res;
-  }
-
-  var BAKE_SLACK_DOWN = 12, BAKE_SLACK_UP = 3, BAKE_SETTLE_MS = 650, AVAIL_STEP = 8, REGION = 2;
-  var TICK_GAP_MS = [13, 25, 50], TICK_HOLD_MS = 600, TICK_PAUSE_MS = 120, FIELD_SCALE = 0.5;
-  var REFR_CACHE = new Map();
-  function cachedRefraction(short, radius) {
-    var key = short + '|' + radius;
-    var map = REFR_CACHE.get(key);
-    if (!map) {
-      map = buildRefraction(short, radius);
-      if (REFR_CACHE.size >= 96) REFR_CACHE.delete(REFR_CACHE.keys().next().value);
-      REFR_CACHE.set(key, map);
-    }
-    return map;
-  }
-
-  var SVG_BACKDROP = typeof navigator !== 'undefined' && 'userAgentData' in navigator;
-  var anchorProbe;
-  function anchorsFollowHost() {
-    if (anchorProbe !== undefined) return anchorProbe;
-    anchorProbe = false;
-    if (typeof CSS === 'undefined' || !CSS.supports('anchor-name', '--lg') || !CSS.supports('top', 'anchor(top)')) return anchorProbe;
-    var hidden = 'position:fixed;visibility:hidden;pointer-events:none;';
-    var a = document.createElement('div');
-    var b = document.createElement('div');
-    a.style.cssText = hidden + 'top:0;left:0;width:10px;height:10px;anchor-name:--lg-probe;translate:0 7px';
-    b.style.cssText = hidden + 'position-anchor:--lg-probe;top:anchor(top);left:anchor(left);width:anchor-size(width);height:anchor-size(height)';
-    document.body.append(a, b);
-    var ra = a.getBoundingClientRect();
-    var rb = b.getBoundingClientRect();
-    anchorProbe = Math.abs(ra.top - rb.top) < 0.5 && Math.abs(ra.width - rb.width) < 0.5;
-    a.remove();
-    b.remove();
-    return anchorProbe;
-  }
-
-  var SVG_NS = 'http://www.w3.org/2000/svg';
-  function svgEl(parent, tag, attrs) {
-    var node = document.createElementNS(SVG_NS, tag);
-    if (attrs) {
-      Object.keys(attrs).forEach(function (k) { node.setAttribute(k, String(attrs[k])); });
-    }
-    parent.appendChild(node);
-    return node;
-  }
-  function layer(parent, cls) {
-    var node = document.createElement('span');
-    node.className = cls;
-    node.setAttribute('aria-hidden', 'true');
-    parent.appendChild(node);
-    return node;
-  }
-  function setAttr(node, name, value) {
-    var next = String(value);
-    if (node.getAttribute(name) !== next) node.setAttribute(name, next);
-  }
-  function setRect(node, r) {
-    setAttr(node, 'x', r.x); setAttr(node, 'y', r.y);
-    setAttr(node, 'width', r.w); setAttr(node, 'height', r.h);
-  }
-  function setStyle(node, name, value) {
-    if (node.style.getPropertyValue(name) !== value) node.style.setProperty(name, value);
-  }
-  function setBackdrop(node, value) {
-    setStyle(node, 'backdrop-filter', value);
-    setStyle(node, '-webkit-backdrop-filter', value);
-  }
-
-  function buildField(filter, p) {
-    svgEl(filter, 'feFlood', { 'flood-color': 'rgb(128,128,128)', result: p + 'base' });
-    var edges = {};
-    EDGES.forEach(function (slot) { edges[slot] = svgEl(filter, 'feImage', { preserveAspectRatio: 'none', result: p + slot }); });
-    var corners = {};
-    ['x', 'y'].forEach(function (axis) {
-      CORNERS.forEach(function (c) {
-        corners[axis + c] = svgEl(filter, 'feImage', { preserveAspectRatio: 'none', result: p + 'c' + axis + c });
-      });
-      var merge = svgEl(filter, 'feMerge', { result: p + axis });
-      svgEl(merge, 'feMergeNode', { in: p + 'base' });
-      CORNERS.forEach(function (c) { svgEl(merge, 'feMergeNode', { in: p + 'c' + axis + c }); });
-      (axis === 'x' ? ['left', 'right'] : ['top', 'bottom']).forEach(function (slot) {
-        svgEl(merge, 'feMergeNode', { in: p + slot });
-      });
-    });
-    return { edges: edges, corners: corners };
-  }
-
-  function packField(filter, x, y, out) {
-    svgEl(filter, 'feColorMatrix', { in: y, type: 'matrix', values: PACK_Y, result: out + 'ya' });
-    svgEl(filter, 'feComposite', { in: x, in2: out + 'ya', operator: 'in', result: out + 'xy' });
-    svgEl(filter, 'feColorMatrix', { in: out + 'xy', type: 'matrix', values: UNPACK, result: out });
-    return svgEl(filter, 'feDisplacementMap', {
-      in: 'SourceGraphic', in2: out, xChannelSelector: 'R', yChannelSelector: 'G', result: 'bent'
-    });
-  }
-
-  function setFieldImages(field, map) {
-    EDGES.forEach(function (slot) { setAttr(field.edges[slot], 'href', map.slice.img[slot]); });
-    ['x', 'y'].forEach(function (axis) {
-      CORNERS.forEach(function (c) { setAttr(field.corners[axis + c], 'href', map.prod[axis][c]); });
-    });
-  }
-
-  function layField(field, tiles, w, h, ox, oy) {
-    ox = ox || 0; oy = oy || 0;
-    EDGES.forEach(function (slot) { setRect(field.edges[slot], sliceRect(slot, w, h, tiles.r, tiles.reach, ox, oy)); });
-    CORNERS.forEach(function (c) {
-      var rect = sliceRect(c, w, h, tiles.r, tiles.reach, ox, oy);
-      setRect(field.corners['x' + c], rect);
-      setRect(field.corners['y' + c], rect);
-    });
-  }
-
-  function boxOf(f) {
-    return { x: +f.getAttribute('x'), y: +f.getAttribute('y'), width: +f.getAttribute('width'), height: +f.getAttribute('height') };
-  }
-
-  function decoded(url) {
-    return new Promise(function (resolve, reject) {
-      var check = new Image();
-      check.onload = function () { resolve(url); };
-      check.onerror = reject;
-      check.src = url;
-    });
-  }
-
-  function renderFilter(f, box, scale) {
-    var x = box.x, y = box.y, w = box.width, h = box.height;
-    f.id = 'f';
-    var svg = '<svg xmlns="' + SVG_NS + '" width="' + w + '" height="' + h + '" viewBox="' + x + ' ' + y + ' ' + w + ' ' + h + '">' +
-      f.outerHTML + '<rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '" filter="url(#f)"/></svg>';
-    return new Promise(function (resolve, reject) {
-      var img = new Image();
-      img.onload = function () {
-        var canvas = document.createElement('canvas');
-        canvas.width = Math.max(1, Math.round(w * scale));
-        canvas.height = Math.max(1, Math.round(h * scale));
-        canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-        decoded(canvas.toDataURL('image/png')).then(resolve, reject);
-      };
-      img.onerror = reject;
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    });
-  }
-
-  function renderField(live, out, cut, box, scale) {
-    var f = live.cloneNode(true);
-    var from = f.querySelector('[result="' + cut + '"]');
-    while (from && from.nextSibling) from.nextSibling.remove();
-    if (from) from.remove();
-    svgEl(svgEl(f, 'feMerge'), 'feMergeNode', { in: out });
-    return renderFilter(f, box, scale);
-  }
-
-  function packImages(xUrl, yUrl) {
-    function read(url) {
-      return new Promise(function (resolve, reject) {
-        var img = new Image();
-        img.onload = function () {
-          var c = document.createElement('canvas');
-          c.width = img.width; c.height = img.height;
-          var g = c.getContext('2d');
-          g.drawImage(img, 0, 0);
-          var d = g.getImageData(0, 0, c.width, c.height).data;
-          var v = new Uint8Array(c.width * c.height);
-          for (var k = 0; k < v.length; k++) v[k] = d[4 * k];
-          resolve({ w: c.width, h: c.height, v: v });
-        };
-        img.onerror = reject;
-        img.src = url;
-      });
-    }
-    return Promise.all([read(xUrl), read(yUrl)]).then(function (pair) {
-      return decoded(packedFieldPng(pair[0].w, pair[0].h, pair[0].v, pair[1].v));
-    });
-  }
-
-  function feImg(attrs) {
-    var node = document.createElementNS(SVG_NS, 'feImage');
-    node.setAttribute('preserveAspectRatio', 'none');
-    Object.keys(attrs).forEach(function (k) { node.setAttribute(k, String(attrs[k])); });
-    return node;
-  }
-
-  function renderMask(live, mask) {
-    var names = mask.parts.concat([mask.result]);
-    var f = live.cloneNode(true);
-    Array.prototype.slice.call(f.children).forEach(function (n) {
-      if (names.indexOf(n.getAttribute('result') || '') === -1) n.remove();
-    });
-    return renderFilter(f, mask.box, mask.scale);
-  }
-
-  function bakeFilter(live, xOut, yOut, cut, scale, opts) {
-    opts = opts || {};
-    var box = opts.box || boxOf(live);
-    var mask = opts.mask;
-    var fields = opts.fields;
-    function isMask(n) {
-      if (!mask) return false;
-      var r = n.getAttribute('result') || '';
-      return mask.parts.indexOf(r) !== -1 || r === mask.result;
-    }
-    var xyP = fields
-      ? decoded(fields.xy)
-      : Promise.all([renderField(live, xOut, cut, box, scale), renderField(live, yOut, cut, box, scale)]).then(function (xy) {
-          return packImages(xy[0], xy[1]);
-        });
-    var maskP = mask ? renderMask(live, mask) : Promise.resolve('');
-    return Promise.all([xyP, maskP]).then(function (res) {
-      var xyUrl = res[0], maskUrl = res[1];
-      var f = live.cloneNode(true);
-      f.id = live.id + '-baked';
-      var from = f.querySelector('[result="' + cut + '"]');
-      while (from.previousSibling) from.previousSibling.remove();
-      var packed = from.nextElementSibling.getAttribute('result');
-      from.nextElementSibling.remove();
-      from.replaceWith(feImg({ x: box.x, y: box.y, width: box.width, height: box.height, result: packed, href: xyUrl }));
-      if (mask) {
-        var parts = Array.prototype.slice.call(f.children).filter(isMask);
-        parts[parts.length - 1].after(feImg({ x: mask.box.x, y: mask.box.y, width: mask.box.width, height: mask.box.height, result: mask.result, href: maskUrl }));
-        parts.forEach(function (n) { n.remove(); });
-      }
-      var old = document.getElementById(f.id);
-      if (old) old.remove();
-      live.after(f);
-      return f.id;
-    });
-  }
-
-  function ringMask(w, h, r, rimW, fade, dpr) {
-    var W = Math.max(1, Math.round(w * dpr));
-    var H = Math.max(1, Math.round(h * dpr));
-    var sx = W / w, sy = H / h;
-    var R = Math.min(r, w / 2, h / 2);
-    var d = Math.max(0.01, Math.min(fade, R));
-    var s = Math.min(1, rimW / d);
-    var bx = Math.min(Math.floor(W / 2), Math.round(R * sx));
-    var by = Math.min(Math.floor(H / 2), Math.round(R * sy));
-    var hx = Math.floor(W / 2), hy = Math.floor(H / 2);
-    function stops(a, b) {
-      return '<stop offset="' + a + '" stop-opacity="' + (a === s ? 1 : 0) + '"/><stop offset="' + b + '" stop-opacity="' + (b === s ? 1 : 0) + '"/>';
-    }
-    function linear(id, x1, y1, x2, y2) {
-      return '<linearGradient id="' + id + '" gradientUnits="userSpaceOnUse" x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '">' + stops(s, 1) + '</linearGradient>';
-    }
-    function radial(id, cx, cy) {
-      return '<radialGradient id="' + id + '" gradientUnits="userSpaceOnUse" cx="' + cx + '" cy="' + cy + '" r="' + (R * sx) + '" gradientTransform="translate(' + cx + ' ' + cy + ') scale(1 ' + (sy / sx) + ') translate(' + (-cx) + ' ' + (-cy) + ')">' +
-        '<stop offset="' + ((R - d) / R) + '" stop-opacity="0"/><stop offset="' + ((R - Math.min(rimW, d)) / R) + '" stop-opacity="1"/></radialGradient>';
-    }
-    function rect(x, y, rw, rh, fill) {
-      return rw > 0 && rh > 0 ? '<rect x="' + x + '" y="' + y + '" width="' + rw + '" height="' + rh + '" fill="url(#' + fill + ')"/>' : '';
-    }
-    var svg = '<svg xmlns="' + SVG_NS + '" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" shape-rendering="crispEdges"><defs>' +
-      linear('t', 0, 0, 0, d * sy) + linear('b', 0, H, 0, H - d * sy) + linear('l', 0, 0, d * sx, 0) + linear('r', W, 0, W - d * sx, 0) +
-      radial('ctl', R * sx, R * sy) + radial('ctr', W - R * sx, R * sy) + radial('cbr', W - R * sx, H - R * sy) + radial('cbl', R * sx, H - R * sy) +
-      '</defs>' +
-      rect(bx, 0, W - 2 * bx, hy, 't') + rect(bx, hy, W - 2 * bx, H - hy, 'b') +
-      rect(0, by, hx, H - 2 * by, 'l') + rect(hx, by, W - hx, H - 2 * by, 'r') +
-      rect(0, 0, bx, by, 'ctl') + rect(W - bx, 0, bx, by, 'ctr') + rect(W - bx, H - by, bx, by, 'cbr') + rect(0, H - by, bx, by, 'cbl') +
-      '</svg>';
-    return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-  }
-
-  function ringWidths(layerEl) {
-    var probe = document.createElement('span');
-    probe.style.cssText = 'position:absolute;left:0;top:0;width:var(--w);height:var(--d);visibility:hidden';
-    layerEl.append(probe);
-    var r = probe.getBoundingClientRect();
-    probe.remove();
-    return { rimW: r.width, fade: r.height };
-  }
-
-  var instances = 0;
-  function createLiquidGlass(host, options) {
-    options = options || {};
-    var radius = options.radius !== undefined ? options.radius : 30;
-    var rim = options.rim !== undefined ? options.rim : 1.3;
-    var blur = options.blur !== undefined ? options.blur : 2.5;
-    var saturate = options.saturate !== undefined ? options.saturate : 1.1;
-    var reflect = options.reflect !== undefined ? options.reflect : true;
-    var reflectStrength = options.reflectStrength !== undefined ? options.reflectStrength : 2.5;
-    var keepRadius = !!options.keepRadius;
-
-    var uid = ++instances;
-    var refractId = 'lg-refract-' + uid;
-    var reflectId = 'lg-reflect-' + uid;
-
-    host.classList.add('lg-host');
-    if (!keepRadius) host.style.borderRadius = radius + 'px';
-
-    var root = document.createDocumentFragment();
-    var defs = svgEl(root, 'svg', { class: 'lg-defs', width: 0, height: 0, 'aria-hidden': 'true' });
-
-    var refrFilter = svgEl(defs, 'filter', {
-      id: refractId, filterUnits: 'userSpaceOnUse', 'color-interpolation-filters': 'sRGB', x: -REGION, y: -REGION
-    });
-    var refrField = buildField(refrFilter, 'r');
-    svgEl(refrFilter, 'feFlood', { 'flood-color': 'rgb(128,128,128)', result: 'tbase' });
-    var tiltTiles = {};
-    SLOTS.forEach(function (slot) { tiltTiles[slot] = svgEl(refrFilter, 'feImage', { preserveAspectRatio: 'none', result: 't' + slot }); });
-    var tmag = svgEl(refrFilter, 'feMerge', { result: 'tmag' });
-    svgEl(tmag, 'feMergeNode', { in: 'tbase' });
-    SLOTS.forEach(function (slot) { svgEl(tmag, 'feMergeNode', { in: 't' + slot }); });
-    svgEl(refrFilter, 'feFlood', { 'flood-color': 'rgb(255,255,255)', result: 'sbase' });
-    var tiltRamp = svgEl(refrFilter, 'feImage', { preserveAspectRatio: 'none', y: 0, result: 'sramp' });
-    var sfield = svgEl(refrFilter, 'feMerge', { result: 'sfield' });
-    svgEl(sfield, 'feMergeNode', { in: 'sbase' });
-    svgEl(sfield, 'feMergeNode', { in: 'sramp' });
-    svgEl(refrFilter, 'feComposite', Object.assign({ in: 'tmag', in2: 'sfield', operator: 'arithmetic', result: 'tvec' }, TILT_MULTIPLY));
-    var tiltAdd = svgEl(refrFilter, 'feComposite', { in: 'rx', in2: 'tvec', operator: 'arithmetic', k1: 0, k2: 1, result: 'rxt' });
-    var refrDisp = packField(refrFilter, 'rxt', 'ry', 'rmap');
-
-    var reflFilter = svgEl(defs, 'filter', {
-      id: reflectId, filterUnits: 'userSpaceOnUse', 'color-interpolation-filters': 'sRGB', x: -REGION, y: -REGION
-    });
-    var reflField = buildField(reflFilter, 'f');
-    var reflTailFrom = reflFilter.children.length;
-    var reflDisp = packField(reflFilter, 'fx', 'fy', 'fmap');
-    var reflBlur = svgEl(reflFilter, 'feGaussianBlur', { in: 'bent', result: 'fsoft' });
-    var reflMask = {};
-    SLOTS.forEach(function (slot) { reflMask[slot] = svgEl(reflFilter, 'feImage', { preserveAspectRatio: 'none', result: 'fm' + slot }); });
-    var reflMaskMerge = svgEl(reflFilter, 'feMerge', { result: 'fmask' });
-    SLOTS.forEach(function (slot) { svgEl(reflMaskMerge, 'feMergeNode', { in: 'fm' + slot }); });
-    svgEl(reflFilter, 'feComposite', { in: 'fsoft', in2: 'fmask', operator: 'in' });
-
-    var reflectLayer = layer(root, 'lg-layer lg-reflect');
-    reflectLayer.hidden = true;
-    var causticWrap = layer(root, 'lg-layer lg-caustic');
-    layer(causticWrap, 'lg-caustic-ring');
-    var pane = layer(root, 'lg-layer lg-pane');
-    var fold = layer(root, 'lg-layer lg-edge lg-fold');
-    var glint = layer(root, 'lg-layer lg-edge lg-glint');
-    var rimLayer = layer(root, 'lg-layer lg-edge lg-rim');
-    host.prepend(root);
-
-    var anchorName = '--lg-host-' + uid;
-    var anchors = anchorsFollowHost();
-    if (anchors) {
-      var given = getComputedStyle(host).getPropertyValue('anchor-name').trim();
-      host.style.setProperty('anchor-name', given && given !== 'none' ? (given + ', ' + anchorName) : anchorName);
-    }
-    var anchored = new Set();
-    function anchorTo(c) {
-      c.style.setProperty('position-anchor', anchorName);
-      c.style.setProperty('left', 'anchor(left)');
-      c.style.setProperty('top', 'anchor(top)');
-      c.style.setProperty('width', 'anchor-size(width)');
-      c.style.setProperty('height', 'anchor-size(height)');
-      anchored.add(c);
-    }
-    function makeCover() {
-      var c = document.createElement('div');
-      c.className = 'lg-cover';
-      c.setAttribute('aria-hidden', 'true');
-      c.style.position = 'absolute';
-      layer(c, 'lg-layer lg-edge lg-spec');
-      layer(c, 'lg-layer lg-underlay');
-      if (anchors) anchorTo(c);
-      return c;
-    }
-    var cover = makeCover();
-    var covers = [cover];
-    host.after(cover);
-
-    var tick = document.createElement('span');
-    tick.className = 'lg-tick';
-    tick.setAttribute('aria-hidden', 'true');
-    tick.style.position = 'absolute';
-    host.before(tick);
-
-    function onHost(el, r) {
-      if (!host.getClientRects().length || !el.getClientRects().length) return true;
-      var c = el.getBoundingClientRect();
-      return Math.abs(c.left - r.left) < 1 && Math.abs(c.top - r.top) < 1 && Math.abs(c.width - r.width) < 1 && Math.abs(c.height - r.height) < 1;
-    }
-
-    function place() {
-      var cs = getComputedStyle(host);
-      var fixed = cs.position === 'fixed';
-      var r = host.getBoundingClientRect();
-      var op = host.offsetParent || document.body;
-      var o = fixed ? { left: 0, top: 0 } : op.getBoundingClientRect();
-      var tr = cs.translate === 'none' ? [] : cs.translate.split(' ').map(parseFloat);
-      var tx = tr[0] || 0, ty = tr[1] || 0;
-      [tick].concat(covers).forEach(function (el) {
-        setStyle(el, 'position', fixed ? 'fixed' : 'absolute');
-        if (anchored.has(el)) {
-          if (onHost(el, r)) return;
-          el.style.removeProperty('position-anchor');
-          anchored.delete(el);
-        }
-        setStyle(el, 'left', (r.left - o.left - tx) + 'px');
-        setStyle(el, 'top', (r.top - o.top - ty) + 'px');
-        setStyle(el, 'width', r.width + 'px');
-        setStyle(el, 'height', r.height + 'px');
-      });
-      covers.forEach(function (c) {
-        setStyle(c, 'z-index', cs.zIndex);
-        setStyle(c, 'border-radius', cs.borderRadius);
-        ['--lg-r', '--lg-s', '--lg-rim-w', '--lg-rim-fade'].forEach(function (name) {
-          var v = cs.getPropertyValue(name);
-          if (v) setStyle(c, name, v);
-          else c.style.removeProperty(name);
-        });
-      });
-    }
-
-    setBackdrop(fold, 'brightness(var(--lg-fold-exp, 1.08)) saturate(var(--lg-fold-sat, 1.3))');
-    fold.style.setProperty('--lg-fold-k', String(REFR_FOLD_DEPTH));
-    setBackdrop(glint, 'brightness(var(--lg-glint-exp, 1.35)) saturate(var(--lg-glint-sat, 3.1))');
-    setBackdrop(rimLayer, 'brightness(var(--lg-rim-exp, 0.84)) saturate(var(--lg-rim-sat, 2.2))');
-
-    var frost = (blur > 0 ? ' blur(' + blur + 'px)' : '') + ' saturate(' + saturate + ')';
-    function setPane(v) { setBackdrop(pane, v); }
-    function setRefl(v) { setBackdrop(reflectLayer, v); }
-    setPane(frost.trim());
-
-    var w = 0, h = 0, baked = 0, refr = null, refl = null, reflSize = { w: 0, h: 0 }, avail = null;
-    var bakeTimer = 0, viewTimer = 0, fieldTimer = 0;
-    var refrKey = '', reflKey = '', pendRefr = false, pendRefl = false, bakedOnce = false, lastSpot = '';
-
-    function measureAvail() {
-      var r = host.getBoundingClientRect();
-      function q(v) { return Math.max(0, Math.floor(v / AVAIL_STEP) * AVAIL_STEP); }
-      return [q(r.top), q(innerWidth - r.right), q(innerHeight - r.bottom), q(r.left)];
-    }
-
-    var ringKey = '';
-    function edgeLayers() {
-      return [fold, glint, rimLayer].concat(covers.map(function (c) { return c.querySelector('.lg-spec'); }));
-    }
-    function clearRings() {
-      if (!ringKey) return;
-      ringKey = '';
-      edgeLayers().forEach(function (e) { e.removeAttribute('data-ring'); });
-    }
-    function applyRings() {
-      var key = w + 'x' + h + '@' + devicePixelRatio;
-      if (key === ringKey) return Promise.resolve();
-      var r = Math.max(0.01, Math.min(radius, w / 2, h / 2));
-      return Promise.all(edgeLayers().map(function (e) {
-        var rw = ringWidths(e);
-        return decoded(ringMask(w, h, r, rw.rimW, rw.fade, devicePixelRatio)).then(function (url) {
-          return { e: e, url: url };
-        });
-      })).then(function (done) {
-        if ((w + 'x' + h + '@' + devicePixelRatio) !== key) return;
-        ringKey = key;
-        done.forEach(function (item) {
-          setStyle(item.e, '--lg-ring', 'url("' + item.url + '")');
-          item.e.setAttribute('data-ring', '');
-        });
-      });
-    }
-
-    function scheduleFields() {
-      if (!refr) return;
-      var rKey = w + 'x' + h;
-      var fKey = refl ? (rKey + ':' + refl.pad.join(',')) : '';
-      if (rKey !== refrKey) {
-        refrKey = rKey; pendRefr = true;
-        setPane('url(#' + refractId + ')' + frost);
-        if (ringKey.indexOf(rKey + '@') !== 0) clearRings();
-      }
-      if (fKey !== reflKey) {
-        reflKey = fKey; pendRefl = true;
-        if (refl) setRefl('url(#' + reflectId + ')');
-      }
-      if (!pendRefr && !pendRefl) return;
-      clearTimeout(fieldTimer);
-      fieldTimer = window.setTimeout(function () {
-        var doRefr = pendRefr;
-        var doRefl = pendRefl && !!refl;
-        pendRefr = pendRefl = false;
-        var field = refr, map = refl;
-        var res = fieldScales(w, h, Math.min(field.slice.r, w / 2, h / 2));
-        var jobs = [];
-        if (doRefr) {
-          var region = { x: -REGION, y: -REGION, width: w + 2 * REGION, height: h + 2 * REGION };
-          jobs.push(
-            bakeFilter(refrFilter, 'rxt', 'ry', 'rmapya', res.y, {
-              box: region,
-              fields: refractionField(field, w, h, { x: region.x, y: region.y, w: region.width, h: region.height }, res.y, res.x)
-            }).then(function (refrBaked) {
-              if (rKey === refrKey) { setPane('url(#' + refrBaked + ')' + frost); bakedOnce = true; }
-            })
-          );
-        }
-        if (doRefl && map) {
-          var box = { x: map.pad[3], y: map.pad[0], width: w, height: h };
-          var m = Math.ceil(3 * map.blur) + REGION;
-          var mask = { result: 'fmask', parts: SLOTS.map(function (s) { return 'fm' + s; }), box: box, scale: FIELD_SCALE };
-          jobs.push(
-            bakeFilter(reflFilter, 'fx', 'fy', 'fmapya', res.refl, {
-              box: { x: box.x - m, y: box.y - m, width: box.width + 2 * m, height: box.height + 2 * m },
-              mask: mask
-            }).then(function (reflBaked) {
-              if (fKey === reflKey) setRefl('url(#' + reflBaked + ')');
-            })
-          );
-        }
-        Promise.all(jobs).then(function () { return applyRings(); }).catch(function () {});
-      }, bakedOnce ? 300 : 0);
-    }
-
-    function sync() {
-      host.style.setProperty('--lg-r', Math.max(0.01, Math.min(radius, w / 2, h / 2)) + 'px');
-      if (refr) {
-        layField(refrField, refr.slice, w, h);
-        SLOTS.forEach(function (slot) { setRect(tiltTiles[slot], sliceRect(slot, w, h, refr.tilt.r, refr.tilt.reach)); });
-        var r = Math.max(0.01, Math.min(refr.slice.r, w / 2, h / 2));
-        setAttr(tiltRamp, 'x', r);
-        setAttr(tiltRamp, 'width', Math.max(0.01, w - 2 * r));
-        setAttr(tiltRamp, 'height', h);
-        var g = tiltGain(refr, w, h);
-        setAttr(tiltAdd, 'k3', g);
-        setAttr(tiltAdd, 'k4', -g / 2);
-        setAttr(refrDisp, 'scale', refractionScale(refr, w, h));
-        setAttr(refrFilter, 'width', w + REGION * 2);
-        setAttr(refrFilter, 'height', h + REGION * 2);
-      }
-      if (refl) {
-        var pt = refl.pad[0], pr = refl.pad[1], pb = refl.pad[2], pl = refl.pad[3];
-        layField(reflField, refl.slice, w, h, pl, pt);
-        setAttr(reflDisp, 'scale', reflectionScale(refl, w, h));
-        setAttr(reflFilter, 'width', w + pl + pr + REGION * 2);
-        setAttr(reflFilter, 'height', h + pt + pb + REGION * 2);
-        var m = Math.ceil(3 * refl.blur) + REGION;
-        for (var i = reflTailFrom; i < reflFilter.children.length; i++) {
-          setRect(reflFilter.children[i], { x: pl - m, y: pt - m, w: w + 2 * m, h: h + 2 * m });
-        }
-        SLOTS.forEach(function (slot) {
-          var sr = sliceRect(slot, w, h, refl.mask.r, refl.mask.reach, pl, pt);
-          setRect(reflMask[slot], (sr.w < 0.5 || sr.h < 0.5) ? { x: sr.x, y: sr.y, w: 0, h: 0 } : sr);
-        });
-      }
-      place();
-      var arcs = buildBevelArcs(w, h);
-      setStyle(glint, '--lg-arc-glint', arcs.glint);
-      covers.forEach(function (c) { setStyle(c.querySelector('.lg-spec'), '--lg-arc-glint', arcs.glint); });
-      setStyle(rimLayer, '--lg-arc-rim', arcs.rim);
-      scheduleFields();
-    }
-
-    function rebuildReflection() {
-      refl = (reflect && avail) ? buildReflection(reflSize.w, reflSize.h, radius, rim, reflectStrength, avail) : null;
-      reflKey = '';
-      reflectLayer.hidden = !refl;
-      if (!refl) return;
-      setFieldImages(reflField, refl);
-      setAttr(reflBlur, 'stdDeviation', refl.blur);
-      var pt = refl.pad[0], pr = refl.pad[1], pb = refl.pad[2], pl = refl.pad[3];
-      var csClip = getComputedStyle(host);
-      var radCss = keepRadius
-        ? (csClip.borderTopLeftRadius + ' ' + csClip.borderTopRightRadius + ' ' + csClip.borderBottomRightRadius + ' ' + csClip.borderBottomLeftRadius)
-        : 'var(--lg-r)';
-      var clip = 'inset(' + pt + 'px ' + pr + 'px ' + pb + 'px ' + pl + 'px round ' + radCss + ')';
-      reflectLayer.style.inset = (-pt) + 'px ' + (-pr) + 'px ' + (-pb) + 'px ' + (-pl) + 'px';
-      setStyle(reflectLayer, 'clip-path', clip);
-      setStyle(reflectLayer, '-webkit-clip-path', clip);
-      SLOTS.forEach(function (slot) { setAttr(reflMask[slot], 'href', refl.mask.img[slot]); });
-      setRefl('url(#' + reflectId + ')');
-    }
-
-    function bake(short) {
-      baked = short;
-      refrKey = reflKey = '';
-      refr = cachedRefraction(short, radius);
-      setFieldImages(refrField, refr);
-      SLOTS.forEach(function (slot) { setAttr(tiltTiles[slot], 'href', refr.tilt.img[slot]); });
-      setAttr(tiltRamp, 'href', refr.tiltRamp);
-      reflSize = { w: w, h: h };
-      rebuildReflection();
-      setPane('url(#' + refractId + ')' + frost);
-    }
-
-    function onResize() {
-      var nw = Math.round(host.clientWidth);
-      var nh = Math.round(host.clientHeight);
-      if (nw < 8 || nh < 8 || (nw === w && nh === h)) return;
-      w = nw; h = nh;
-      var s = Math.min(w, h);
-      if (!SVG_BACKDROP) {
-        // Frosted fallback
-      } else if (!refr) {
-        avail = measureAvail();
-        bake(s);
-      } else if (s > baked + BAKE_SLACK_UP) {
-        clearTimeout(bakeTimer);
-        bake(s);
-      } else if (baked - s > BAKE_SLACK_DOWN) {
-        clearTimeout(bakeTimer);
-        bakeTimer = window.setTimeout(function () {
-          var settled = Math.min(Math.round(host.clientWidth), Math.round(host.clientHeight));
-          if (Math.abs(settled - s) <= 1 && baked - settled > BAKE_SLACK_DOWN) {
-            bake(settled);
-            sync();
-          }
-        }, BAKE_SETTLE_MS);
-      } else {
-        clearTimeout(bakeTimer);
-      }
-      sync();
-    }
-
-    function onView() {
-      place();
-      clearTimeout(viewTimer);
-      viewTimer = window.setTimeout(function check() {
-        var r = host.getBoundingClientRect();
-        var spot = Math.round(r.top) + ':' + Math.round(r.left);
-        if (spot !== lastSpot) {
-          lastSpot = spot;
-          viewTimer = window.setTimeout(check, 120);
-          return;
-        }
-        place();
-        var next = measureAvail();
-        if (!refr) return;
-        var short = Math.min(reflSize.w, reflSize.h);
-        var before = avail && reflectionPad(short, avail);
-        avail = next;
-        var after = reflectionPad(short, next);
-        if (!before || after.some(function (v, i) { return v !== before[i]; })) {
-          rebuildReflection();
-          sync();
-        }
-      }, 220);
-    }
-
-    var tickAt = -Infinity, tickReq = 0, frameAt = -Infinity, frameMs = 50, gap = TICK_GAP_MS[0], gapUntil = -Infinity;
-    function applyTick(now) {
-      tickReq = 0;
-      var dt = now - frameAt;
-      frameAt = now;
-      if (dt < TICK_PAUSE_MS) {
-        frameMs = Math.min(Math.max(4, dt), frameMs * 1.02);
-        var level = dt >= 4 * frameMs + 2 ? 2 : dt >= 2 * frameMs + 2 ? 1 : 0;
-        if (level) {
-          gap = Math.max(gap, TICK_GAP_MS[level]);
-          gapUntil = now + TICK_HOLD_MS;
-        }
-      }
-      if (now > gapUntil) gap = TICK_GAP_MS[0];
-      if (now - tickAt < gap) {
-        tickReq = requestAnimationFrame(applyTick);
-        return;
-      }
-      tickAt = now;
-      tick.toggleAttribute('data-tick');
-    }
-    function refresh() {
-      if (!tickReq) tickReq = requestAnimationFrame(applyTick);
-    }
-
-    var followReq = 0;
-    function moving() {
-      if (typeof document.getAnimations !== 'function') return false;
-      return document.getAnimations().some(function (a) {
-        if (a.playState !== 'running' || a.timeline !== document.timeline) return false;
-        var target = a.effect && a.effect.target;
-        var end = a.effect && a.effect.getComputedTiming && a.effect.getComputedTiming().endTime;
-        return !!target && target.contains(host) && typeof end === 'number' && Number.isFinite(end);
-      });
-    }
-    function follow() {
-      if (followReq) return;
-      var last = '', still = 0;
-      function step() {
-        place();
-        var r = host.getBoundingClientRect();
-        var spot = r.left + ':' + r.top + ':' + r.width + ':' + r.height;
-        still = spot === last ? still + 1 : 0;
-        last = spot;
-        if (still < 3 || moving()) {
-          followReq = requestAnimationFrame(step);
-        } else {
-          followReq = 0;
-          onView();
-        }
-      }
-      followReq = requestAnimationFrame(step);
-    }
-    function onMotion(e) {
-      if (e.target instanceof Node && e.target.contains(host)) follow();
-    }
-
-    var ro = new ResizeObserver(onResize);
-    ro.observe(host);
-    addEventListener('resize', onView, { passive: true });
-    document.addEventListener('transitionrun', onMotion, { capture: true, passive: true });
-    document.addEventListener('animationstart', onMotion, { capture: true, passive: true });
-    onResize();
-    onView();
-
-    return {
-      refresh: refresh,
-      update: function () { place(); onView(); }
-    };
-  }
-
-  /* --- Mount Liquid Glass on the 7 Sign-In & Terms Elements --- */
-  var instancesList = [];
-  var sheetList = [];
-
-  function mount(selector, opts, isSheet) {
-    var el = document.querySelector(selector);
-    if (!el) return null;
-    var g = createLiquidGlass(el, opts);
-    instancesList.push(g);
-    if (isSheet) sheetList.push(g);
-    return g;
-  }
-
-  mount('#wrap-name',     { radius: 9999, rim: 1.15, blur: 3,  saturate: 1.2,  reflect: true, reflectStrength: 2.3 });
-  mount('#wrap-pass',     { radius: 9999, rim: 1.15, blur: 3,  saturate: 1.2,  reflect: true, reflectStrength: 2.3 });
-  mount('#btn-get-pass',  { radius: 9999, rim: 1.15, blur: 3,  saturate: 1.15, reflect: true, reflectStrength: 2.4 });
-  mount('#btn-signin',    { radius: 9999, rim: 1.15, blur: 3,  saturate: 1.15, reflect: true, reflectStrength: 2.5 });
-  mount('#signin-sound',  { radius: 9999, rim: 1.1,  blur: 4,  saturate: 1.15, reflect: true, reflectStrength: 2.2 });
-  mount('.signin-bottom', { radius: 28,   rim: 1.1,  blur: 6,  saturate: 1.15, reflect: true, reflectStrength: 2.0, keepRadius: true });
-  mount('#sheet',         { radius: 28,   rim: 1.0,  blur: 12, saturate: 1.15, reflect: true, reflectStrength: 1.8, keepRadius: true }, true);
-  mount('#sheetClose',    { radius: 9999, rim: 1.1,  blur: 4,  saturate: 1.15, reflect: true, reflectStrength: 2.2 }, true);
-  mount('#sheetAgree',    { radius: 9999, rim: 1.15, blur: 3,  saturate: 1.15, reflect: true, reflectStrength: 2.4 }, true);
-
-  window.pikazooUpdateSheetGlass = function () {
-    sheetList.forEach(function (g) { g.update(); });
-  };
-
-  var scr = document.getElementById('screen-signin');
-  var v = document.getElementById('signin-video');
-  if (scr) {
-    new MutationObserver(function () {
-      if (scr.classList.contains('is-active')) {
-        instancesList.forEach(function (g) { g.update(); });
-      }
-    }).observe(scr, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  if (v && typeof v.requestVideoFrameCallback === 'function') {
-    var onVFrame = function () {
-      if (scr && scr.classList.contains('is-active') && !v.paused && !document.hidden) {
-        instancesList.forEach(function (g) { g.refresh(); });
-      }
-      v.requestVideoFrameCallback(onVFrame);
-    };
-    v.requestVideoFrameCallback(onVFrame);
-  }
+    var top = topOpen();
+    if (!top) return;
+    top.close();
+    setTimeout(syncBackTrap, 30);
+  });
 })();
 </script>
 </body>
