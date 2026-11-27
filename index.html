@@ -2475,7 +2475,6 @@
                   <span class="pill-icon" aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="3"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>
                   </span>
-                  <label class="pass-prefix" for="input-pass">PIKAZOO</label>
                   <input id="input-pass" class="pill-input" type="password" name="password" placeholder="Password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Password" aria-describedby="error-pass" />
                   <button id="btn-toggle-pass" class="pill-toggle" type="button" aria-label="Show password">
                     <svg id="icon-toggle-pass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
@@ -2869,8 +2868,7 @@
 
       const HOME_URL = '';
       const STORAGE_KEY = 'pikazoo_premium_user_v1';
-      const PREFIX = 'PIKAZOO';
-      const SUFFIX_LEN = 7;
+      const KEY_LEN = 14;
       const OWNER_EMAIL = 'itsmesaudi.me@gmail.com';
       const WA_URL = 'https://wa.me/923041891897?text=' + encodeURIComponent('Share The Secret Key For PIKAZOO PREMIUM 4.7');
 
@@ -3661,7 +3659,7 @@
 
       function fullPass() {
         const v = inputPass.value;
-        return v.charAt(0) === '@' ? v : PREFIX + v;
+        return v.charAt(0) === '@' ? v : v.trim();
       }
       function syncPassMode() { wrapPass.classList.toggle('owner-mode', inputPass.value.charAt(0) === '@'); }
 
@@ -3984,8 +3982,7 @@
         if (v.charAt(0) === '@') return v.slice(0, 128);
         v = v.trim();
         if (v.charAt(0) === '@') return v.slice(0, 128);
-        if (v.indexOf(PREFIX) === 0) v = v.slice(PREFIX.length);
-        return v.slice(0, SUFFIX_LEN);
+        return v.slice(0, KEY_LEN);
       }
 
       inputPass.addEventListener('paste', (e) => {
@@ -4008,9 +4005,9 @@
 
       let lastAutoKey = '';
       async function autoFillNameFromKey() {
-        const v = inputPass.value;
-        if (v.charAt(0) === '@' || v.length !== SUFFIX_LEN) { lastAutoKey = ''; return; }
-        const full = PREFIX + v;
+        const v = inputPass.value.trim();
+        if (v.charAt(0) === '@' || !/^[a-zA-Z0-9]{14}$/.test(v)) { lastAutoKey = ''; return; }
+        const full = v;
         if (full === lastAutoKey) return;
         lastAutoKey = full;
         try {
@@ -4056,7 +4053,7 @@
         const rawPass = inputPass.value;
         const isOwnerAttempt = rawPass.charAt(0) === '@';
         const fullKey = fullPass();
-        const keyFormatOk = isOwnerAttempt ? (rawPass.length >= 2) : /^PIKAZOO[a-zA-Z0-9]{7}$/.test(fullKey);
+        const keyFormatOk = isOwnerAttempt ? (rawPass.length >= 2) : /^[a-zA-Z0-9]{14}$/.test(fullKey);
         const termsChecked = inputTerms.checked;
 
         let firstInvalid = null;
