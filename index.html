@@ -2411,7 +2411,7 @@
       <!-- SCREEN 2: SIGN IN -->
       <section id="screen-signin" class="screen screen-signin" aria-label="Sign in">
         <div class="signin-video-wrap" aria-hidden="true">
-          <video id="signin-video" class="signin-video" loop playsinline preload="auto" disablepictureinpicture></video>
+          <video id="signin-video" class="signin-video" loop playsinline webkit-playsinline preload="auto" disablepictureinpicture></video>
         </div>
         <button id="signin-sound" class="signin-sound" type="button"></button>
         <div class="signin-amber-top">
@@ -7387,19 +7387,22 @@
     v.muted = true;
   }
 
-  function sync() {
+  function safePlay() {
     if (!isAppActive()) {
       hardStopVideo();
       return;
     }
-    if (state !== 2) return;
+    if (!v.getAttribute('src')) return;
     v.muted = userMuted || autoMuted;
     v.volume = 1;
     var p = v.play();
     if (p && typeof p.then === 'function') {
       p.then(function () {
-        if (!isAppActive()) hardStopVideo();
-        else paint();
+        if (!isAppActive()) { hardStopVideo(); return; }
+        v.classList.add('is-on');
+        btn.classList.add('is-on');
+        paint();
+        syncThemeColor();
       }).catch(function () {
         if (!isAppActive()) { hardStopVideo(); return; }
         if (!v.muted) {
@@ -7408,19 +7411,44 @@
           paint();
           var p2 = v.play();
           if (p2 && typeof p2.then === 'function') {
-            p2.then(function () { if (!isAppActive()) hardStopVideo(); }).catch(function () {});
+            p2.then(function () {
+              if (!isAppActive()) { hardStopVideo(); return; }
+              v.classList.add('is-on');
+              btn.classList.add('is-on');
+              syncThemeColor();
+            }).catch(function () {});
           }
         }
       });
     }
   }
 
+  function sync() {
+    if (!isAppActive()) {
+      hardStopVideo();
+      return;
+    }
+    if (scr.classList.contains('is-active') && !v.getAttribute('src')) {
+      v.src = VIDEO_URL;
+      v.load();
+    }
+    if (v.getAttribute('src')) {
+      safePlay();
+    }
+  }
+
   function useSrc(u) {
+    state = 2;
+    if (scr.classList.contains('is-active') && !v.paused && v.currentTime > 0 && v.classList.contains('is-on')) {
+      if (/^blob:/.test(u)) {
+        try { URL.revokeObjectURL(u); } catch (e) {}
+      }
+      return;
+    }
     if (blobUrl && blobUrl !== u) {
       try { URL.revokeObjectURL(blobUrl); } catch (e) {}
     }
     blobUrl = /^blob:/.test(u) ? u : '';
-    state = 2;
     v.src = u;
     v.load();
     sync();
@@ -7490,7 +7518,7 @@
         return null;
       }).then(function (cachedBlob) {
         if (cachedBlob) return cachedBlob;
-        return fetchWithTimeout(VIDEO_URL, 25000).then(function (res) {
+        return fetchWithTimeout(VIDEO_URL, 120000).then(function (res) {
           if (!res.ok || res.status === 206) throw new Error('video_fetch_bad');
           var ct = res.headers.get('content-type') || 'video/mp4';
           var et = res.headers.get('etag');
@@ -7509,15 +7537,20 @@
     }).catch(function () {
       state = 0;
       if (scr.classList.contains('is-active') && navigator.onLine !== false && !isOfflineLocked) {
-        v.src = VIDEO;
-        v.load();
-        v.play().catch(function () {});
+        if (!v.getAttribute('src')) {
+          v.src = VIDEO_URL;
+          v.load();
+        }
+        safePlay();
       }
       scheduleRetry();
     });
   }
   window.pikazooPreloadLoginVideo = start;
 
+  v.addEventListener('canplay', function () {
+    if (isAppActive() && v.paused) safePlay();
+  });
   v.addEventListener('play', function () {
     if (!isAppActive()) hardStopVideo();
   });
@@ -7530,14 +7563,17 @@
   v.addEventListener('error', function () {
     v.classList.remove('is-on');
     btn.classList.remove('is-on');
-    if (/^blob:/.test(v.src) && window.caches) {
-      caches.open(CACHE).then(function (c) {
-        c.delete(VIDEO_URL);
-        c.delete(VIDEO);
-      }).catch(function () {});
+    if (/^blob:/.test(v.src)) {
+      if (window.caches) {
+        caches.open(CACHE).then(function (c) {
+          c.delete(VIDEO_URL);
+          c.delete(VIDEO);
+        }).catch(function () {});
+      }
       state = 0;
-      v.src = VIDEO;
+      v.src = VIDEO_URL;
       v.load();
+      if (isAppActive()) safePlay();
       scheduleRetry();
     }
     syncThemeColor();
@@ -7599,8 +7635,8 @@
   function sampleVideoColor() {
     if (!sampleCtx || v.readyState < 2 || !v.videoWidth || !v.videoHeight) return '';
     try {
-      sampleCtx.drawImage(v, 0, 0, 4, 4);
-      var d = sampleCtx.getImageData(0, 0, 4, 4).data;
+      sampleCtx.drawImage(v, 0, 0, 2, 2);
+      var d = sampleCtx.getImageData(0, 0, 2, 2).data;
       var r = 0, g = 0, b = 0, c = d.length / 4;
       for (var i = 0; i < d.length; i += 4) {
         r += d[i]; g += d[i + 1]; b += d[i + 2];
@@ -7770,7 +7806,6 @@
   });
   window.addEventListener('pagehide', hardStopVideo);
   window.addEventListener('freeze', hardStopVideo);
-  window.addEventListener('blur', hardStopVideo);
   window.addEventListener('focus', function () {
     if (!isOfflineLocked) {
       if (scr.classList.contains('is-active')) start();
