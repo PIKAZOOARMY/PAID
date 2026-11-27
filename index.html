@@ -1296,6 +1296,60 @@
       font-size: 14.5px;
       font-weight: 700;
     }
+    .loading-box {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 224, 237, 0.72);
+      background: linear-gradient(145deg, rgba(228, 243, 244, 0.85), rgba(246, 224, 234, 0.85));
+      box-shadow: var(--st-clay-sm);
+      color: var(--st-text);
+      font-size: 14.5px;
+      font-weight: 800;
+    }
+    .loading-spin {
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2.8px solid rgba(42, 59, 71, 0.16);
+      border-top-color: #B93868;
+      animation: spinRotate 0.75s linear infinite;
+    }
+    .skel-card {
+      padding: 12px;
+      border-radius: 28px;
+      border: 1px solid rgba(255, 224, 237, 0.72);
+      background: linear-gradient(158deg, rgba(255, 212, 181, 0.25), rgba(209, 240, 240, 0.25));
+      box-shadow: 0 8px 18px rgba(132, 160, 172, 0.14);
+    }
+    .skel-thumb {
+      aspect-ratio: 4/3;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.55);
+      animation: skelPulse 1.25s ease-in-out infinite;
+    }
+    .skel-line {
+      height: 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.65);
+      margin: 14px 6px 8px;
+      width: 68%;
+      animation: skelPulse 1.25s ease-in-out infinite;
+    }
+    .skel-line.sm {
+      height: 11px;
+      margin: 0 6px 8px;
+      width: 46%;
+      opacity: 0.8;
+    }
+    @keyframes skelPulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.95; }
+    }
     #cardModalSub { white-space: pre-wrap; }
     .desc-link {
       color: #E11D74;
@@ -3611,6 +3665,20 @@
       }
       window.pikazooSyncHook = syncHookReleases;
 
+      function renderAllLoading() {
+        ['hook', 'file', 'preview'].forEach((cat) => {
+          const grid = document.querySelector('#' + cat + ' .grid');
+          if (!grid) return;
+          grid.innerHTML =
+            '<div class="loading-box" role="status" aria-live="polite">' +
+              '<span class="loading-spin" aria-hidden="true"></span>' +
+              '<span>Loading ' + cat.toUpperCase() + '...</span>' +
+            '</div>' +
+            '<div class="skel-card" aria-hidden="true"><div class="skel-thumb"></div><div class="skel-line"></div><div class="skel-line sm"></div></div>' +
+            '<div class="skel-card" aria-hidden="true"><div class="skel-thumb"></div><div class="skel-line"></div><div class="skel-line sm"></div></div>';
+        });
+      }
+
       function startStoreFeed(mode) {
         if (unsubStoreFeed) {
           try { unsubStoreFeed(); } catch (err) {}
@@ -3618,9 +3686,9 @@
           unsubStoreFeed = null;
         }
         lastSyncedMetaKey = null;
+        renderAllLoading();
 
         if (mode === 'guest') {
-          renderGuestPlaceholders({ hook: 0, file: 0, preview: 0 });
           unsubStoreFeed = trackUnsub(onSnapshot(doc(db, 'meta', 'public'), (snap) => {
             if (!document.body.classList.contains('guest-mode')) return;
             renderGuestPlaceholders(snap.exists() ? snap.data() : { hook: 0, file: 0, preview: 0 });
@@ -3643,6 +3711,9 @@
           if (mode === 'owner') syncPublicMetaIfNeeded(list);
         }, (err) => {
           console.warn('Cards listener error:', err);
+          if (!window.pikazooCards || !window.pikazooCards.length) {
+            renderAllCards([]);
+          }
         }));
 
         if (mode === 'owner') {
