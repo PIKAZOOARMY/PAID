@@ -435,7 +435,9 @@
       display: block;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.9s ease;
+      transform: translateZ(0);
+      will-change: opacity;
+      transition: opacity 0.25s ease;
     }
     .signin-video.is-on { opacity: 1; }
     .signin-amber-top {
@@ -483,17 +485,14 @@
     }
     .signin-header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 14px;
       margin-top: 8px;
-      padding: 14px 18px;
-      border-radius: 26px;
-      background: rgba(255, 255, 255, 0.58);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.72);
-      box-shadow: 0 8px 24px rgba(11, 11, 13, 0.12);
+    }
+    .signin-header .mask-line {
+      padding: 6px 8px;
+      margin: -6px -8px;
     }
     .signin-title {
       margin: 0;
@@ -502,21 +501,23 @@
       color: var(--black);
       letter-spacing: -0.02em;
       line-height: 1.2;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 22px rgba(255, 255, 255, 0.85);
     }
     .signin-subtitle {
       margin: 4px 0 0;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
       color: var(--black);
       line-height: 1.35;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.95), 0 0 20px rgba(255, 255, 255, 0.85);
     }
 
     .signin-doodle-wrap {
       flex-shrink: 0;
-      width: 82px;
-      height: 70px;
-      margin-top: 0;
-      margin-right: 0;
+      width: 90px;
+      height: 78px;
+      margin-top: -8px;
+      margin-right: -4px;
       transform: scale(0.86);
       opacity: 0;
       transition:
@@ -526,6 +527,7 @@
     .signin-doodle-wrap svg {
       width: 100%;
       height: 100%;
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95)) drop-shadow(0 0 14px rgba(255, 255, 255, 0.8));
     }
     .screen.is-animated .signin-doodle-wrap {
       transform: scale(1);
@@ -552,8 +554,8 @@
       width: 100%;
       height: 54px;
       background: rgba(255, 255, 255, 0.56);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.72);
       border-radius: 999px;
       padding: 0 20px;
@@ -659,8 +661,8 @@
       color: #fff;
       cursor: pointer;
       background: rgba(11, 11, 13, 0.56);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.28);
       box-shadow: 0 8px 22px rgba(11, 11, 13, 0.22);
       opacity: 0;
@@ -686,8 +688,8 @@
       border-radius: 50%;
       border: 1px solid rgba(255, 255, 255, 0.3);
       background: rgba(11, 11, 13, 0.6);
-      -webkit-backdrop-filter: blur(16px);
-      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(10px);
+      backdrop-filter: blur(10px);
       color: var(--white);
       display: flex;
       align-items: center;
@@ -720,8 +722,8 @@
       position: relative;
       z-index: 1;
       background: rgba(255, 255, 255, 0.44);
-      -webkit-backdrop-filter: blur(20px);
-      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
       border-top: 1px solid rgba(255, 255, 255, 0.65);
       border-radius: 28px 28px 0 0;
       box-shadow: 0 -8px 26px rgba(11, 11, 13, 0.12);
@@ -3664,6 +3666,8 @@
         try {
           unsubscribeAllListeners();
           currentMemberKeyId = null;
+          bootUser = null;
+          window.pikazooCards = [];
           clearSavedUser();
           document.body.classList.add('guest-mode');
           delete document.body.dataset.role;
@@ -3892,11 +3896,11 @@
 
         try {
           await Promise.race([bootReady, delay(6000)]);
-          const u = bootUser || auth.currentUser;
+          const u = auth.currentUser;
           const saved = readSavedUser();
-          if (u && !u.isAnonymous && u.email === OWNER_EMAIL) {
+          if (u && !u.isAnonymous && u.email === OWNER_EMAIL && saved && saved.role === 'owner') {
             target = 'owner';
-            payload = { name: (saved && saved.role === 'owner' && saved.name) ? saved.name : 'Owner', role: 'owner' };
+            payload = { name: saved.name || 'Owner', role: 'owner' };
           } else if (u && u.isAnonymous && saved && (saved.keyId || saved.pass)) {
             const keyId = saved.keyId || saved.pass;
             const check = await verifyMemberSession(keyId, u.uid);
@@ -4179,13 +4183,19 @@
         try {
           unsubscribeAllListeners();
           currentMemberKeyId = null;
+          bootUser = null;
+          window.pikazooCards = [];
           document.body.classList.add('guest-mode');
           delete document.body.dataset.role;
           if (roleBadge) roleBadge.hidden = true;
           clearSavedUser();
           try { await signOut(auth); } catch (err) {}
           resetSigninForm();
+          startStoreFeed('guest');
           window.dispatchEvent(new Event('pikazoo-user-ready'));
+          if (typeof window.pikazooPreloadLoginVideo === 'function') {
+            window.pikazooPreloadLoginVideo();
+          }
           await coverWithCurtainThen(async () => {
             showScreenImmediate(screenWelcome);
             await delay(40);
@@ -4201,11 +4211,11 @@
       };
 
       onAuthStateChanged(auth, async (user) => {
+        bootUser = user || null;
         if (isSigningIn || isHandlingLogout) return;
 
         if (!initialAuthResolved) {
           initialAuthResolved = true;
-          bootUser = user;
           if (bootResolve) bootResolve();
           document.body.classList.add('guest-mode');
           delete document.body.dataset.role;
@@ -7205,6 +7215,134 @@
   })();
   </script>
 
+<!-- Cute Animated Offline Restriction Screen -->
+  <style>
+    .pz-offline-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 2147483500;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 18% 14%, rgba(254, 184, 13, 0.22), transparent 52%),
+        radial-gradient(circle at 86% 84%, rgba(176, 230, 232, 0.45), transparent 52%),
+        #F7F7F9;
+      color: #0B0B0D;
+      text-align: center;
+    }
+    .pz-offline-gate.is-open { display: flex; }
+    .pz-off-card {
+      width: min(360px, 100%);
+      padding: 28px 22px 24px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(11, 11, 13, 0.08);
+      box-shadow: 0 20px 50px rgba(11, 11, 13, 0.1);
+      animation: pzCardPop 0.35s cubic-bezier(0.34, 1.35, 0.64, 1);
+    }
+    @keyframes pzCardPop {
+      from { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.95); }
+      to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+    }
+    .pz-off-art {
+      width: 124px;
+      height: 112px;
+      margin: 0 auto 12px;
+      animation: pzCloudFloat 3s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes pzCloudFloat {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(0, -8px, 0); }
+    }
+    .pz-off-z1 { animation: pzFloatZ 2.4s ease-in-out infinite; }
+    .pz-off-z2 { animation: pzFloatZ 2.4s ease-in-out 0.8s infinite; }
+    @keyframes pzFloatZ {
+      0%, 100% { opacity: 0.25; transform: translate3d(0, 2px, 0); }
+      50% { opacity: 1; transform: translate3d(2px, -5px, 0); }
+    }
+    .pz-off-title {
+      margin: 0 0 8px;
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #0B0B0D;
+    }
+    .pz-off-sub {
+      margin: 0 0 18px;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: #5C5C66;
+    }
+    .pz-off-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 14px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: #FFF4D4;
+      color: #8F5B00;
+      font-size: 12.5px;
+      font-weight: 800;
+    }
+    .pz-off-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #FF4D4F;
+      animation: pzDotBlink 1.3s ease-in-out infinite;
+    }
+    @keyframes pzDotBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.75); }
+    }
+    .pz-off-btn {
+      width: 100%;
+      height: 48px;
+      border: 0;
+      border-radius: 999px;
+      background: #0B0B0D;
+      color: #FFFFFF;
+      font: 800 15px inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 10px 22px rgba(11, 11, 13, 0.16);
+      transition: transform 0.16s ease;
+    }
+    .pz-off-btn:active { transform: scale(0.96); }
+    .pz-off-btn:disabled { opacity: 0.7; cursor: wait; }
+  </style>
+
+  <div id="offlineGate" class="pz-offline-gate" role="alertdialog" aria-modal="true" aria-labelledby="offTitle" aria-hidden="true">
+    <div class="pz-off-card">
+      <div class="pz-off-art" aria-hidden="true">
+        <svg viewBox="0 0 130 116" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="65" cy="103" rx="38" ry="6" fill="#0B0B0D" fill-opacity="0.08"/>
+          <path d="M35 84H93C104 84 113 75 113 64C113 54 105 46 95 45C92 30 79 20 63 20C46 20 33 32 31 48C22 50 16 58 16 67C16 77 24 84 35 84Z" fill="#FEB80D" stroke="#0B0B0D" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="52" cy="57" r="3.4" fill="#0B0B0D"/>
+          <circle cx="77" cy="57" r="3.4" fill="#0B0B0D"/>
+          <circle cx="45" cy="63" r="3.6" fill="#FF7B93" fill-opacity="0.65"/>
+          <circle cx="84" cy="63" r="3.6" fill="#FF7B93" fill-opacity="0.65"/>
+          <path d="M58 67C61 63.5 68 63.5 71 67" stroke="#0B0B0D" stroke-width="2.6" stroke-linecap="round"/>
+          <text class="pz-off-z1" x="97" y="25" fill="#0B0B0D" font-size="13" font-weight="800" font-family="sans-serif">!</text>
+          <text class="pz-off-z2" x="108" y="16" fill="#FF4D4F" font-size="11" font-weight="800" font-family="sans-serif">?</text>
+          <path d="M53 93L76 93" stroke="#0B0B0D" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="4 4"/>
+        </svg>
+      </div>
+      <h2 id="offTitle" class="pz-off-title">No Internet Connection</h2>
+      <p class="pz-off-sub">Pikazoo Premium needs an active internet connection to run. Please turn on your Wi-Fi or mobile data.</p>
+      <div class="pz-off-pill"><span class="pz-off-dot"></span><span id="offStatusText">Offline · Waiting for network</span></div>
+      <button id="offRetryBtn" class="pz-off-btn" type="button">Try Again</button>
+    </div>
+  </div>
+
 <script>
 (function () {
   var scr = document.getElementById('screen-signin');
@@ -7220,7 +7358,7 @@
   var state = 0; // 0 = idle, 1 = loading, 2 = ready
   var blobUrl = '';
   var retryTimer = null;
-  var winFocused = true;
+  var isOfflineLocked = false;
   var userMuted = false;
   var autoMuted = false;
 
@@ -7228,10 +7366,10 @@
   var ICON_ON = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0B0B0D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M19 5a10 10 0 0 1 0 14"/></svg>';
 
   function isAppActive() {
-    return scr.classList.contains('is-active') &&
+    return !isOfflineLocked &&
+      scr.classList.contains('is-active') &&
       !document.hidden &&
-      document.visibilityState === 'visible' &&
-      winFocused;
+      document.visibilityState === 'visible';
   }
 
   function paint() {
@@ -7286,10 +7424,21 @@
 
   function scheduleRetry() {
     clearTimeout(retryTimer);
-    if (state === 2) return;
+    if (state === 2 || isOfflineLocked) return;
     retryTimer = setTimeout(function () {
-      if (state === 0 && navigator.onLine !== false) start();
-    }, 3000);
+      if (state === 0 && navigator.onLine !== false && !isOfflineLocked) start();
+    }, 2500);
+  }
+
+  function fetchWithTimeout(url, ms) {
+    if (typeof AbortController === 'undefined') {
+      return fetch(url, { cache: 'no-store' });
+    }
+    var ac = new AbortController();
+    var tid = setTimeout(function () { ac.abort(); }, ms);
+    return fetch(url, { cache: 'no-store', signal: ac.signal }).finally(function () {
+      clearTimeout(tid);
+    });
   }
 
   function refreshIfChanged(c, hit) {
@@ -7312,7 +7461,7 @@
   }
 
   function start() {
-    if (state === 1 || state === 2) return;
+    if (state === 1 || state === 2 || isOfflineLocked) return;
     state = 1;
     clearTimeout(retryTimer);
 
@@ -7337,7 +7486,7 @@
         return null;
       }).then(function (cachedBlob) {
         if (cachedBlob) return cachedBlob;
-        return fetch(VIDEO_URL, { cache: 'reload' }).then(function (res) {
+        return fetchWithTimeout(VIDEO_URL, 25000).then(function (res) {
           if (!res.ok || res.status === 206) throw new Error('video_fetch_bad');
           var ct = res.headers.get('content-type') || 'video/mp4';
           var et = res.headers.get('etag');
@@ -7355,14 +7504,15 @@
       useSrc(URL.createObjectURL(b));
     }).catch(function () {
       state = 0;
-      if (scr.classList.contains('is-active')) {
+      if (scr.classList.contains('is-active') && navigator.onLine !== false && !isOfflineLocked) {
         v.src = VIDEO;
         v.load();
         v.play().catch(function () {});
-        scheduleRetry();
       }
+      scheduleRetry();
     });
   }
+  window.pikazooPreloadLoginVideo = start;
 
   v.addEventListener('play', function () {
     if (!isAppActive()) hardStopVideo();
@@ -7419,16 +7569,22 @@
   var scrHome = document.getElementById('screen-home');
   var sheetEl = document.getElementById('sheet');
   var drawerEl = document.getElementById('drawer');
+  var viewportEl = document.querySelector('.app-viewport');
   var sampleCanvas = document.createElement('canvas');
-  sampleCanvas.width = 4;
-  sampleCanvas.height = 4;
+  sampleCanvas.width = 2;
+  sampleCanvas.height = 2;
   var sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
   var lastThemeColor = '';
 
   function setThemeColor(hex) {
-    if (!metaTheme || !hex || hex === lastThemeColor) return;
+    if (!hex || hex === lastThemeColor) return;
     lastThemeColor = hex;
-    metaTheme.setAttribute('content', hex);
+    if (metaTheme) metaTheme.setAttribute('content', hex);
+    document.documentElement.style.backgroundColor = hex;
+    document.body.style.backgroundColor = hex;
+    if (viewportEl && window.innerWidth < 460) {
+      viewportEl.style.backgroundColor = hex;
+    }
   }
 
   function toHex(n) {
@@ -7457,6 +7613,10 @@
   }
 
   function syncThemeColor() {
+    if (isOfflineLocked) {
+      setThemeColor('#F7F7F9');
+      return;
+    }
     if (curtainEl && !curtainEl.classList.contains('is-wiped-up')) {
       setThemeColor('#FEB80D');
       return;
@@ -7485,10 +7645,10 @@
   }
 
   setInterval(function () {
-    if (scr.classList.contains('is-active') && v.classList.contains('is-on') && !document.hidden) {
+    if (!isOfflineLocked && scr.classList.contains('is-active') && v.classList.contains('is-on') && !document.hidden) {
       syncThemeColor();
     }
-  }, 600);
+  }, 1400);
 
   var classObs = new MutationObserver(function () {
     if (scr.classList.contains('is-active')) start();
@@ -7502,37 +7662,134 @@
     classObs.observe(m, { attributes: true, attributeFilter: ['class'] });
   });
 
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden || document.visibilityState !== 'visible') hardStopVideo();
-    else {
-      if (scr.classList.contains('is-active')) start();
+  var offlineGate = document.getElementById('offlineGate');
+  var offStatusText = document.getElementById('offStatusText');
+  var offRetryBtn = document.getElementById('offRetryBtn');
+  var failStreak = 0;
+
+  function setOfflineMode(locked) {
+    isOfflineLocked = !!locked;
+    if (offlineGate) {
+      offlineGate.classList.toggle('is-open', isOfflineLocked);
+      offlineGate.setAttribute('aria-hidden', isOfflineLocked ? 'false' : 'true');
+    }
+    if (isOfflineLocked) {
+      hardStopVideo();
+      var ytFrame = document.getElementById('ytFrame');
+      var ytModal = document.getElementById('ytModal');
+      if (ytModal && ytModal.classList.contains('show') && ytFrame) {
+        ytFrame.src = 'about:blank';
+      }
+      if (offStatusText) offStatusText.textContent = 'Offline · Waiting for network';
+    } else {
+      failStreak = 0;
+      if (state !== 2) start();
       sync();
+    }
+    syncThemeColor();
+  }
+
+  function pingInternet() {
+    if (navigator.onLine === false) return Promise.resolve(false);
+    var url = './manifest.json?ping=' + Date.now();
+    var ac = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    var tid = ac ? setTimeout(function () { ac.abort(); }, 4000) : null;
+    return fetch(url, { method: 'HEAD', cache: 'no-store', signal: ac ? ac.signal : undefined })
+      .then(function (r) { return !!(r && r.ok); })
+      .catch(function () { return false; })
+      .finally(function () { if (tid) clearTimeout(tid); });
+  }
+
+  function verifyConnectivity(immediate) {
+    if (navigator.onLine === false) {
+      failStreak = 2;
+      setOfflineMode(true);
+      return Promise.resolve(false);
+    }
+    return pingInternet().then(function (ok) {
+      if (ok) {
+        failStreak = 0;
+        if (isOfflineLocked) setOfflineMode(false);
+        return true;
+      }
+      failStreak++;
+      if (immediate || failStreak >= 2) {
+        setOfflineMode(true);
+      } else {
+        setTimeout(function () {
+          if (!document.hidden) verifyConnectivity(true);
+        }, 1500);
+      }
+      return false;
+    });
+  }
+
+  if (offRetryBtn) {
+    offRetryBtn.addEventListener('click', function () {
+      if (offRetryBtn.disabled) return;
+      offRetryBtn.disabled = true;
+      offRetryBtn.textContent = 'Checking...';
+      if (offStatusText) offStatusText.textContent = 'Checking connection...';
+      verifyConnectivity(true).then(function (ok) {
+        if (!ok && offStatusText) {
+          offStatusText.textContent = 'Still offline · Check Wi-Fi or Data';
+        }
+      }).finally(function () {
+        offRetryBtn.disabled = false;
+        offRetryBtn.textContent = 'Try Again';
+      });
+    });
+  }
+
+  window.addEventListener('offline', function () {
+    failStreak = 2;
+    setOfflineMode(true);
+  });
+  window.addEventListener('online', function () {
+    verifyConnectivity(true);
+  });
+
+  setInterval(function () {
+    if (document.visibilityState === 'visible') verifyConnectivity(false);
+  }, 15000);
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden || document.visibilityState !== 'visible') {
+      hardStopVideo();
+    } else {
+      verifyConnectivity(false);
+      if (!isOfflineLocked) {
+        if (scr.classList.contains('is-active')) start();
+        sync();
+      }
     }
   });
   window.addEventListener('pagehide', hardStopVideo);
   window.addEventListener('freeze', hardStopVideo);
-  window.addEventListener('blur', function () {
-    winFocused = false;
-    hardStopVideo();
-  });
+  window.addEventListener('blur', hardStopVideo);
   window.addEventListener('focus', function () {
-    winFocused = true;
-    if (scr.classList.contains('is-active')) start();
-    sync();
+    if (!isOfflineLocked) {
+      if (scr.classList.contains('is-active')) start();
+      sync();
+    }
   });
   window.addEventListener('pageshow', function () {
-    winFocused = true;
-    if (scr.classList.contains('is-active')) start();
-    sync();
+    verifyConnectivity(false);
+    if (!isOfflineLocked) {
+      if (scr.classList.contains('is-active')) start();
+      sync();
+    }
     syncThemeColor();
-  });
-  window.addEventListener('online', function () {
-    if (state !== 2) start();
   });
 
   var saved = null;
   try { saved = window.localStorage.getItem('pikazoo_premium_user_v1'); } catch (e) {}
-  if (!saved) setTimeout(start, 600);
+  if (navigator.onLine === false) {
+    setOfflineMode(true);
+  } else {
+    verifyConnectivity(false);
+  }
+  if (!saved) start();
   syncThemeColor();
 })();
 </script>
