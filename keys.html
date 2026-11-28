@@ -465,6 +465,125 @@
             background: var(--pink-deep);
         }
 
+        /* Custom Key RANDOM & Brand Manager */
+        .custom-key-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .custom-key-row .search-input {
+            min-width: 0;
+            flex: 1;
+        }
+        .btn-inline {
+            width: auto !important;
+            flex-shrink: 0;
+            padding: 12px 16px !important;
+            font-size: 0.78rem !important;
+        }
+        .brand-chips-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.45rem;
+        }
+        .brand-chips-head span {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .brand-link-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.7);
+            color: var(--pink-darker);
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .brand-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 0.85rem;
+        }
+        .brand-chip {
+            padding: 6px 12px;
+            border-radius: 999px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.65);
+            color: var(--text-main);
+            font-size: 0.76rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .brand-chip.active {
+            background: linear-gradient(45deg, var(--pink-deep), var(--orange-deep));
+            color: white;
+            border-color: transparent;
+        }
+        .brand-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 44vh;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+        .brand-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.65);
+            border: 1px solid var(--glass-border);
+        }
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            min-width: 0;
+        }
+        .brand-name {
+            font-family: monospace;
+            font-size: 0.95rem;
+            font-weight: 800;
+            word-break: break-all;
+        }
+        .brand-meta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .brand-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .brand-act-btn {
+            border: 1px solid var(--glass-border);
+            background: rgba(255, 255, 255, 0.85);
+            color: var(--text-main);
+            padding: 6px 11px;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .brand-act-btn.danger {
+            background: rgba(219, 39, 119, 0.14);
+            color: var(--danger);
+            border-color: rgba(219, 39, 119, 0.35);
+        }
+
         /* View Switching */
         .view { display: none; }
         .view.active { display: block; }
@@ -615,6 +734,9 @@
                     </button>
                     <button class="btn btn-outline" id="btn-open-custom" onclick="openCustomKeyModal()" style="border-color: rgba(244, 114, 182, 0.45); background: rgba(255, 255, 255, 0.72);">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> GENERATE CUSTOM KEY
+                    </button>
+                    <button class="btn btn-outline" id="btn-open-brands" onclick="openBrandsModal()" style="border-color: rgba(34, 184, 207, 0.45); background: rgba(255, 255, 255, 0.72);">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg> MANAGE BRANDS
                     </button>
                 </div>
                 <h2 style="font-weight: 800; font-size: 1.2rem;">GENERATED KEYS HISTORY</h2>
@@ -794,18 +916,47 @@
     <!-- Custom Key Modal -->
     <div class="overlay" id="custom-key-overlay">
         <div class="modal glass">
-            <h3 style="margin-bottom: 0.5rem; font-weight: 800;">Generate Custom Key</h3>
-            <p style="color: var(--text-muted); margin-bottom: 1.25rem; line-height: 1.5; font-size: 0.85rem;">14 characters ki koi bhi random key daalein (A-Z, a-z, 0-9). Example: <b>SAJIDfDnGrWqOf</b></p>
+            <h3 style="margin-bottom: 0.45rem; font-weight: 800;">Generate Custom Key</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; line-height: 1.45; font-size: 0.83rem;">14 characters ki random ya Brand prefix wali key banayein (A-Z, a-z, 0-9).</p>
+
+            <div class="brand-chips-head">
+                <span>Brand Prefix</span>
+                <button type="button" class="brand-link-btn" onclick="openBrandsModal()">+ Manage Brands</button>
+            </div>
+            <div class="brand-chips" id="custom-brand-chips"></div>
+
             <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <input type="text" id="custom-key-input" class="search-input" maxlength="14" placeholder="Enter 14 digit custom key..." oninput="updateCustomKeyCounter()" onkeydown="if(event.key==='Enter') submitCustomKey()">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 6px;">
+                <div class="custom-key-row">
+                    <input type="text" id="custom-key-input" class="search-input" maxlength="14" placeholder="Enter 14 digit custom key..." oninput="onCustomKeyInput()" onkeydown="if(event.key==='Enter') submitCustomKey()">
+                    <button type="button" class="btn btn-outline btn-inline" onclick="fillRandomCustomKey()" style="background: rgba(201, 246, 249, 0.85); color: #0E7490; border-color: rgba(34, 184, 207, 0.45);">RANDOM</button>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 6px; gap: 8px; flex-wrap: wrap;">
                     <span id="custom-key-count" style="font-size: 0.78rem; color: var(--text-muted); font-weight: 700;">0 / 14 characters</span>
                     <span id="custom-key-error" style="font-size: 0.78rem; color: var(--danger); font-weight: 700; display: none;"></span>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 0.75rem;">
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 0.5rem;">
                     <button type="button" class="btn btn-outline" onclick="closeCustomKeyModal()">Cancel</button>
                     <button type="button" class="btn btn-primary" id="btn-submit-custom" onclick="submitCustomKey()">Generate</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Brand & Reseller Manager Modal -->
+    <div class="overlay" id="brands-overlay">
+        <div class="modal glass">
+            <h3 style="margin-bottom: 0.45rem; font-weight: 800;">Brand &amp; Reseller Manager</h3>
+            <p style="color: var(--text-muted); margin-bottom: 1rem; line-height: 1.45; font-size: 0.83rem;">4 se 10 characters ka Brand Name save karein (e.g. <b>PIKAZOO</b>, <b>SAJID</b>).</p>
+            <div class="custom-key-row">
+                <input type="text" id="brand-name-input" class="search-input" maxlength="10" placeholder="Brand name (4-10 chars)..." oninput="document.getElementById('brand-form-error').style.display='none'" onkeydown="if(event.key==='Enter') saveNewBrand()">
+                <button type="button" class="btn btn-primary btn-inline" id="btn-save-brand" onclick="saveNewBrand()">Save</button>
+            </div>
+            <p id="brand-form-error" style="color: var(--danger); font-size: 0.78rem; font-weight: 700; margin-top: 6px; display: none;"></p>
+
+            <div class="brand-list" id="brands-list"></div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.1rem;">
+                <button type="button" class="btn btn-outline" onclick="closeBrandsModal()">Close</button>
             </div>
         </div>
     </div>
@@ -829,8 +980,13 @@
         let auth = null;
         let currentUser = null;
         let allKeys = [];
+        let allBrands = [];
+        let usedKeyHistorySet = new Set();
+        let selectedBrandName = '';
         let currentStatusFilter = 'GENERATED'; // default selected filter
         let unsubKeys = null;
+        let unsubBrands = null;
+        let unsubKeyHistory = null;
 
         // --- CUSTOM STATUS DROPDOWN (replaces native <select>) ---
         window.toggleStatusDropdown = () => {
@@ -938,6 +1094,8 @@
         window.handleLogout = async () => {
             try {
                 if (unsubKeys) { unsubKeys(); unsubKeys = null; }
+                if (unsubBrands) { unsubBrands(); unsubBrands = null; }
+                if (unsubKeyHistory) { unsubKeyHistory(); unsubKeyHistory = null; }
                 await signOut(auth);
             } catch (e) {
                 showToast("Logout failed: " + e.message, "danger");
@@ -945,9 +1103,14 @@
             }
             currentUser = null;
             allKeys = [];
+            allBrands = [];
+            usedKeyHistorySet.clear();
+            selectedBrandName = '';
             updateStats();
             applyFilters();
             renderTrash();
+            renderBrandChips();
+            renderBrandsList();
             closeMenu();
             showView('dashboard');
             promptAdminLogin();
@@ -966,6 +1129,25 @@
             }, (err) => {
                 console.error(err);
                 updateConnStatus(false);
+            });
+
+            if (unsubBrands) unsubBrands();
+            unsubBrands = onSnapshot(collection(db, "brands"), (snapshot) => {
+                allBrands = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+                if (selectedBrandName && !allBrands.some(b => b.name === selectedBrandName && b.status === 'ACTIVE')) {
+                    selectedBrandName = '';
+                }
+                renderBrandChips();
+                renderBrandsList();
+            }, (err) => {
+                console.error(err);
+            });
+
+            if (unsubKeyHistory) unsubKeyHistory();
+            unsubKeyHistory = onSnapshot(collection(db, "usedKeyHistory"), (snapshot) => {
+                usedKeyHistorySet = new Set(snapshot.docs.map(d => d.id));
+            }, (err) => {
+                console.error(err);
             });
         }
 
@@ -1020,7 +1202,12 @@
                         updatedAt: serverTimestamp()
                     });
 
-                    // 3. Log Audit
+                    // 3. Global Uniqueness History + Audit Log
+                    transaction.set(doc(db, "usedKeyHistory", keyDoc.id), {
+                        key: keyDoc.id,
+                        createdAt: serverTimestamp()
+                    }, { merge: true });
+
                     const logRef = doc(collection(db, "keyAuditLogs"));
                     transaction.set(logRef, {
                         keyId: keyDoc.id,
@@ -1063,6 +1250,11 @@
                         updatedAt: serverTimestamp()
                     });
 
+                    transaction.set(doc(db, "usedKeyHistory", keyId), {
+                        key: keyId,
+                        createdAt: serverTimestamp()
+                    }, { merge: true });
+
                     const logRef = doc(collection(db, "keyAuditLogs"));
                     transaction.set(logRef, {
                         keyId: keyId,
@@ -1079,9 +1271,86 @@
             }
         };
 
+        const KEY_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        function cryptoRandomString(len) {
+            if (len <= 0) return '';
+            const bytes = new Uint8Array(len * 2);
+            let out = '';
+            while (out.length < len) {
+                window.crypto.getRandomValues(bytes);
+                for (let i = 0; i < bytes.length && out.length < len; i++) {
+                    if (bytes[i] < 248) {
+                        out += KEY_CHARSET[bytes[i] % 62];
+                    }
+                }
+            }
+            return out;
+        }
+
+        function isKeyUsedGlobally(keyStr) {
+            return usedKeyHistorySet.has(keyStr) || allKeys.some(k => k.id === keyStr);
+        }
+
+        function renderBrandChips() {
+            const box = document.getElementById('custom-brand-chips');
+            if (!box) return;
+            const activeBrands = allBrands
+                .filter(b => b.status === 'ACTIVE')
+                .sort((a, b) => String(a.name).localeCompare(String(b.name)));
+
+            let html = `<button type="button" class="brand-chip ${selectedBrandName === '' ? 'active' : ''}" onclick="selectCustomBrand('')">No Brand (Random)</button>`;
+            activeBrands.forEach(b => {
+                const safe = escapeHtml(b.name);
+                const rem = 14 - b.name.length;
+                html += `<button type="button" class="brand-chip ${selectedBrandName === b.name ? 'active' : ''}" onclick="selectCustomBrand('${safe}')">${safe} (${b.name.length}+${rem})</button>`;
+            });
+            box.innerHTML = html;
+        }
+
+        window.selectCustomBrand = (brandName) => {
+            selectedBrandName = brandName || '';
+            renderBrandChips();
+            if (selectedBrandName) {
+                fillRandomCustomKey();
+            } else {
+                const input = document.getElementById('custom-key-input');
+                input.value = '';
+                updateCustomKeyCounter();
+            }
+        };
+
+        window.fillRandomCustomKey = () => {
+            const input = document.getElementById('custom-key-input');
+            const prefix = selectedBrandName || '';
+            const remLen = 14 - prefix.length;
+            let candidate = '';
+            for (let tries = 0; tries < 30; tries++) {
+                const next = prefix + cryptoRandomString(remLen);
+                if (!isKeyUsedGlobally(next)) {
+                    candidate = next;
+                    break;
+                }
+            }
+            if (!candidate) candidate = prefix + cryptoRandomString(remLen);
+            input.value = candidate;
+            updateCustomKeyCounter();
+        };
+
+        window.onCustomKeyInput = () => {
+            const input = document.getElementById('custom-key-input');
+            let val = input.value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 14);
+            if (selectedBrandName && !val.startsWith(selectedBrandName)) {
+                val = selectedBrandName;
+            }
+            if (val !== input.value) input.value = val;
+            updateCustomKeyCounter();
+        };
+
         window.openCustomKeyModal = () => {
             const input = document.getElementById('custom-key-input');
             const err = document.getElementById('custom-key-error');
+            selectedBrandName = '';
+            renderBrandChips();
             input.value = '';
             err.style.display = 'none';
             updateCustomKeyCounter();
@@ -1099,7 +1368,7 @@
             const val = document.getElementById('custom-key-input').value.trim();
             const countEl = document.getElementById('custom-key-count');
             const err = document.getElementById('custom-key-error');
-            countEl.innerText = `${val.length} / 14 characters`;
+            countEl.innerText = `${val.length} / 14 characters` + (selectedBrandName ? ` (Brand: ${selectedBrandName})` : '');
             countEl.style.color = val.length === 14 ? '#16A34A' : 'var(--text-muted)';
             err.style.display = 'none';
         };
@@ -1116,21 +1385,41 @@
                 err.style.display = 'block';
                 return;
             }
+            if (selectedBrandName && !rawKey.startsWith(selectedBrandName)) {
+                err.innerText = `Key "${selectedBrandName}" se shuru honi chahiye`;
+                err.style.display = 'block';
+                return;
+            }
 
             if (btn) btn.disabled = true;
             try {
                 await runTransaction(db, async (transaction) => {
                     const keyRef = doc(db, "keys", rawKey);
-                    const existing = await transaction.get(keyRef);
+                    const histRef = doc(db, "usedKeyHistory", rawKey);
+                    const [existing, histSnap] = await Promise.all([
+                        transaction.get(keyRef),
+                        transaction.get(histRef)
+                    ]);
 
                     if (existing.exists()) {
                         throw new Error(`Ye key pehle se maujood hai (Status: ${existing.data().status})`);
+                    }
+                    if (histSnap.exists()) {
+                        throw new Error("Ye key pehle generate ho chuki hai! Dubara generate nahi ho sakti.");
+                    }
+                    if (selectedBrandName) {
+                        const brandRef = doc(db, "brands", selectedBrandName);
+                        const brandSnap = await transaction.get(brandRef);
+                        if (!brandSnap.exists() || brandSnap.data().status !== 'ACTIVE') {
+                            throw new Error("Selected brand Paused ya Remove ho chuka hai");
+                        }
                     }
 
                     transaction.set(keyRef, {
                         key: rawKey,
                         status: 'GENERATED',
                         customKey: true,
+                        brand: selectedBrandName || null,
                         createdAt: serverTimestamp(),
                         generatedAt: serverTimestamp(),
                         generatedBy: currentUser.uid,
@@ -1138,10 +1427,17 @@
                         permanentlyInvalidated: false
                     });
 
+                    transaction.set(histRef, {
+                        key: rawKey,
+                        brand: selectedBrandName || null,
+                        createdAt: serverTimestamp()
+                    });
+
                     const logRef = doc(collection(db, "keyAuditLogs"));
                     transaction.set(logRef, {
                         keyId: rawKey,
                         action: 'GENERATE_CUSTOM',
+                        brand: selectedBrandName || null,
                         previousStatus: null,
                         newStatus: 'GENERATED',
                         adminUid: currentUser.uid,
@@ -1157,6 +1453,112 @@
             } finally {
                 if (btn) btn.disabled = false;
             }
+        };
+
+        // --- BRAND & RESELLER MANAGEMENT ---
+        window.openBrandsModal = () => {
+            document.getElementById('brand-name-input').value = '';
+            document.getElementById('brand-form-error').style.display = 'none';
+            renderBrandsList();
+            document.getElementById('brands-overlay').style.display = 'flex';
+            addLayer('brands');
+            setTimeout(() => document.getElementById('brand-name-input').focus(), 80);
+        };
+
+        window.closeBrandsModal = () => {
+            document.getElementById('brands-overlay').style.display = 'none';
+            removeLayer('brands');
+        };
+
+        function renderBrandsList() {
+            const box = document.getElementById('brands-list');
+            if (!box) return;
+            if (!allBrands.length) {
+                box.innerHTML = `<p style="text-align:center; color: var(--text-muted); font-size:0.82rem; padding:1rem 0;">Abhi koi brand save nahi hai.</p>`;
+                return;
+            }
+            const sorted = [...allBrands].sort((a, b) => String(a.name).localeCompare(String(b.name)));
+            box.innerHTML = sorted.map(b => {
+                const safe = escapeHtml(b.name);
+                const isActive = b.status === 'ACTIVE';
+                return `
+                    <div class="brand-item">
+                        <div class="brand-info">
+                            <span class="brand-name">${safe}</span>
+                            <div class="brand-meta">
+                                <span class="badge ${isActive ? 'badge-generated' : 'badge-blocked'}">${isActive ? 'ACTIVE' : 'PAUSED'}</span>
+                                <span>${b.name.length} chars (+${14 - b.name.length} random)</span>
+                            </div>
+                        </div>
+                        <div class="brand-actions">
+                            <button type="button" class="brand-act-btn" onclick="toggleBrandStatus('${safe}', '${isActive ? 'PAUSED' : 'ACTIVE'}')">${isActive ? 'Pause' : 'Activate'}</button>
+                            <button type="button" class="brand-act-btn danger" onclick="removeBrand('${safe}')">Remove</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.saveNewBrand = async () => {
+            if (!db || !currentUser) return showToast("Pehle login karo aur Connected hone do", "danger");
+            const input = document.getElementById('brand-name-input');
+            const err = document.getElementById('brand-form-error');
+            const btn = document.getElementById('btn-save-brand');
+            const name = input.value.trim();
+
+            if (!/^[a-zA-Z0-9]{4,10}$/.test(name)) {
+                err.innerText = "Brand name 4 se 10 letters/numbers ka hona chahiye (no spaces)";
+                err.style.display = 'block';
+                return;
+            }
+            if (allBrands.some(b => b.id === name)) {
+                err.innerText = "Ye brand pehle se database mein saved hai";
+                err.style.display = 'block';
+                return;
+            }
+
+            if (btn) btn.disabled = true;
+            try {
+                await setDoc(doc(db, "brands", name), {
+                    name: name,
+                    status: 'ACTIVE',
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+                input.value = '';
+                err.style.display = 'none';
+                showToast(`Brand ${name} saved!`, "success");
+            } catch (e) {
+                err.innerText = e.message;
+                err.style.display = 'block';
+            } finally {
+                if (btn) btn.disabled = false;
+            }
+        };
+
+        window.toggleBrandStatus = async (brandName, newStatus) => {
+            if (!db || !currentUser) return;
+            try {
+                await updateDoc(doc(db, "brands", brandName), {
+                    status: newStatus,
+                    updatedAt: serverTimestamp()
+                });
+                showToast(`Brand ${brandName} ${newStatus === 'ACTIVE' ? 'Activated' : 'Paused'}`);
+            } catch (e) {
+                showToast(e.message, "danger");
+            }
+        };
+
+        window.removeBrand = (brandName) => {
+            if (!db || !currentUser) return;
+            confirmAction(`Brand "${brandName}" ko Firebase se permanently delete karna chahte hain?`, async () => {
+                try {
+                    await deleteDoc(doc(db, "brands", brandName));
+                    showToast(`Brand ${brandName} permanently removed`, "danger");
+                } catch (e) {
+                    showToast(e.message, "danger");
+                }
+            });
         };
 
         // --- TXT IMPORT SYSTEM ---
@@ -1465,19 +1867,16 @@ window.handleFileImportOld = async (input) => {
         };
 
         window.deleteKey = async (keyId) => {
-            confirmAction(`Move ${keyId} to Trash?`, async () => {
+            confirmAction(`PERMANENTLY DELETE ${keyId} from Firebase? (Is key ko dubara kabhi generate nahi kiya ja sakega)`, async () => {
                 try {
                     const prev = getKeyData(keyId).status || null;
-                    await updateDoc(doc(db, "keys", keyId), {
-                        status: 'DELETED',
-                        previousStatus: prev,
-                        permanentlyInvalidated: true,
-                        deletedAt: serverTimestamp(),
-                        deletedBy: currentUser.uid,
-                        updatedAt: serverTimestamp()
-                    });
-                    await logAudit(keyId, 'DELETE', prev, 'DELETED');
-                    showToast("Key moved to trash");
+                    await setDoc(doc(db, "usedKeyHistory", keyId), {
+                        key: keyId,
+                        deletedAt: serverTimestamp()
+                    }, { merge: true });
+                    await logAudit(keyId, 'DELETE_PERMANENT', prev, null);
+                    await deleteDoc(doc(db, "keys", keyId));
+                    showToast("Key permanently deleted from Firebase", "danger");
                 } catch (e) {
                     showToast(e.message, "danger");
                 }
@@ -1508,6 +1907,10 @@ window.handleFileImportOld = async (input) => {
                     if (getKeyData(keyId).status !== 'DELETED') {
                         return showToast("Sirf Trash wali key purge ho sakti hai", "danger");
                     }
+                    await setDoc(doc(db, "usedKeyHistory", keyId), {
+                        key: keyId,
+                        deletedAt: serverTimestamp()
+                    }, { merge: true });
                     await logAudit(keyId, 'PURGE', 'DELETED', null);
                     await deleteDoc(doc(db, "keys", keyId));
                     showToast("Key purged from database", "danger");
@@ -1752,6 +2155,7 @@ window.handleFileImportOld = async (input) => {
             if (name === 'menu') document.getElementById('sideMenu').classList.remove('open');
             else if (name === 'modal') document.getElementById('modal-overlay').style.display = 'none';
             else if (name === 'customKey') document.getElementById('custom-key-overlay').style.display = 'none';
+            else if (name === 'brands') document.getElementById('brands-overlay').style.display = 'none';
             else if (name === 'dropdown') document.getElementById('status-dropdown').classList.remove('open');
             else if (name === 'view') setView('dashboard');
         }
