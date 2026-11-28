@@ -2800,7 +2800,7 @@
               </div>
             </div>
 
-            <form id="signin-form" class="signin-form" novalidate>
+            <form id="signin-form" class="signin-form" autocomplete="on" novalidate>
               <div class="field-group">
                 <div id="wrap-name" class="pill-input-wrap">
                   <span class="pill-icon" aria-hidden="true">
@@ -2809,7 +2809,7 @@
                       <circle cx="12" cy="7" r="4"/>
                     </svg>
                   </span>
-                  <input id="input-name" class="pill-input" type="text" name="name" maxlength="14" autocapitalize="words" spellcheck="false" placeholder="Name (3 to 14 letters)" autocomplete="name" aria-label="Name" aria-describedby="error-name" />
+                  <input id="input-name" class="pill-input" type="text" name="username" maxlength="14" autocapitalize="words" spellcheck="false" placeholder="Name (3 to 14 letters)" autocomplete="username" aria-label="Name" aria-describedby="error-name" />
                 </div>
                 <span id="error-name" class="error-msg" role="alert"></span>
               </div>
@@ -2819,7 +2819,7 @@
                   <span class="pill-icon" aria-hidden="true">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="3"/><path d="M8 10.5V7.8a4 4 0 0 1 8 0v2.7"/></svg>
                   </span>
-                  <input id="input-pass" class="pill-input" type="password" name="password" placeholder="Password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Password" aria-describedby="error-pass" />
+                  <input id="input-pass" class="pill-input" type="password" name="password" placeholder="Password" autocomplete="current-password" autocapitalize="off" spellcheck="false" aria-label="Password" aria-describedby="error-pass" />
                   <button id="btn-toggle-pass" class="pill-toggle" type="button" aria-label="Show password">
                     <svg id="icon-toggle-pass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>
@@ -4315,7 +4315,29 @@
       });
 
       function saveUser(user) {
-        try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user)); } catch (err) {}
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+          if (user && user.name && user.role === 'member') {
+            window.localStorage.setItem('pz_last_member_name_v1', String(user.name).slice(0, 30));
+          }
+        } catch (err) {}
+      }
+
+      function getLastMemberName() {
+        try { return (window.localStorage.getItem('pz_last_member_name_v1') || '').trim(); } catch (err) { return ''; }
+      }
+
+      function storeGoogleCredential(username, password) {
+        if (window.PasswordCredential && navigator.credentials && typeof navigator.credentials.store === 'function') {
+          try {
+            const cred = new window.PasswordCredential({
+              id: String(username || 'Member'),
+              password: String(password || ''),
+              name: String(username || 'Member')
+            });
+            navigator.credentials.store(cred).catch(() => {});
+          } catch (e) {}
+        }
       }
 
       function clearSavedUser() {
@@ -4570,10 +4592,7 @@
       }
 
       inputPass.addEventListener('focus', () => {
-        setTimeout(() => {
-          const l = inputPass.value.length;
-          try { inputPass.setSelectionRange(l, l); } catch (err) {}
-        }, 0);
+        if (errorPass.classList.contains('is-visible')) setFieldError(errorPass, wrapPass, '');
       });
 
       btnTogglePass.addEventListener('click', () => {
@@ -4586,18 +4605,26 @@
       const GET_PASS_BTN_HTML = btnGetPass.innerHTML;
       const UNBLOCK_BTN_HTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 21.8a9.87 9.87 0 0 1-5.03-1.38l-3.74.98 1-3.65a9.86 9.86 0 1 1 7.77 4.05zm4.2-6.6c-.23-.12-1.37-.68-1.58-.75-.21-.08-.37-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.17-.5.06-.23-.12-.98-.36-1.87-1.15-.69-.62-1.16-1.38-1.3-1.61-.13-.23-.01-.36.1-.47.1-.1.23-.27.35-.4.12-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.52-1.26-.72-1.72-.19-.45-.38-.39-.52-.4h-.45c-.15 0-.4.06-.61.29-.21.23-.8.78-.8 1.9s.82 2.2.93 2.36c.12.15 1.6 2.45 3.9 3.43.55.24.98.38 1.3.49.55.17 1.05.15 1.44.09.44-.07 1.37-.56 1.56-1.1.19-.54.19-1 .13-1.1-.06-.09-.21-.15-.44-.27z"/></svg> Unblock';
 
+      function getBanCode(devId) {
+        const s = String(devId || '');
+        const m = s.match(/^dev_BAN(\d{4})_/);
+        if (m) return 'BAN-' + m[1];
+        return 'BAN-' + s.replace(/^dev_/, '').slice(0, 4).toUpperCase();
+      }
+
       btnGetPass.addEventListener('click', () => {
         const g = readGuard();
         if (g.lockType === '24h' && g.lockUntil && (!hasServerTime() || trueNow() < g.lockUntil)) {
-          const nm = inputName.value.trim();
-          const msg = 'Assalam-o-Alaikum! My Pikazoo account is blocked for 24 hours due to wrong password attempts. Please unblock my ID: ' + g.deviceId + (nm ? (' (Name: ' + nm + ')') : '') + '\n\nNote: I am already a Premium Member / I want to get Premium Membership.';
+          const nm = inputName.value.trim() || getLastMemberName();
+          const bCode = getBanCode(g.deviceId);
+          const msg = 'Assalam-o-Alaikum! My Pikazoo account is blocked for 24 hours due to wrong password attempts.\nBan Code: ' + bCode + (nm ? ('\nName: ' + nm) : '') + '\n\nNote: I am already a Premium Member / I want to buy Premium Membership. Please unblock me.';
           window.open('https://wa.me/923041891897?text=' + encodeURIComponent(msg), '_blank', 'noopener');
           return;
         }
         window.open(WA_URL, '_blank', 'noopener');
       });
 
-      /* --- WRONG PASSWORD TIMER (59s -> 119s -> 24h BLOCK) --- */
+      /* --- WRONG PASSWORD TIMER (59s -> 24h BLOCK) --- */
       const GUARD_STORAGE_KEY = 'pz_signin_guard_v1';
       const DAY_MS = 24 * 60 * 60 * 1000;
       const signinLockBox = document.getElementById('signin-lock-box');
@@ -4608,16 +4635,22 @@
       let guardTickInterval = null;
 
       function createDeviceId() {
+        const digits = '0123456789';
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let out = 'dev_';
+        let code4 = '';
+        let tail = '';
         if (window.crypto && window.crypto.getRandomValues) {
-          const arr = new Uint8Array(16);
-          window.crypto.getRandomValues(arr);
-          for (let i = 0; i < arr.length; i++) out += chars[arr[i] % chars.length];
+          const dArr = new Uint8Array(4);
+          const tArr = new Uint8Array(8);
+          window.crypto.getRandomValues(dArr);
+          window.crypto.getRandomValues(tArr);
+          for (let i = 0; i < 4; i++) code4 += digits[dArr[i] % 10];
+          for (let i = 0; i < 8; i++) tail += chars[tArr[i] % chars.length];
         } else {
-          out += Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+          code4 = String(Math.floor(1000 + Math.random() * 9000));
+          tail = Math.random().toString(36).slice(2, 10);
         }
-        return out;
+        return 'dev_BAN' + code4 + '_' + tail;
       }
 
       function hasServerTime() {
@@ -4694,7 +4727,7 @@
             }
             if (screenSignin.classList.contains('is-active')) {
               window.dispatchEvent(new CustomEvent('pikazoo-ban-tick', {
-                detail: { timerText: timerStr, deviceId: g.deviceId }
+                detail: { timerText: timerStr, deviceId: g.deviceId, banCode: getBanCode(g.deviceId) }
               }));
             } else {
               window.dispatchEvent(new Event('pikazoo-ban-clear'));
@@ -4748,7 +4781,7 @@
         try {
           await setDoc(doc(db, 'loginBans', g.deviceId), {
             deviceId: g.deviceId,
-            name: (inputName.value.trim() || 'Unknown').slice(0, 30),
+            name: (inputName.value.trim() || getLastMemberName() || 'Unknown').slice(0, 30),
             lastTriedKey: String(triedKey || '').slice(0, 30),
             attempts: 4,
             status: 'BLOCKED',
@@ -4940,6 +4973,7 @@
             };
             resetGuard();
             saveUser(userPayload);
+            storeGoogleCredential(userPayload.name, rawPass);
 
             await coverWithCurtainThen(async () => {
               populateHome(userPayload);
@@ -5061,6 +5095,7 @@
           };
           resetGuard();
           saveUser(userPayload);
+          storeGoogleCredential(lockedName, fullKey);
           startMemberKeyWatcher(fullKey, uid);
 
           await coverWithCurtainThen(async () => {
@@ -8175,7 +8210,7 @@
 
       if (reason === 'banned-24h' && kickEl && kickEl.dataset.reason === 'banned-24h') {
         var tEl = kickEl.querySelector('.pz-ktimer');
-        if (tEl) tEl.textContent = 'Unlocks in: ' + (detail.timerText || '24:00:00');
+        if (tEl) tEl.textContent = (detail.banCode ? (detail.banCode + ' · ') : '') + 'Unlocks in: ' + (detail.timerText || '24:00:00');
         return;
       }
 
@@ -8202,10 +8237,10 @@
         showKeyRow = false;
       } else if (reason === 'banned-24h') {
         title = 'Blocked for 1 Day (24 Hours)';
-        desc = 'Too many wrong password attempts. Tap the green Unblock button below to contact Owner on WhatsApp.';
+        desc = 'Too many wrong password attempts. Tap the green Unblock button below and send your Ban Code to the Owner on WhatsApp.';
         showKeyRow = false;
         showClose = false;
-        extraHtml = '<div class="pz-ktimer">Unlocks in: ' + (detail.timerText || '24:00:00') + '</div>' +
+        extraHtml = '<div class="pz-ktimer">' + (detail.banCode ? (detail.banCode + ' · ') : '') + 'Unlocks in: ' + (detail.timerText || '24:00:00') + '</div>' +
           '<div class="pz-knote">Note: Unban is only available for users who already hold a Premium Membership or want to purchase a Premium Membership.</div>';
       } else {
         title = 'You are logged out - your key was used on another Browser/Phone.';
@@ -8240,7 +8275,7 @@
       if (e && e.detail) showKick(e.detail);
     });
     window.addEventListener('pikazoo-ban-tick', function (e) {
-      if (e && e.detail) showKick({ reason: 'banned-24h', timerText: e.detail.timerText });
+      if (e && e.detail) showKick({ reason: 'banned-24h', timerText: e.detail.timerText, banCode: e.detail.banCode });
     });
     window.addEventListener('pikazoo-ban-clear', function () {
       if (kickEl && kickEl.dataset.reason === 'banned-24h') hideKick();
