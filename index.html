@@ -2606,6 +2606,26 @@
         <div id="sheetFoot" class="sheet-foot"><button id="sheetAgree" class="sheet-agree" type="button">Agree</button></div>
       </div>
 
+      <!-- Terms & Conditions Prompt Popup (on Next Arrow without tick) -->
+      <div class="modal" id="termsPromptModal" role="dialog" aria-modal="true" aria-labelledby="termsPromptTitle" aria-hidden="true" style="color: var(--st-text);">
+        <div class="modal-card">
+          <div class="modal-icon">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="9" y1="13" x2="15" y2="13"/>
+              <line x1="9" y1="17" x2="13" y2="17"/>
+            </svg>
+          </div>
+          <h2 id="termsPromptTitle">Terms &amp; Conditions</h2>
+          <p class="modal-sub">Please agree to our Terms &amp; Conditions to continue. By tapping Agree, you confirm that payments are non-refundable and you accept all Pikazoo Premium Store rules.</p>
+          <div class="modal-actions">
+            <button class="btn" id="termsPromptCancel" type="button">Cancel</button>
+            <button class="btn btn-orange" id="termsPromptAgree" type="button">Agree</button>
+          </div>
+        </div>
+      </div>
+
       <!-- SCREEN 1: WELCOME -->
       <section id="screen-welcome" class="screen screen-welcome" aria-label="Welcome">
         <header class="welcome-header">
@@ -4464,6 +4484,45 @@
         window.open(WA_URL, '_blank', 'noopener');
       });
 
+      const termsPromptModal = document.getElementById('termsPromptModal');
+      const termsPromptCancel = document.getElementById('termsPromptCancel');
+      const termsPromptAgree = document.getElementById('termsPromptAgree');
+
+      function openTermsPrompt() {
+        if (!termsPromptModal) return;
+        termsPromptModal.classList.add('show');
+        termsPromptModal.setAttribute('aria-hidden', 'false');
+      }
+      function closeTermsPrompt() {
+        if (!termsPromptModal || !termsPromptModal.classList.contains('show')) return;
+        termsPromptModal.classList.remove('show');
+        termsPromptModal.setAttribute('aria-hidden', 'true');
+      }
+
+      if (termsPromptCancel) termsPromptCancel.addEventListener('click', closeTermsPrompt);
+      if (termsPromptModal) {
+        termsPromptModal.addEventListener('click', (ev) => {
+          if (ev.target === termsPromptModal) closeTermsPrompt();
+        });
+      }
+      if (termsPromptAgree) {
+        termsPromptAgree.addEventListener('click', () => {
+          closeTermsPrompt();
+          inputTerms.checked = true;
+          inputTerms.dispatchEvent(new Event('change', { bubbles: true }));
+          if (typeof signinForm.requestSubmit === 'function') {
+            signinForm.requestSubmit();
+          } else {
+            btnSignin.click();
+          }
+        });
+      }
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape' && termsPromptModal && termsPromptModal.classList.contains('show')) {
+          closeTermsPrompt();
+        }
+      });
+
       inputTerms.addEventListener('change', () => {
         if (inputTerms.checked) setFieldError(errorTerms, wrapTerms, '');
       });
@@ -4497,17 +4556,17 @@
           setFieldError(errorPass, wrapPass, '');
         }
 
-        if (!termsChecked) {
-          setFieldError(errorTerms, wrapTerms, 'Please agree to Terms & Conditions');
-          firstInvalid = firstInvalid || inputTerms;
-        } else {
-          setFieldError(errorTerms, wrapTerms, '');
-        }
-
         if (firstInvalid) {
           firstInvalid.focus();
           return;
         }
+
+        if (!termsChecked) {
+          setFieldError(errorTerms, wrapTerms, '');
+          openTermsPrompt();
+          return;
+        }
+        setFieldError(errorTerms, wrapTerms, '');
 
         btnSignin.disabled = true;
         signinBtnIcon.innerHTML = getSpinnerSvg('#FFFFFF');
@@ -8539,6 +8598,7 @@
   var ignorePop = false;
   var targets = [
     { id: 'ytModal',            cls: 'show',      close: function () { var b = document.getElementById('ytCloseBtn'); if (b) b.click(); } },
+    { id: 'termsPromptModal',   cls: 'show',      close: function () { var b = document.getElementById('termsPromptCancel'); if (b) b.click(); } },
     { id: 'shareIdModal',       cls: 'show',      close: function () { var b = document.getElementById('shareIdCancelBtn'); if (b) b.click(); } },
     { id: 'spoofModal',         cls: 'show',      close: function () { var b = document.getElementById('spoofCancelBtn'); if (b) b.click(); } },
     { id: 'confirmDeleteModal', cls: 'show',      close: function () { var b = document.getElementById('delCancelBtn'); if (b) b.click(); } },
