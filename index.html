@@ -689,6 +689,11 @@
       transform: translate3d(0, 0, 0);
     }
     .get-pass-btn:active { transform: scale(0.97); }
+    .get-pass-btn.is-unblock {
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 8px 20px rgba(18, 140, 126, 0.35);
+    }
 
     .submit-row {
       display: flex;
@@ -723,6 +728,71 @@
     }
     .circle-submit-btn:active:not(:disabled) { transform: scale(0.92); }
     .circle-submit-btn:disabled { cursor: wait; opacity: 0.88; }
+    .circle-submit-btn.is-locked { opacity: 0.42; pointer-events: none; cursor: not-allowed; }
+
+    .signin-lock-box {
+      padding: 13px 16px;
+      border-radius: 20px;
+      background: rgba(11, 11, 13, 0.78);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 77, 79, 0.55);
+      box-shadow: 0 8px 22px rgba(11, 11, 13, 0.28);
+      color: #FFFFFF;
+      text-align: center;
+    }
+    .signin-lock-box[hidden] { display: none; }
+    .signin-lock-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+    .signin-lock-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #FFB4B4;
+      text-align: start;
+    }
+    .signin-lock-timer {
+      flex: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255, 77, 79, 0.24);
+      border: 1px solid rgba(255, 130, 132, 0.45);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #FFFFFF;
+      font-variant-numeric: tabular-nums;
+    }
+    .signin-lock-desc {
+      margin: 4px 0 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.42;
+      color: rgba(255, 255, 255, 0.88);
+      text-align: start;
+    }
+    .signin-unblock-btn {
+      margin-top: 10px;
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #25D366, #128C7E);
+      color: #FFFFFF;
+      font: 800 13.5px inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 6px 16px rgba(18, 140, 126, 0.35);
+    }
+    .signin-unblock-btn:active { transform: scale(0.97); }
+    .signin-unblock-btn[hidden] { display: none; }
 
     .brush-divider-wrap {
       display: none;
@@ -2762,6 +2832,18 @@
                 Get Password
               </button>
 
+              <div id="signin-lock-box" class="signin-lock-box" role="alert" hidden>
+                <div class="signin-lock-head">
+                  <span id="signin-lock-title" class="signin-lock-title">Too many wrong attempts</span>
+                  <span id="signin-lock-timer" class="signin-lock-timer">59s</span>
+                </div>
+                <p id="signin-lock-desc" class="signin-lock-desc"></p>
+                <button id="btn-unblock-wa" class="signin-unblock-btn" type="button" hidden>
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 21.8a9.87 9.87 0 0 1-5.03-1.38l-3.74.98 1-3.65a9.86 9.86 0 1 1 7.77 4.05zm4.2-6.6c-.23-.12-1.37-.68-1.58-.75-.21-.08-.37-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.17-.5.06-.23-.12-.98-.36-1.87-1.15-.69-.62-1.16-1.38-1.3-1.61-.13-.23-.01-.36.1-.47.1-.1.23-.27.35-.4.12-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.52-1.26-.72-1.72-.19-.45-.38-.39-.52-.4h-.45c-.15 0-.4.06-.61.29-.21.23-.8.78-.8 1.9s.82 2.2.93 2.36c.12.15 1.6 2.45 3.9 3.43.55.24.98.38 1.3.49.55.17 1.05.15 1.44.09.44-.07 1.37-.56 1.56-1.1.19-.54.19-1 .13-1.1-.06-.09-.21-.15-.44-.27z"/></svg>
+                  Contact for Unblock (+923041891897)
+                </button>
+              </div>
+
               <div class="submit-row">
                 <button id="btn-signin" class="circle-submit-btn" type="submit" aria-label="Sign in">
                   <span id="signin-btn-icon">
@@ -4137,13 +4219,15 @@
           try { await signOut(auth); } catch (err) {}
           resetSigninForm();
           startStoreFeed('guest');
-          if (!screenHome.classList.contains('is-active')) {
-            showScreenImmediate(screenHome);
-            animateScreenContent(screenHome);
+          if (screenHome.classList.contains('is-active')) {
+            slideTransition(screenHome, screenSignin, 'right');
+          } else if (!screenSignin.classList.contains('is-active')) {
+            showScreenImmediate(screenSignin);
+            animateScreenContent(screenSignin);
           }
           window.dispatchEvent(new CustomEvent('pikazoo-force-guest', {
             detail: {
-              message: toastMsg || 'Aap ki key revoke, block ya delete ho gayi hai',
+              message: toastMsg || 'Session ended',
               reason: (opts && opts.reason) || '',
               keyId: (opts && opts.keyId) || ''
             }
@@ -4164,26 +4248,41 @@
         unsubKeyWatch = trackUnsub(onSnapshot(keyRef, (snap) => {
           if (!currentMemberKeyId || isHandlingLogout) return;
           if (!snap.exists()) {
-            performAutoLogout('Key invalid ya delete ho gayi hai');
+            performAutoLogout('', { reason: 'deleted', keyId: keyId });
             return;
           }
           const data = snap.data();
-          if (data.status === 'USED' && data.userUid !== uid) {
+          if (data.status === 'DELETED' || data.permanentlyInvalidated) {
+            performAutoLogout('', { reason: 'deleted', keyId: keyId });
+          } else if (data.status === 'BLOCKED') {
+            performAutoLogout('', { reason: 'blocked', keyId: keyId });
+          } else if (data.status === 'GENERATED' || data.status === 'UNUSED') {
+            performAutoLogout('', { reason: 'revoked', keyId: keyId });
+          } else if (data.status === 'USED' && data.userUid !== uid) {
             performAutoLogout('', { reason: 'other-device', keyId: keyId });
           } else if (data.status !== 'USED' || data.userUid !== uid) {
-            performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai');
+            performAutoLogout('', { reason: 'revoked', keyId: keyId });
           }
         }, () => {
           if (!currentMemberKeyId || isHandlingLogout) return;
-          performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai');
+          performAutoLogout('', { reason: 'revoked', keyId: keyId });
         }));
       }
 
       async function verifyMemberSession(keyId, uid) {
         try {
           const keySnap = await getDoc(doc(db, 'keys', keyId));
-          if (!keySnap.exists()) return { ok: false };
+          if (!keySnap.exists()) return { ok: false, reason: 'deleted' };
           const keyData = keySnap.data();
+          if (keyData.status === 'DELETED' || keyData.permanentlyInvalidated) {
+            return { ok: false, reason: 'deleted' };
+          }
+          if (keyData.status === 'BLOCKED') {
+            return { ok: false, reason: 'blocked' };
+          }
+          if (keyData.status === 'GENERATED' || keyData.status === 'UNUSED') {
+            return { ok: false, reason: 'revoked' };
+          }
           if (keyData.status !== 'USED' || keyData.userUid !== uid) {
             return { ok: false, reason: (keyData.status === 'USED') ? 'other-device' : 'revoked' };
           }
@@ -4211,8 +4310,7 @@
         if (!user || !user.isAnonymous) return;
         const res = await verifyMemberSession(currentMemberKeyId, user.uid);
         if (!res.ok && res.reason !== 'network') {
-          if (res.reason === 'other-device') performAutoLogout('', { reason: 'other-device', keyId: currentMemberKeyId });
-          else performAutoLogout('Aap ki key revoke, block ya delete ho gayi hai');
+          performAutoLogout('', { reason: res.reason || 'revoked', keyId: currentMemberKeyId });
         }
       });
 
@@ -4353,6 +4451,7 @@
         let target = 'guest';
         let payload = null;
         let kickKey = '';
+        let kickReason = '';
         let uidNow = '';
 
         try {
@@ -4373,7 +4472,8 @@
               target = 'retry';
             } else {
               target = 'signin';
-              if (check.reason === 'other-device') kickKey = keyId;
+              kickKey = keyId;
+              kickReason = check.reason || 'revoked';
               clearSavedUser();
               try { await signOut(auth); } catch (e2) {}
             }
@@ -4397,7 +4497,8 @@
         } else if (target === 'signin') {
           resetSigninForm();
           slideTransition(screenWelcome, screenSignin, 'left');
-          if (kickKey) window.dispatchEvent(new CustomEvent('pikazoo-kicked', { detail: { keyId: kickKey } }));
+          setTimeout(() => tickLockUI(), 40);
+          if (kickKey) window.dispatchEvent(new CustomEvent('pikazoo-kicked', { detail: { reason: kickReason || 'other-device', keyId: kickKey } }));
         } else {
           document.body.classList.add('guest-mode');
           delete document.body.dataset.role;
@@ -4482,9 +4583,255 @@
         btnTogglePass.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
       });
 
+      const GET_PASS_BTN_HTML = btnGetPass.innerHTML;
+      const UNBLOCK_BTN_HTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.05 21.8a9.87 9.87 0 0 1-5.03-1.38l-3.74.98 1-3.65a9.86 9.86 0 1 1 7.77 4.05zm4.2-6.6c-.23-.12-1.37-.68-1.58-.75-.21-.08-.37-.12-.52.12-.15.23-.6.75-.73.9-.13.16-.27.17-.5.06-.23-.12-.98-.36-1.87-1.15-.69-.62-1.16-1.38-1.3-1.61-.13-.23-.01-.36.1-.47.1-.1.23-.27.35-.4.12-.14.15-.23.23-.39.08-.15.04-.29-.02-.4-.06-.12-.52-1.26-.72-1.72-.19-.45-.38-.39-.52-.4h-.45c-.15 0-.4.06-.61.29-.21.23-.8.78-.8 1.9s.82 2.2.93 2.36c.12.15 1.6 2.45 3.9 3.43.55.24.98.38 1.3.49.55.17 1.05.15 1.44.09.44-.07 1.37-.56 1.56-1.1.19-.54.19-1 .13-1.1-.06-.09-.21-.15-.44-.27z"/></svg> Unblock';
+
       btnGetPass.addEventListener('click', () => {
+        const g = readGuard();
+        if (g.lockType === '24h' && g.lockUntil && (!hasServerTime() || trueNow() < g.lockUntil)) {
+          const nm = inputName.value.trim();
+          const msg = 'Assalam-o-Alaikum! My Pikazoo account is blocked for 24 hours due to wrong password attempts. Please unblock my ID: ' + g.deviceId + (nm ? (' (Name: ' + nm + ')') : '') + '\n\nNote: I am already a Premium Member / I want to get Premium Membership.';
+          window.open('https://wa.me/923041891897?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+          return;
+        }
         window.open(WA_URL, '_blank', 'noopener');
       });
+
+      /* --- WRONG PASSWORD TIMER (59s -> 119s -> 24h BLOCK) --- */
+      const GUARD_STORAGE_KEY = 'pz_signin_guard_v1';
+      const DAY_MS = 24 * 60 * 60 * 1000;
+      const signinLockBox = document.getElementById('signin-lock-box');
+      const signinLockTitle = document.getElementById('signin-lock-title');
+      const signinLockTimer = document.getElementById('signin-lock-timer');
+      const signinLockDesc = document.getElementById('signin-lock-desc');
+      const btnUnblockWa = document.getElementById('btn-unblock-wa');
+      let guardTickInterval = null;
+
+      function createDeviceId() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let out = 'dev_';
+        if (window.crypto && window.crypto.getRandomValues) {
+          const arr = new Uint8Array(16);
+          window.crypto.getRandomValues(arr);
+          for (let i = 0; i < arr.length; i++) out += chars[arr[i] % chars.length];
+        } else {
+          out += Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+        }
+        return out;
+      }
+
+      function hasServerTime() {
+        return typeof window.__pzTrueBase === 'number' && typeof window.__pzPerfBase === 'number';
+      }
+
+      function trueNow() {
+        if (hasServerTime()) {
+          return Math.round(window.__pzTrueBase + (performance.now() - window.__pzPerfBase));
+        }
+        return Date.now();
+      }
+
+      function readGuard() {
+        let g = null;
+        try {
+          g = JSON.parse(window.localStorage.getItem(GUARD_STORAGE_KEY) || 'null');
+        } catch (e) {}
+        if (!g || typeof g.deviceId !== 'string' || !/^dev_[a-zA-Z0-9_-]{8,48}$/.test(g.deviceId)) {
+          g = { deviceId: createDeviceId(), stage: 0, fails: 0, lockUntil: 0, lockType: '', lastAttemptAt: 0 };
+        }
+        if (hasServerTime()) {
+          const now = trueNow();
+          if (g.lockType === '24h' && g.lockUntil && now >= g.lockUntil) {
+            g.stage = 0; g.fails = 0; g.lockUntil = 0; g.lockType = ''; g.lastAttemptAt = 0;
+          } else if (g.lastAttemptAt && (now - g.lastAttemptAt) >= DAY_MS && (!g.lockUntil || now >= g.lockUntil)) {
+            g.stage = 0; g.fails = 0; g.lockUntil = 0; g.lockType = ''; g.lastAttemptAt = 0;
+          }
+        }
+        saveGuard(g);
+        return g;
+      }
+
+      function saveGuard(g) {
+        try { window.localStorage.setItem(GUARD_STORAGE_KEY, JSON.stringify(g)); } catch (e) {}
+      }
+
+      function resetGuard() {
+        const cur = readGuard();
+        const fresh = { deviceId: cur.deviceId, stage: 0, fails: 0, lockUntil: 0, lockType: '', lastAttemptAt: 0 };
+        saveGuard(fresh);
+        tickLockUI();
+      }
+
+      function formatBanTimer(ms) {
+        const totalSec = Math.max(0, Math.ceil(ms / 1000));
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+        if (h > 0) {
+          return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+        return totalSec + 's';
+      }
+
+      function isSignInLockedNow() {
+        const g = readGuard();
+        return !!(g.lockUntil && (!hasServerTime() || trueNow() < g.lockUntil));
+      }
+
+      function tickLockUI() {
+        const g = readGuard();
+        const now = trueNow();
+        if (g.lockUntil && (!hasServerTime() || now < g.lockUntil)) {
+          const rem = g.lockUntil - now;
+          const timerStr = formatBanTimer(rem);
+          if (g.lockType === '24h') {
+            if (signinLockBox) signinLockBox.hidden = true;
+            if (btnUnblockWa) btnUnblockWa.hidden = true;
+            btnGetPass.classList.add('is-unblock');
+            if (btnGetPass.dataset.mode !== 'unblock') {
+              btnGetPass.innerHTML = UNBLOCK_BTN_HTML;
+              btnGetPass.dataset.mode = 'unblock';
+            }
+            if (screenSignin.classList.contains('is-active')) {
+              window.dispatchEvent(new CustomEvent('pikazoo-ban-tick', {
+                detail: { timerText: timerStr, deviceId: g.deviceId }
+              }));
+            } else {
+              window.dispatchEvent(new Event('pikazoo-ban-clear'));
+            }
+          } else {
+            if (signinLockBox) signinLockBox.hidden = false;
+            if (signinLockTimer) signinLockTimer.textContent = timerStr;
+            if (signinLockTitle) signinLockTitle.textContent = 'Too many wrong passwords';
+            if (signinLockDesc) signinLockDesc.textContent = 'Please wait until the countdown ends before trying again.';
+            if (btnUnblockWa) btnUnblockWa.hidden = true;
+            btnGetPass.classList.remove('is-unblock');
+            if (btnGetPass.dataset.mode === 'unblock') {
+              btnGetPass.innerHTML = GET_PASS_BTN_HTML;
+              btnGetPass.dataset.mode = '';
+            }
+          }
+          inputPass.disabled = true;
+          btnSignin.classList.add('is-locked');
+          if (!guardTickInterval) {
+            guardTickInterval = setInterval(tickLockUI, 1000);
+          }
+          return true;
+        }
+
+        if (g.lockType) {
+          if (g.lockType === '24h') {
+            g.stage = 0; g.fails = 0; g.lastAttemptAt = 0;
+          }
+          g.lockType = '';
+          g.lockUntil = 0;
+          saveGuard(g);
+        }
+        if (guardTickInterval) {
+          clearInterval(guardTickInterval);
+          guardTickInterval = null;
+        }
+        if (signinLockBox) signinLockBox.hidden = true;
+        if (btnUnblockWa) btnUnblockWa.hidden = true;
+        btnGetPass.classList.remove('is-unblock');
+        if (btnGetPass.dataset.mode === 'unblock') {
+          btnGetPass.innerHTML = GET_PASS_BTN_HTML;
+          btnGetPass.dataset.mode = '';
+        }
+        window.dispatchEvent(new Event('pikazoo-ban-clear'));
+        inputPass.disabled = false;
+        btnSignin.classList.remove('is-locked');
+        return false;
+      }
+
+      async function saveBanToFirebase(g, triedKey) {
+        try {
+          await setDoc(doc(db, 'loginBans', g.deviceId), {
+            deviceId: g.deviceId,
+            name: (inputName.value.trim() || 'Unknown').slice(0, 30),
+            lastTriedKey: String(triedKey || '').slice(0, 30),
+            attempts: 4,
+            status: 'BLOCKED',
+            blockedAt: serverTimestamp(),
+            expiresAt: Math.floor(g.lockUntil),
+            updatedAt: serverTimestamp()
+          });
+        } catch (e) {}
+      }
+
+      function recordWrongPassword(triedKey) {
+        const g = readGuard();
+        const now = trueNow();
+        if (g.lockUntil && (!hasServerTime() || now < g.lockUntil)) {
+          tickLockUI();
+          return { locked: true, left: 0 };
+        }
+        g.fails = (Number(g.fails) || 0) + 1;
+        g.lastAttemptAt = now;
+
+        if (g.stage >= 1) {
+          g.fails = 0;
+          g.stage = 2;
+          g.lockType = '24h';
+          g.lockUntil = now + DAY_MS;
+          saveGuard(g);
+          saveBanToFirebase(g, triedKey);
+          setFieldError(errorPass, wrapPass, '');
+          tickLockUI();
+          return { locked: true, left: 0 };
+        }
+
+        if (g.fails >= 3) {
+          g.fails = 0;
+          g.stage = 1;
+          g.lockType = '59s';
+          g.lockUntil = now + 59 * 1000;
+          saveGuard(g);
+          setFieldError(errorPass, wrapPass, '');
+          tickLockUI();
+          return { locked: true, left: 0 };
+        }
+
+        saveGuard(g);
+        return { locked: false, left: 3 - g.fails };
+      }
+
+      if (btnUnblockWa) {
+        btnUnblockWa.addEventListener('click', () => {
+          const g = readGuard();
+          const nm = inputName.value.trim();
+          const msg = 'Assalam-o-Alaikum! My Pikazoo account is blocked for 24 hours after wrong password attempts. Please unblock my ID: ' + g.deviceId + (nm ? (' (Name: ' + nm + ')') : '');
+          window.open('https://wa.me/923041891897?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+        });
+      }
+
+      window.addEventListener('pikazoo-server-time', tickLockUI);
+      const initG = readGuard();
+      tickLockUI();
+      onSnapshot(doc(db, 'loginBans', initG.deviceId), (snap) => {
+        if (!snap.exists()) return;
+        const d = snap.data();
+        const cur = readGuard();
+        if (d.status === 'UNBLOCKED') {
+          if (cur.lockType === '24h' || cur.stage > 0 || cur.fails > 0) {
+            resetGuard();
+            setFieldError(errorPass, wrapPass, '');
+            window.dispatchEvent(new CustomEvent('pikazoo-toast', { detail: { message: 'Owner ne aapko unblock kar diya! Ab login karein.' } }));
+          }
+        } else if (d.status === 'BLOCKED') {
+          const srvExp = (d.blockedAt && typeof d.blockedAt.toMillis === 'function')
+            ? (d.blockedAt.toMillis() + DAY_MS)
+            : Number(d.expiresAt || 0);
+          if (srvExp > trueNow() && (cur.lockType !== '24h' || Math.abs((cur.lockUntil || 0) - srvExp) > 5000)) {
+            cur.stage = 2;
+            cur.fails = 0;
+            cur.lockType = '24h';
+            cur.lockUntil = srvExp;
+            saveGuard(cur);
+            tickLockUI();
+          }
+        }
+      }, () => {});
 
       const termsPromptModal = document.getElementById('termsPromptModal');
       const termsPromptCancel = document.getElementById('termsPromptCancel');
@@ -4532,6 +4879,10 @@
       signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         if (btnSignin.disabled) return;
+        if (isSignInLockedNow()) {
+          tickLockUI();
+          return;
+        }
 
         const nameVal = inputName.value.trim();
         const nameIsEmpty = nameVal.length === 0;
@@ -4552,7 +4903,14 @@
         }
 
         if (!keyFormatOk) {
-          setFieldError(errorPass, wrapPass, isOwnerAttempt ? 'Wrong password' : 'Key invalid, used ya blocked');
+          if (rawPass.trim().length > 0) {
+            const res = recordWrongPassword(rawPass.trim());
+            if (!res.locked) {
+              setFieldError(errorPass, wrapPass, (isOwnerAttempt ? 'Wrong password' : 'Key invalid, used ya blocked') + ` (${res.left} left)`);
+            }
+          } else {
+            setFieldError(errorPass, wrapPass, isOwnerAttempt ? 'Wrong password' : 'Key invalid, used ya blocked');
+          }
           firstInvalid = firstInvalid || inputPass;
         } else {
           setFieldError(errorPass, wrapPass, '');
@@ -4580,6 +4938,7 @@
               role: 'owner',
               signedInAt: Date.now()
             };
+            resetGuard();
             saveUser(userPayload);
 
             await coverWithCurtainThen(async () => {
@@ -4593,7 +4952,10 @@
             btnSignin.disabled = false;
             signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
           } catch (err) {
-            setFieldError(errorPass, wrapPass, 'Wrong password');
+            const res = recordWrongPassword(rawPass);
+            if (!res.locked) {
+              setFieldError(errorPass, wrapPass, `Wrong password (${res.left} left)`);
+            }
             btnSignin.disabled = false;
             signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
           } finally {
@@ -4610,7 +4972,14 @@
           const keySnap = await getDoc(keyRef);
           if (!keySnap.exists()) throw new Error('invalid key');
           const kd = keySnap.data();
-          if (kd.permanentlyInvalidated) throw new Error('invalid key');
+          if (kd.status === 'DELETED' || kd.permanentlyInvalidated) {
+            window.dispatchEvent(new CustomEvent('pikazoo-kicked', { detail: { reason: 'deleted', keyId: fullKey } }));
+            throw new Error('key deleted');
+          }
+          if (kd.status === 'BLOCKED') {
+            window.dispatchEvent(new CustomEvent('pikazoo-kicked', { detail: { reason: 'blocked', keyId: fullKey } }));
+            throw new Error('key blocked');
+          }
 
           if (kd.status === 'GENERATED' && !nameOk) {
             setFieldError(errorName, wrapName, 'First time login: enter your Name (3 to 14 letters)');
@@ -4690,6 +5059,7 @@
             keyId: fullKey,
             signedInAt: Date.now()
           };
+          resetGuard();
           saveUser(userPayload);
           startMemberKeyWatcher(fullKey, uid);
 
@@ -4706,7 +5076,10 @@
         } catch (err) {
           try { await signOut(auth); } catch (e2) {}
           clearSavedUser();
-          setFieldError(errorPass, wrapPass, 'Key invalid, used ya blocked');
+          const res = recordWrongPassword(fullKey);
+          if (!res.locked) {
+            setFieldError(errorPass, wrapPass, `Key invalid, used ya blocked (${res.left} left)`);
+          }
           btnSignin.disabled = false;
           signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
         } finally {
@@ -4744,9 +5117,11 @@
 
       window.pikazooGoToSignin = function () {
         slideTransition(screenHome, screenSignin, 'right');
+        setTimeout(() => tickLockUI(), 40);
       };
       window.pikazooBackToHome = function () {
         if (btnSignin.disabled) return;
+        window.dispatchEvent(new Event('pikazoo-ban-clear'));
         if (!unsubStoreFeed && !document.body.dataset.role) {
           startStoreFeed('guest');
         }
@@ -7657,6 +8032,8 @@
     .pz-kkey{flex:1;min-width:0;background:#fff;border:1px dashed #FF9C9C;border-radius:10px;padding:8px 10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:700;color:#0B0B0D;letter-spacing:.02em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .pz-kcopy{border:0;border-radius:10px;background:#D83A3A;color:#fff;font-weight:800;font-size:12.5px;padding:9px 14px;cursor:pointer;font-family:inherit}
     .pz-kx{position:absolute;top:6px;right:8px;width:28px;height:28px;border:0;background:transparent;color:#8A1C1C;font-size:20px;line-height:1;cursor:pointer}
+    .pz-ktimer{display:inline-block;margin-top:6px;padding:4px 10px;border-radius:999px;background:#D83A3A;color:#fff;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;font-weight:800;font-variant-numeric:tabular-nums}
+    .pz-knote{margin-top:6px;padding:7px 10px;border-radius:10px;background:rgba(255,255,255,0.65);border:1px solid #FFB1B1;font-size:11.5px;font-weight:700;color:#7A1919;line-height:1.35}
   </style>
 
   <script>
@@ -7790,27 +8167,84 @@
       el.classList.remove('pz-in');
       setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 560);
     }
-    function showKick(keyId) {
-      if (!keyId) return;
+    function showKick(detail) {
+      if (typeof detail === 'string') detail = { reason: 'other-device', keyId: detail };
+      if (!detail || !detail.reason) return;
+      var reason = detail.reason;
+      var keyId = detail.keyId || '';
+
+      if (reason === 'banned-24h' && kickEl && kickEl.dataset.reason === 'banned-24h') {
+        var tEl = kickEl.querySelector('.pz-ktimer');
+        if (tEl) tEl.textContent = 'Unlocks in: ' + (detail.timerText || '24:00:00');
+        return;
+      }
+
       hideKick();
       var el = document.createElement('div');
       el.className = 'pz-kick';
-      el.innerHTML = '<button type="button" class="pz-kx" aria-label="Close">\u00D7</button><b>You are logged out - your key was used to login on another Browser/Phone.</b><p>You can login again by using your key:</p><div class="pz-krow"><div class="pz-kkey"></div><button type="button" class="pz-kcopy">Copy</button></div>';
-      el.querySelector('.pz-kkey').textContent = keyId;
-      el.querySelector('.pz-kx').addEventListener('click', hideKick);
-      var cb = el.querySelector('.pz-kcopy');
-      cb.addEventListener('click', function () {
-        copyText(keyId, function () { cb.textContent = 'Copied'; setTimeout(function () { cb.textContent = 'Copy'; }, 1500); });
-      });
+      el.dataset.reason = reason;
+
+      var title = '';
+      var desc = '';
+      var showKeyRow = !!keyId;
+      var showClose = true;
+      var extraHtml = '';
+
+      if (reason === 'blocked') {
+        title = 'Account Blocked by Owner';
+        desc = 'Owner has blocked your key. Please contact the Owner on WhatsApp (+923041891897) to get unblocked.';
+      } else if (reason === 'revoked') {
+        title = 'Session Revoked by Owner';
+        desc = 'Owner revoked your active session. Please re-enter the same key below to login again:';
+      } else if (reason === 'deleted') {
+        title = 'Key Deleted by Owner';
+        desc = 'Owner has permanently deleted your key. Please contact Owner on WhatsApp to get a new key.';
+        showKeyRow = false;
+      } else if (reason === 'banned-24h') {
+        title = 'Blocked for 1 Day (24 Hours)';
+        desc = 'Too many wrong password attempts. Tap the green Unblock button below to contact Owner on WhatsApp.';
+        showKeyRow = false;
+        showClose = false;
+        extraHtml = '<div class="pz-ktimer">Unlocks in: ' + (detail.timerText || '24:00:00') + '</div>' +
+          '<div class="pz-knote">Note: Unban is only available for users who already hold a Premium Membership or want to purchase a Premium Membership.</div>';
+      } else {
+        title = 'You are logged out - your key was used on another Browser/Phone.';
+        desc = 'You can login again by using your key:';
+      }
+
+      var html = (showClose ? '<button type="button" class="pz-kx" aria-label="Close">\u00D7</button>' : '') +
+        '<b></b><p></p>' + extraHtml +
+        (showKeyRow ? '<div class="pz-krow"><div class="pz-kkey"></div><button type="button" class="pz-kcopy">Copy</button></div>' : '');
+
+      el.innerHTML = html;
+      el.querySelector('b').textContent = title;
+      el.querySelector('p').textContent = desc;
+      if (showClose) el.querySelector('.pz-kx').addEventListener('click', hideKick);
+      if (showKeyRow) {
+        el.querySelector('.pz-kkey').textContent = keyId;
+        var cb = el.querySelector('.pz-kcopy');
+        cb.addEventListener('click', function () {
+          copyText(keyId, function () { cb.textContent = 'Copied'; setTimeout(function () { cb.textContent = 'Copy'; }, 1500); });
+        });
+      }
+
       document.body.appendChild(el);
       kickEl = el;
       void el.offsetWidth;
       requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('pz-in'); }); });
     }
     window.addEventListener('pikazoo-force-guest', function (e) {
-      if (e && e.detail && e.detail.reason === 'other-device') showKick(e.detail.keyId);
+      if (e && e.detail && e.detail.reason) showKick({ reason: e.detail.reason, keyId: e.detail.keyId });
     });
-    window.addEventListener('pikazoo-kicked', function (e) { showKick(e && e.detail && e.detail.keyId); });
+    window.addEventListener('pikazoo-kicked', function (e) {
+      if (e && e.detail) showKick(e.detail);
+    });
+    window.addEventListener('pikazoo-ban-tick', function (e) {
+      if (e && e.detail) showKick({ reason: 'banned-24h', timerText: e.detail.timerText });
+    });
+    window.addEventListener('pikazoo-ban-clear', function () {
+      if (kickEl && kickEl.dataset.reason === 'banned-24h') hideKick();
+    });
     window.addEventListener('pikazoo-user-ready', function () {
       if (document.body.dataset.role) hideKick();
     });
@@ -8488,7 +8922,21 @@
     var ac = typeof AbortController !== 'undefined' ? new AbortController() : null;
     var tid = ac ? setTimeout(function () { ac.abort(); }, 4000) : null;
     return fetch(url, { method: 'HEAD', cache: 'no-store', signal: ac ? ac.signal : undefined })
-      .then(function (r) { return !!(r && r.ok); })
+      .then(function (r) {
+        if (r && r.ok) {
+          var dh = r.headers.get('date');
+          if (dh) {
+            var srvMs = Date.parse(dh);
+            if (!isNaN(srvMs)) {
+              window.__pzTrueBase = srvMs;
+              window.__pzPerfBase = performance.now();
+              window.dispatchEvent(new Event('pikazoo-server-time'));
+            }
+          }
+          return true;
+        }
+        return false;
+      })
       .catch(function () { return false; })
       .finally(function () { if (tid) clearTimeout(tid); });
   }
