@@ -1626,8 +1626,8 @@
       width: min(320px, 84vw);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      padding: calc(20px + var(--safe-top)) 16px calc(20px + var(--safe-bottom));
+      gap: 9px;
+      padding: calc(18px + var(--safe-top)) 16px calc(18px + var(--safe-bottom));
       border-radius: 0 34px 34px 0;
       border-right: 1px solid rgba(255, 224, 237, 0.8);
       background: linear-gradient(162deg, #E6F4F5 0%, #DDEFF1 62%, #F3DDE8 100%);
@@ -1638,6 +1638,7 @@
       overscroll-behavior: contain;
       touch-action: pan-y;
     }
+    .drawer > * { flex-shrink: 0; }
     .drawer.open { transform: translate3d(0, 0, 0); will-change: transform; }
 
     .drawer-head {
@@ -1689,11 +1690,11 @@
     .drawer-item {
       display: flex;
       align-items: center;
-      gap: 13px;
+      gap: 12px;
       width: 100%;
-      padding: 14px;
+      padding: 11px 13px;
       border: 1px solid rgba(255, 224, 237, 0.7);
-      border-radius: 22px;
+      border-radius: 20px;
       cursor: pointer;
       font-size: 14.5px;
       font-weight: 800;
@@ -1707,9 +1708,9 @@
 
     .di-icon {
       flex: 0 0 auto;
-      width: 44px;
-      height: 44px;
-      border-radius: 16px;
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
       display: grid;
       place-items: center;
       color: #2A3B47;
