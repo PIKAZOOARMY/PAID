@@ -1655,6 +1655,68 @@
       color: var(--st-muted);
       text-transform: uppercase;
     }
+    .drawer-head-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .drawer-share-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 40px;
+      padding: 0 13px;
+      border: 1px solid rgba(255, 224, 237, 0.85);
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #2A3B47;
+      background: linear-gradient(145deg, var(--st-orange), var(--st-pink));
+      box-shadow: var(--st-clay-sm);
+      transition: transform 0.18s var(--ease-pop);
+    }
+    .drawer-share-btn:active { transform: scale(0.92); }
+    body:not([data-role="member"]) .drawer-share-btn { display: none; }
+
+    .share-trust-box {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, rgba(212, 245, 207, 0.72), rgba(209, 240, 240, 0.72));
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      margin-bottom: 12px;
+      text-align: start;
+    }
+    .share-trust-box strong {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: #166534;
+      margin-bottom: 4px;
+    }
+    .share-trust-box p {
+      margin: 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #1F3A3E;
+    }
+    .share-check-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid rgba(42, 59, 71, 0.12);
+      cursor: pointer;
+      margin-bottom: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--st-text);
+    }
+    .share-check-row:active { transform: scale(0.98); }
+
     .close-x {
       width: 40px;
       height: 40px;
@@ -2788,9 +2850,15 @@
         <aside class="drawer" id="drawer" aria-hidden="true" aria-label="Menu">
           <div class="drawer-head">
             <h2>Menu</h2>
-            <button class="close-x" id="closeDrawer" type="button" aria-label="Close menu">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-            </button>
+            <div class="drawer-head-actions">
+              <button class="drawer-share-btn" id="btnShareId" type="button" aria-label="Share Membership ID">
+                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                <span>Share ID</span>
+              </button>
+              <button class="close-x" id="closeDrawer" type="button" aria-label="Close menu">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+              </button>
+            </div>
           </div>
 
           <div class="role-badge" id="roleBadge" hidden></div>
@@ -3090,6 +3158,40 @@
             <p class="yt-desc" id="ytModalDesc"></p>
             <div class="modal-actions">
               <button class="btn btn-cyan" id="ytFsBtn" type="button">Fullscreen / Landscape</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- MEMBER SHARE ID MODAL -->
+        <div class="modal" id="shareIdModal" role="dialog" aria-modal="true" aria-labelledby="shareIdTitle" aria-hidden="true">
+          <div class="modal-card">
+            <div class="modal-icon">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+              </svg>
+            </div>
+            <h2 id="shareIdTitle">Share Membership ID</h2>
+            <div class="share-trust-box">
+              <strong>100% Safe · Official Store Owner</strong>
+              <p>Don't worry at all! You are sharing your details directly with the Owner of this Store. If you tick "Share with Key", no need to feel scared because he is already the Owner of Pikazoo Premium Store and manages all keys safely.</p>
+            </div>
+            <div class="keybox">
+              <span class="key-label">YOUR DETAILS TO SHARE</span>
+              <span class="key-val" id="shareIdPreview">Name: ---</span>
+            </div>
+            <label class="share-check-row" for="shareWithKeyCb">
+              <input id="shareWithKeyCb" class="terms-checkbox" type="checkbox" />
+              <span class="checkbox-box" aria-hidden="true">
+                <svg class="checkbox-tick" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 8.5 6.5 12 13 4.5"/>
+                </svg>
+              </span>
+              <span>Share with Key (Password)</span>
+            </label>
+            <div class="modal-actions">
+              <button class="btn" id="shareIdCancelBtn" type="button">Cancel</button>
+              <button class="btn btn-orange" id="shareIdSendBtn" type="button">Share on WhatsApp</button>
             </div>
           </div>
         </div>
@@ -4371,6 +4473,7 @@
         if (btnSignin.disabled) return;
 
         const nameVal = inputName.value.trim();
+        const nameIsEmpty = nameVal.length === 0;
         const nameOk = NAME_RE.test(nameVal);
         const rawPass = inputPass.value;
         const isOwnerAttempt = rawPass.charAt(0) === '@';
@@ -4380,7 +4483,7 @@
 
         let firstInvalid = null;
 
-        if (!nameOk) {
+        if (!nameIsEmpty && !nameOk) {
           setFieldError(errorName, wrapName, 'Use 3 to 14 letters (A-Z and spaces only)');
           firstInvalid = firstInvalid || inputName;
         } else {
@@ -4417,7 +4520,7 @@
             }
             await signInWithEmailAndPassword(auth, OWNER_EMAIL, rawPass);
             const userPayload = {
-              name: nameVal,
+              name: nameVal || 'Owner',
               role: 'owner',
               signedInAt: Date.now()
             };
@@ -4446,16 +4549,31 @@
         try {
           unsubscribeAllListeners();
           currentMemberKeyId = null;
+
+          const keyRef = doc(db, 'keys', fullKey);
+          const keySnap = await getDoc(keyRef);
+          if (!keySnap.exists()) throw new Error('invalid key');
+          const kd = keySnap.data();
+          if (kd.permanentlyInvalidated) throw new Error('invalid key');
+
+          if (kd.status === 'GENERATED' && !nameOk) {
+            setFieldError(errorName, wrapName, 'First time login: enter your Name (3 to 14 letters)');
+            btnSignin.disabled = false;
+            signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
+            isSigningIn = false;
+            inputName.focus();
+            return;
+          }
+          if (kd.status !== 'GENERATED' && !(kd.status === 'USED' && kd.userName)) {
+            throw new Error('invalid key');
+          }
+
           if (auth.currentUser) {
             await signOut(auth);
           }
           const cred = await signInAnonymously(auth);
           const uid = cred.user.uid;
 
-          const keyRef = doc(db, 'keys', fullKey);
-          const keySnap = await getDoc(keyRef);
-          if (!keySnap.exists()) throw new Error('invalid key');
-          const kd = keySnap.data();
           let lockedName = nameVal;
           let isFirstActivation = false;
 
@@ -4470,16 +4588,16 @@
               sessionId: genSessionId(),
               updatedAt: serverTimestamp()
             });
-          } else if (kd.status === 'USED' && kd.userName) {
+          } else {
             lockedName = kd.userName;
+            inputName.value = String(kd.userName).slice(0, 14);
+            setFieldError(errorName, wrapName, '');
             await updateDoc(keyRef, {
               userUid: uid,
               lastUsedAt: serverTimestamp(),
               sessionId: genSessionId(),
               updatedAt: serverTimestamp()
             });
-          } else {
-            throw new Error('invalid key');
           }
 
           await setDoc(doc(db, 'members', uid), {
@@ -4906,6 +5024,7 @@
       window.addEventListener('pikazoo-force-guest', function (e) {
         if (typeof cancelActiveReorder === 'function') cancelActiveReorder();
         if (typeof closeYtModal === 'function') closeYtModal();
+        if (typeof closeShareIdModal === 'function') closeShareIdModal();
         if (typeof closeConfirmDelete === 'function') closeConfirmDelete();
         if (typeof closeSpoofModal === 'function') closeSpoofModal();
         if (typeof closeSettingsModal === 'function') closeSettingsModal();
@@ -6175,6 +6294,79 @@
         });
       }
 
+      /* MEMBER SHARE ID MODAL */
+      var btnShareId       = $('#btnShareId');
+      var shareIdModal     = $('#shareIdModal');
+      var shareIdPreview   = $('#shareIdPreview');
+      var shareWithKeyCb   = $('#shareWithKeyCb');
+      var shareIdCancelBtn = $('#shareIdCancelBtn');
+      var shareIdSendBtn   = $('#shareIdSendBtn');
+
+      function getMemberShareInfo() {
+        var name = 'Member';
+        try {
+          var raw = window.localStorage.getItem('pikazoo_premium_user_v1');
+          if (raw) {
+            var parsed = JSON.parse(raw);
+            if (parsed && parsed.name) name = String(parsed.name);
+          }
+        } catch (e) {}
+        var uid = (window.pikazooAuth && window.pikazooAuth.currentUser) ? window.pikazooAuth.currentUser.uid : '';
+        var key = generateKey();
+        if (key === 'PRM-XXXX-XXXX-XXXX') key = '';
+        return { name: name, uid: uid, key: key };
+      }
+
+      function updateSharePreview() {
+        if (!shareIdPreview) return;
+        var info = getMemberShareInfo();
+        var text = 'Name: ' + info.name + '\nMember ID: ' + (info.uid || 'N/A');
+        if (shareWithKeyCb && shareWithKeyCb.checked && info.key) {
+          text += '\nPassword / Key: ' + info.key;
+        }
+        shareIdPreview.style.whiteSpace = 'pre-wrap';
+        shareIdPreview.textContent = text;
+      }
+
+      function openShareIdModal() {
+        if (document.body.dataset.role !== 'member' || !shareIdModal) return;
+        closeDrawer();
+        if (shareWithKeyCb) shareWithKeyCb.checked = false;
+        updateSharePreview();
+        shareIdModal.classList.add('show');
+        shareIdModal.setAttribute('aria-hidden', 'false');
+        lockScroll();
+      }
+
+      function closeShareIdModal() {
+        if (!shareIdModal || !shareIdModal.classList.contains('show')) return;
+        shareIdModal.classList.remove('show');
+        shareIdModal.setAttribute('aria-hidden', 'true');
+        unlockScroll();
+      }
+
+      if (btnShareId) btnShareId.addEventListener('click', openShareIdModal);
+      if (shareWithKeyCb) shareWithKeyCb.addEventListener('change', updateSharePreview);
+      if (shareIdCancelBtn) shareIdCancelBtn.addEventListener('click', closeShareIdModal);
+      if (shareIdModal) shareIdModal.addEventListener('click', function (e) { if (e.target === shareIdModal) closeShareIdModal(); });
+      if (shareIdSendBtn) {
+        shareIdSendBtn.addEventListener('click', function () {
+          var info = getMemberShareInfo();
+          var lines = [
+            'Assalam-o-Alaikum! Here is my Pikazoo Premium Membership ID:',
+            '',
+            'Name: ' + info.name,
+            'Member ID: ' + (info.uid || 'N/A')
+          ];
+          if (shareWithKeyCb && shareWithKeyCb.checked && info.key) {
+            lines.push('Password / Key: ' + info.key);
+          }
+          var waUrl = 'https://wa.me/923041891897?text=' + encodeURIComponent(lines.join('\n'));
+          closeShareIdModal();
+          window.open(waUrl, '_blank', 'noopener');
+        });
+      }
+
       /* BOTTOM FLOATING PILL */
       var pillSignup    = $('#pillSignup');
       var pillCopy      = $('#pillCopy');
@@ -7204,6 +7396,7 @@
       document.addEventListener('keydown', function (e) {
         if (e.key !== 'Escape') return;
         if (ytModal && ytModal.classList.contains('show')) { closeYtModal(); return; }
+        if (shareIdModal && shareIdModal.classList.contains('show')) { closeShareIdModal(); return; }
         if (spoofModal && spoofModal.classList.contains('show')) { closeSpoofModal(); return; }
         if (confirmDeleteModal && confirmDeleteModal.classList.contains('show')) { closeConfirmDelete(); return; }
         if (settingsModal && settingsModal.classList.contains('show')) { closeSettingsModal(); return; }
@@ -8346,6 +8539,7 @@
   var ignorePop = false;
   var targets = [
     { id: 'ytModal',            cls: 'show',      close: function () { var b = document.getElementById('ytCloseBtn'); if (b) b.click(); } },
+    { id: 'shareIdModal',       cls: 'show',      close: function () { var b = document.getElementById('shareIdCancelBtn'); if (b) b.click(); } },
     { id: 'spoofModal',         cls: 'show',      close: function () { var b = document.getElementById('spoofCancelBtn'); if (b) b.click(); } },
     { id: 'confirmDeleteModal', cls: 'show',      close: function () { var b = document.getElementById('delCancelBtn'); if (b) b.click(); } },
     { id: 'settingsModal',      cls: 'show',      close: function () { var b = document.getElementById('settingsCancelBtn'); if (b) b.click(); } },
