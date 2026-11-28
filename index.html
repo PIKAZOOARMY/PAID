@@ -4461,6 +4461,8 @@
             if (d.status === 'USED' && d.userName) {
               inputName.value = String(d.userName).slice(0, 14);
               setFieldError(errorName, wrapName, '');
+              inputTerms.checked = true;
+              setFieldError(errorTerms, wrapTerms, '');
             }
           }
         } catch (err) {}
@@ -4560,12 +4562,6 @@
           firstInvalid.focus();
           return;
         }
-
-        if (!termsChecked) {
-          setFieldError(errorTerms, wrapTerms, '');
-          openTermsPrompt();
-          return;
-        }
         setFieldError(errorTerms, wrapTerms, '');
 
         btnSignin.disabled = true;
@@ -4573,6 +4569,7 @@
         isSigningIn = true;
 
         if (isOwnerAttempt) {
+          if (!inputTerms.checked) inputTerms.checked = true;
           try {
             if (auth.currentUser && auth.currentUser.isAnonymous) {
               await signOut(auth);
@@ -4623,8 +4620,18 @@
             inputName.focus();
             return;
           }
+          if (kd.status === 'GENERATED' && !inputTerms.checked) {
+            btnSignin.disabled = false;
+            signinBtnIcon.innerHTML = ARROW_WHITE_SVG;
+            isSigningIn = false;
+            openTermsPrompt();
+            return;
+          }
           if (kd.status !== 'GENERATED' && !(kd.status === 'USED' && kd.userName)) {
             throw new Error('invalid key');
+          }
+          if (kd.status === 'USED' && !inputTerms.checked) {
+            inputTerms.checked = true;
           }
 
           if (auth.currentUser) {
