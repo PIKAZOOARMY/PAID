@@ -969,6 +969,17 @@
             });
         }
 
+        let lastSyncedUsedCount = null;
+        async function syncRealMembersCount(usedCount) {
+            if (!db || !currentUser || usedCount === lastSyncedUsedCount) return;
+            lastSyncedUsedCount = usedCount;
+            try {
+                await setDoc(doc(db, "meta", "public"), { realMembers: usedCount }, { merge: true });
+            } catch (e) {
+                lastSyncedUsedCount = null;
+            }
+        }
+
         function updateStats() {
             const total = allKeys.length;
             const used = allKeys.filter(k => k.status === 'USED').length;
@@ -981,6 +992,7 @@
             document.getElementById('stat-unused').innerText = unused;
             document.getElementById('stat-blocked').innerText = blocked;
             document.getElementById('stat-deleted').innerText = deleted;
+            syncRealMembersCount(used);
         }
 
         // --- KEY GENERATION (Atomic Transaction) ---
